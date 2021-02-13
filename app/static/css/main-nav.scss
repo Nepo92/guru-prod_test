@@ -114,12 +114,9 @@
     display: block;
 }
 
-
 .main-nav {
-
     background-color: #fff;
     box-shadow: 5px 0px 25px rgba(7, 2, 14, 0.05);
-
     position: fixed;
     top: 0;
     left: 0;
@@ -129,16 +126,14 @@
     display: flex;
     flex-direction: column;
     position: relative;
-
     width: 70px;
     min-height: 100vh;
     max-height: 100vh;
-
     transition: width .4s;
-
     /*overflow: hidden;*//*Убрал потому что на сафари не работает*/
     overflow: visible;
 }
+
 .main-nav__wrapper:hover {
     width: 300px;
 }
@@ -581,3 +576,20 @@
 .open-mobile-menu__list-items .main-nav__items-wrapper{
     width: 100%;
 }
+
+@media (max-width: 319px) {
+    .mobile-nav__items-wrapper {
+        width: 100%;
+        margin: 0;
+    }
+
+    mobile-nav__item {
+        margin: 0;
+    }
+
+    .block-wrapper {
+        min-width: 0;
+    }
+} 
+
+

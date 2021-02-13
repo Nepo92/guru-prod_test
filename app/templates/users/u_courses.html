@@ -86,6 +86,7 @@
                                                                                   th:data-startDate="${course.fullStartTime}">
                                                                             </span>
                                                                         </div>
+                                                                        <img class="info-date__logo" src="./../../img/sweets-academy.png" alt="course-logo">
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -97,9 +98,9 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-<!--                                                            <div class="available-course__desc">-->
-<!--                                                                Какой-то подзаголовок-->
-<!--                                                            </div>-->
+                                                           <div class="available-course__desc">
+                                                               Какой-то подзаголовок
+                                                           </div>
                                                             <div class="available-course__progress -gap_4">
                                                                 <div class="progress-bar">
                                                                     <div class="progress-bar__wrapper">
@@ -112,15 +113,15 @@
                                                             </div>
                                                             <div class="available-course__info">
                                                                 <div class="info-blocks">
-                                                                    <div class="info-blocks__wrapper info-blocks__info">
-                                                                        <div class="info-block info-block_icon info-block_icon_module">
-                                                                            <span class="info-block__text" th:utext="${course.modulesCount} + ' модулей'"></span>
+                                                                    <div class="info-blocks__wrapper info-content">
+                                                                        <div class="info-block info-content__item info-block_icon info-block_icon_module">
+                                                                            <span class="info-block__text info-content__text" th:utext="${course.modulesCount} + ' модулей'"></span>
                                                                         </div>
-                                                                        <div class="info-block info-block_icon info-block_icon_video">
-                                                                            <span class="info-block__text" th:utext="${course.lessonsCount} + ' урок'"></span>
+                                                                        <div class="info-block info-content__item info-block_icon info-block_icon_video">
+                                                                            <span class="info-block__text info-content__text" th:utext="${course.lessonsCount} + ' урок'"></span>
                                                                         </div>
-                                                                        <div class="info-block info-block_icon info-block_icon_work">
-                                                                            <span class="info-block__text" th:utext="${course.homeworkCount} + ' домашнее задание'"></span>
+                                                                        <div class="info-block info-content__item info-block_icon info-block_icon_work">
+                                                                            <span class="info-block__text info-content__text" th:utext="${course.homeworkCount} + ' домашнее задание'"></span>
                                                                         </div>
                                                                     </div>
                                                                 </div>

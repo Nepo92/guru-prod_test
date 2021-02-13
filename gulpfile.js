@@ -104,6 +104,14 @@ function createJs() {
 //     .pipe(browserSync.reload({ stream: true }));
 // }
 
+function observer() {
+  gulp.watch('app/templates/**/*.html', gulp.parallel('html'));
+  gulp.watch('app/static/css/**/*.scss', gulp.parallel('sass'));
+  gulp.watch('app/static/js/**/*.js', gulp.parallel('js'));
+}
+
+gulp.task('watch', observer);
+
 gulp.task('html', createHtml);
 
 gulp.task('fonts', createFonts);
@@ -118,5 +126,4 @@ gulp.task('js', createJs);
 
 gulp.task('css', copyCss);
 
-
-gulp.task('default', gulp.parallel('sass', 'css', 'js', 'img', 'fonts', 'html'));
+gulp.task('default', gulp.parallel('watch', 'sass', 'css', 'js', 'img', 'fonts', 'html'));

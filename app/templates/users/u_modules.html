@@ -1,4 +1,5 @@
 <html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,11 +18,14 @@
 </head>
 
 <body class="body" onload="getCountdownOnUserModulesPage()">
-<div th:replace="base :: user-nav"></div>
-    <div class="body__wrapper">
-        <div class="body__header">
-            <header class="header">
-                <div class="header__box block">
+    <div class="modules-menu">
+        <div th:replace="base :: user-mobile-nav"></div>
+    </div>
+
+    <div class="body__wrapper modules">
+        <div class="body__header modules-header">
+            <header class="header modules-header__inner">
+                <div class="header__box block modules-header__box">
                     <div class="header__wrapper block-wrapper">
                         <div class="header__main">
                             <div class="header__items">
@@ -32,8 +36,10 @@
                                     <div class="header__item header__item_btn">
                                         <a href="/user/courses/" class="btn btn_outline">
                                             <div class="btn__content btn__content_large">
-                                                <span class="btn__title btn__title_small btn__icon btn__icon_arrow-left">
-                                                    <span class="btn_title-text btn_title-text_small">Вернуться в каталог</span>
+                                                <span
+                                                    class="btn__title btn__title_small btn__icon btn__icon_arrow-left">
+                                                    <span class="btn_title-text btn_title-text_small">Вернуться в
+                                                        каталог</span>
                                                 </span>
                                             </div>
                                         </a>
@@ -45,60 +51,69 @@
                 </div>
             </header>
         </div>
-        <div class="body__content">
-            <div class="modules block -gap-inner-bottom_5 -gap-inner-top_5">
-                <div class="modules__wrapper block-wrapper">
-                    <div class="modules__main">
-                        <div class="content-element">
-                            <div class="content-element__wrapper">
-<!--                                <div class="logo">-->
-<!--                                    <img src="/img/sa-logo.svg" alt="">-->
-<!--                                </div>-->
-                                <div class="content-element__side">
-                                    <div class="content-element__header -gap_4">
-                                        <div class="content-element__header-wrapper">
-                                            <div class="content-element__header-item">
-                                                <div class="content-element__header-main -gap_2">
-                                                    <div class="content-element__header-element">
-                                                        <span class="content-element__title title title-h2" th:utext="${course.name}"></span>
-                                                    </div>
-                                                    <div class="content-element__header-element">
-                                                        <div class="outline-text">
-                                                            <div class="outline-text__content outline-text__content_dark">
-                                                                <div class="outline-text__text" th:utext="${course.type}"></div>
-                                                            </div>
+        <div class="body__content modules-content">
+            <div class="modules-content__inner block -gap-inner-bottom_5">
+                <div class="modules-content__wrapper block-wrapper">
+                    <div class="modules__main modules-main">
+                        <div class="content-element modules-item">
+                            <div class="content-element__wrapper modules-item__inner">
+                                <!--                                <div class="logo">-->
+                                <!--                                    <img src="/img/sa-logo.svg" alt="">-->
+                                <!--                                </div>-->
+
+                                <div class="content-element__header -gap_4">
+                                    <div class="content-element__header-wrapper">
+                                        <div class="content-element__header-item">
+                                            <div class="content-element__header-main -gap_2">
+                                                <div class="content-element__header-element">
+                                                    <span class="content-element__title title title-h2"
+                                                        th:utext="${course.name}"></span>
+                                                </div>
+                                                <div class="content-element__header-element">
+                                                    <div class="outline-text ">
+                                                        <div class="outline-text__content outline-text__content_dark">
+                                                            <div class="outline-text__text" th:utext="${course.type}">
+                                                                Online</div>
                                                         </div>
                                                     </div>
-                                                    <div class="content-element__header-element">
-                                                        <span class="content-element__title countdown css_countdown" th:id="countdown" th:data-startDate="${course.fullStartTime}"></span>
-                                                    </div>
                                                 </div>
-                                                <div class="content-element__header-side">
-                                                    <div class="info-blocks">
-                                                        <div class="info-blocks__wrapper">
-                                                            <div class="info-block info-block_icon info-block_icon_module">
-                                                                <span class="info-block__text" th:utext="${course.modulesCount} + ' модулей'"></span>
-                                                            </div>
-                                                            <div class="info-block info-block_icon info-block_icon_video">
-                                                                <span class="info-block__text" th:utext="${course.lessonsCount} + ' урок'"></span>
-                                                            </div>
-                                                            <div class="info-block info-block_icon info-block_icon_work">
-                                                                <span class="info-block__text" th:utext="${course.homeworkCount} + ' домашнее задание'"></span>
-                                                            </div>
+                                                <div class="content-element__header-element">
+                                                    <span class="content-element__title countdown css_countdown"
+                                                        th:id="countdown"
+                                                        th:data-startDate="${course.fullStartTime}">Время</span>
+                                                </div>
+                                            </div>
+                                            <div class="content-element__header-side">
+                                                <div class="info-blocks">
+                                                    <div class="info-blocks__wrapper">
+                                                        <div class="info-block info-block_icon info-block_icon_module">
+                                                            <span class="info-block__text"
+                                                                th:utext="${course.modulesCount} + ' модулей'"></span>
+                                                        </div>
+                                                        <div class="info-block info-block_icon info-block_icon_video">
+                                                            <span class="info-block__text"
+                                                                th:utext="${course.lessonsCount} + ' урок'"></span>
+                                                        </div>
+                                                        <div class="info-block info-block_icon info-block_icon_work">
+                                                            <span class="info-block__text"
+                                                                th:utext="${course.homeworkCount} + ' домашнее задание'"></span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="content-element__content">
-                                        <div class="progress-bar">
-                                            <div class="progress-bar__wrapper">
-                                                <div class="progress-bar__progress"
-                                                     th:style="'width:' + ${course.completedModulesPercent} + '%;'" th:classappend="${course.completedModulesClass}"></div>
-                                                <span class="progress-bar__text" th:utext="${course.completedModulesPercent + ' %'}"></span>
-                                                <span class="progress-bar__text" th:utext="${course.completedModulesCount + ' модуля пройдено'}"></span>
-                                            </div>
+                                </div>
+                                <div class="content-element__content">
+                                    <div class="progress-bar">
+                                        <div class="progress-bar__wrapper">
+                                            <div class="progress-bar__progress"
+                                                th:style="'width:' + ${course.completedModulesPercent} + '%;'"
+                                                th:classappend="${course.completedModulesClass}"></div>
+                                            <span class="progress-bar__text"
+                                                th:utext="${course.completedModulesPercent + ' %'}"></span>
+                                            <span class="progress-bar__text"
+                                                th:utext="${course.completedModulesCount + ' модуля пройдено'}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -116,43 +131,59 @@
                                                 <div class="content-element__header-item">
                                                     <div class="content-element__header-main">
                                                         <div class="content-element__header-element">
-                                                            <span class="content-element__title content-element__title_blue title title-h4" th:utext="${stat.count}"></span>
+                                                            <span
+                                                                class="content-element__title content-element__title_blue title title-h4"
+                                                                th:utext="${stat.count}"></span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="content-element__header-item">
                                                     <div class="content-element__header-main -gap_2">
                                                         <div class="content-element__header-element">
-                                                            <span class="content-element__title title title-h5" th:utext="${module.name}"></span>
+                                                            <span class="content-element__title title title-h5"
+                                                                th:utext="${module.name}"></span>
                                                         </div>
                                                     </div>
                                                     <div class="content-element__header-side">
                                                         <div class="info-blocks">
                                                             <div class="info-blocks__wrapper">
-                                                                <div class="info-block info-block_icon info-block_icon_video">
-                                                                    <span class="info-block__text" th:utext="${module.lessonsCount} + ' урок'"></span>
+                                                                <div
+                                                                    class="info-block info-block_icon info-block_icon_video">
+                                                                    <span class="info-block__text"
+                                                                        th:utext="${module.lessonsCount} + ' урок'"></span>
                                                                 </div>
-                                                                <div class="info-block info-block_icon info-block_icon_work">
-                                                                    <span class="info-block__text" th:utext="${module.homeworkCount} + ' домашнее задание'"></span>
+                                                                <div
+                                                                    class="info-block info-block_icon info-block_icon_work">
+                                                                    <span class="info-block__text"
+                                                                        th:utext="${module.homeworkCount} + ' домашнее задание'"></span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="content-element__header-item">
-                                                    <div class="content-element__header-main content-element__header-buttons" th:if="${module.allowStart && module.enabled}">
+                                                    <div class="content-element__header-main content-element__header-buttons"
+                                                        th:if="${module.allowStart && module.enabled}">
                                                         <div class="content-element__header-btn">
-                                                            <div class="btn btn_default " th:classappend="'btn_' + ${module.statusCode}">
+                                                            <div class="btn btn_default "
+                                                                th:classappend="'btn_' + ${module.statusCode}">
                                                                 <div class="btn__content btn__content_medium">
-                                                                    <th:block th:if="${module.statusId != 1 && module.statusId != 2}">
-                                                                        <span class="btn__title btn__title_small btn__icon"
-                                                                              th:classappend="'btn__icon_' + ${module.statusCode}">
-                                                                            <span class="btn_title-text btn_title-text_small" th:utext="${module.enabled ? module.statusTitle : 'Недоступен'}"></span>
+                                                                    <th:block
+                                                                        th:if="${module.statusId != 1 && module.statusId != 2}">
+                                                                        <span
+                                                                            class="btn__title btn__title_small btn__icon"
+                                                                            th:classappend="'btn__icon_' + ${module.statusCode}">
+                                                                            <span
+                                                                                class="btn_title-text btn_title-text_small"
+                                                                                th:utext="${module.enabled ? module.statusTitle : 'Недоступен'}"></span>
                                                                         </span>
                                                                     </th:block>
-                                                                    <th:block th:unless="${module.statusId != 1 && module.statusId != 2}">
+                                                                    <th:block
+                                                                        th:unless="${module.statusId != 1 && module.statusId != 2}">
                                                                         <span class="btn__title btn__title_small">
-                                                                            <span class="btn_title-text btn_title-text_small" th:utext="${module.enabled ? module.statusTitle : 'Недоступен'}"></span>
+                                                                            <span
+                                                                                class="btn_title-text btn_title-text_small"
+                                                                                th:utext="${module.enabled ? module.statusTitle : 'Недоступен'}"></span>
                                                                         </span>
                                                                     </th:block>
                                                                 </div>
@@ -160,10 +191,13 @@
                                                         </div>
                                                         <div class="content-element__header-btn">
                                                             <th:block th:if="${module.enabled}">
-                                                                <a th:href="'/user/courses/' + ${idDeal} + '/' + ${module.id} + '/'" class="btn btn_outline">
+                                                                <a th:href="'/user/courses/' + ${idDeal} + '/' + ${module.id} + '/'"
+                                                                    class="btn btn_outline">
                                                                     <div class="btn__content btn__content_large">
                                                                         <span class="btn__title btn__title_small">
-                                                                            <span class="btn_title-text btn_title-text_small">Перейти к урокам</span>
+                                                                            <span
+                                                                                class="btn_title-text btn_title-text_small">Перейти
+                                                                                к урокам</span>
                                                                         </span>
                                                                     </div>
                                                                 </a>
@@ -172,7 +206,9 @@
                                                                 <button class="btn btn_outline" disabled>
                                                                     <div class="btn__content btn__content_large">
                                                                         <span class="btn__title btn__title_small">
-                                                                            <span class="btn_title-text btn_title-text_small">Перейти к урокам</span>
+                                                                            <span
+                                                                                class="btn_title-text btn_title-text_small">Перейти
+                                                                                к урокам</span>
                                                                         </span>
                                                                     </div>
                                                                 </button>
@@ -180,8 +216,10 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="module__lessons-closed" th:if="${!(module.allowStart && module.enabled)}">
-                                                        Урок будет доступен при выполнении домашнего задания прошлого модуля!
+                                                    <div class="module__lessons-closed"
+                                                        th:if="${!(module.allowStart && module.enabled)}">
+                                                        Урок будет доступен при выполнении домашнего задания
+                                                        прошлого модуля!
                                                     </div>
                                                 </div>
                                             </div>
@@ -192,7 +230,8 @@
                                             <div class="content-element__content__wrapper">
                                                 <div class="content-element__content-main">
                                                     <div class="content-element__text content-element__text_short">
-                                                        <div class="content-element__text-wrapper" th:utext="${module.description}"></div>
+                                                        <div class="content-element__text-wrapper"
+                                                            th:utext="${module.description}"></div>
                                                     </div>
                                                 </div>
                                                 <div class="content-element__content-side">
@@ -207,80 +246,91 @@
                             </div>
                         </th:block>
 
-<!--                        <div class="content-element">-->
-<!--                            <div class="content-element__wrapper">-->
-<!--                                <div class="content-element__side content-element__side_bordered">-->
-<!--                                    <div class="content-element__header">-->
-<!--                                        <div class="content-element__header-wrapper">-->
-<!--                                            <div class="content-element__header-item">-->
-<!--                                                <div class="content-element__header-main -gap_2">-->
-<!--                                                    <div class="content-element__header-element">-->
-<!--                                                        <span class="content-element__title title title-h5">Холодный малиновый чизкейк</span>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                                <div class="content-element__header-side">-->
-<!--                                                    <div class="info-blocks">-->
-<!--                                                        <div class="info-blocks__wrapper">-->
-<!--                                                            <div class="info-block info-block_icon info-block_icon_video">-->
-<!--                                                                <span class="info-block__text">6 модулей</span>-->
-<!--                                                            </div>-->
-<!--                                                            <div class="info-block info-block_icon info-block_icon_work">-->
-<!--                                                                <span class="info-block__text">7 домашних заданий</span>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div class="content-element__header-item">-->
-<!--                                                <div class="content-element__header-main">-->
-<!--                                                    <div class="content-element__header-btn">-->
-<!--                                                        <a href="#" class="btn btn_violet">-->
-<!--                                                            <div class="btn__content btn__content_medium">-->
-<!--                                                                <span class="btn__title btn__title_small btn__icon btn__icon_play">-->
-<!--                                                                    <span class="btn_title-text btn_title-text_small">Прохожу</span>-->
-<!--                                                                </span>-->
-<!--                                                            </div>-->
-<!--                                                        </a>-->
-<!--                                                    </div>-->
-<!--                                                    <div class="content-element__header-btn">-->
-<!--                                                        <a href="#" class="btn btn_outline">-->
-<!--                                                            <div class="btn__content btn__content_large">-->
-<!--                                                                <span class="btn__title btn__title_small">-->
-<!--                                                                    <span class="btn_title-text btn_title-text_small">Перейти к урокам</span>-->
-<!--                                                                </span>-->
-<!--                                                            </div>-->
-<!--                                                        </a>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="content-element__main">-->
-<!--                                    <div class="content-element__content">-->
-<!--                                        <div class="content-element__content__wrapper">-->
-<!--                                            <div class="content-element__content-main">-->
-<!--                                                <div class="content-element__text content-element__text_short">-->
-<!--                                                    <div class="content-element__text-wrapper">-->
-<!--                                                        Далеко-далеко за словесными горами в стране гласных и согласных-->
-<!--                                                        живут рыбные тексты. Вдали от всех живут они в буквенных домах на-->
-<!--                                                        берегу Семантика большого языкового океана. <br> Маленький ручеек Даль-->
-<!--                                                        журчит по всей стране и обеспечивает ее всеми необходимыми правилами.-->
-<!--                                                        Эта парадигматическая страна, в которой жаренные члены предложения-->
-<!--                                                        залетают прямо в рот.-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div class="content-element__content-side">-->
-<!--                                                <div class="content-element__image">-->
-<!--                                                    <img src="/img/test-preview.png" alt="">-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div class="content-element">
+                            <div class="content-element__wrapper">
+                                <div class="content-element__side content-element__side_bordered">
+                                    <div class="content-element__header">
+                                        <div class="content-element__header-wrapper">
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main -gap_2">
+                                                    <div class="content-element__header-element">
+                                                        <span class="content-element__title title title-h5">Холодный
+                                                            малиновый чизкейк</span>
+                                                    </div>
+                                                </div>
+                                                <div class="content-element__header-side">
+                                                    <div class="info-blocks">
+                                                        <div class="info-blocks__wrapper">
+                                                            <div
+                                                                class="info-block info-block_icon info-block_icon_video">
+                                                                <span class="info-block__text">6 модулей</span>
+                                                            </div>
+                                                            <div
+                                                                class="info-block info-block_icon info-block_icon_work">
+                                                                <span class="info-block__text">7 домашних заданий</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+                                                    <div class="content-element__header-btn">
+                                                        <a href="#" class="btn btn_violet">
+                                                            <div class="btn__content btn__content_medium">
+                                                                <span
+                                                                    class="btn__title btn__title_small btn__icon btn__icon_play">
+                                                                    <span
+                                                                        class="btn_title-text btn_title-text_small">Прохожу</span>
+                                                                </span>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                    <div class="content-element__header-btn">
+                                                        <a href="#" class="btn btn_outline">
+                                                            <div class="btn__content btn__content_large">
+                                                                <span class="btn__title btn__title_small">
+                                                                    <span
+                                                                        class="btn_title-text btn_title-text_small">Перейти
+                                                                        к урокам</span>
+                                                                </span>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-element__main">
+                                    <div class="content-element__content">
+                                        <div class="content-element__content__wrapper">
+                                            <div class="content-element__content-main">
+                                                <div class="content-element__text content-element__text_short">
+                                                    <div class="content-element__text-wrapper">
+                                                        Далеко-далеко за словесными горами в стране гласных и согласных
+                                                        живут рыбные тексты. Вдали от всех живут они в буквенных домах
+                                                        на
+                                                        берегу Семантика большого языкового океана. <br> Маленький
+                                                        ручеек Даль
+                                                        журчит по всей стране и обеспечивает ее всеми необходимыми
+                                                        правилами.
+                                                        Эта парадигматическая страна, в которой жаренные члены
+                                                        предложения
+                                                        залетают прямо в рот.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="content-element__content-side">
+                                                <div class="content-element__image">
+                                                    <img src="/img/test-preview.png" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -290,4 +340,5 @@
 <th:block th:insert="base :: jquery" />
 <script th:src="@{/js/progress-bar.js}"></script>
 <script th:src="@{/js/countdown.js}"></script>
+
 </html>

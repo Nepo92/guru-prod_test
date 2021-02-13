@@ -75,12 +75,12 @@
                                                     </div>
                                                     <div class="content-element__header-side">
                                                         <div class="info-blocks">
-                                                            <div class="info-blocks__wrapper">
-                                                                <div class="info-block info-block_icon info-block_icon_clock">
-                                                                    <span class="info-block__text"  th:utext="${lesson.duration / 60 } + ' ч ' + ${lesson.duration % 60 } + ' мин'"></span>
+                                                            <div class="info-blocks__wrapper info-content">
+                                                                <div class="info-block info-block_icon info-content__item info-block_icon_clock">
+                                                                    <span class="info-block__text info-content__text"  th:utext="${lesson.duration / 60 } + ' ч ' + ${lesson.duration % 60 } + ' мин'"></span>
                                                                 </div>
-                                                                <div class="info-block info-block_icon info-block_icon_doc">
-                                                                    <span class="info-block__text" th:utext="${lesson.documentsCounter} + ' документов'"></span>
+                                                                <div class="info-block info-content__item info-block_icon info-block_icon_doc">
+                                                                    <span class="info-block__text info-content__text" th:utext="${lesson.documentsCounter} + ' документов'"></span>
                                                                 </div>
                                                             </div>
                                                         </div>
