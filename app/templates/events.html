@@ -1,0 +1,60 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Корпоративный центр">
+
+    <title th:utext="${title}"></title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: corporate-center-nav"></div>-->
+    <div class="content-top content-top_btn">
+        <div class="content-top__header" th:utext="${title}"></div>
+    </div>
+    <div class="content-main article-container">
+        <th:block th:each="article, cnt : ${articles}">
+            <div class="theme" th:attr="data-article=${article.id}">
+                <div class="theme-wrapper theme-wrapper_row">
+                    <div class="theme__text-wrapper">
+                        <img th:if="${article.kind == 1}" class="article__img" th:src="'/' + ${article.previewImg}">
+                        <img th:if="${article.kind == 2}" js-open-article class="article__img article__img_modal" th:src="'/' + ${article.previewImg}">
+                        <a th:if="${article.kind == 3}" target="_blank" th:href="${article.link}">
+                            <img class="article__img" th:src="'/' + ${article.previewImg}">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+
+<div js-menu-open-article class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-open-article-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <div class="menu__content-side menu__content-side_xxxlarge">
+                <div class="menu__header-wrapper menu__header-wrapper_not-bordered">
+                    <div class="menu-header">
+                        <div js-open-title class="menu-header__title menu-header__title_big"></div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div js-open-text class="article__text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/open-articles.js}"></script>
+
+</body>
+</html>

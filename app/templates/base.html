@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <th:block th:fragment="links">
+        <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+        <link th:href="@{/css/datepicker.css}" rel="stylesheet">
+        <link th:href="@{/css/custom.css}" rel="stylesheet">
+        <link th:href="@{/css/main.css}" rel="stylesheet">
+        <link th:href="@{/css/main-nav.css}" rel="stylesheet">
+        <link th:href="@{/css/gap.css}" rel="stylesheet">
+    </th:block>
+
+</head>
+<body>
+    <div th:fragment="user-mobile-nav" class="mobile-nav">
+        <div class="mobile-nav__box block">
+            <div class="mobile-nav__wrapper block-wrapper">
+                <div class="mobile-nav__main">
+                    <div class="mobile-nav__items">
+                        <div class="mobile-nav__items-wrapper">
+                            <div class="mobile-nav__item mobile-nav__item_menu">
+                                <div js-open-mobile-menu class="mobile-menu">
+                                    <div class="mobile-menu__item mobile-menu__item_close">
+                                        <div class="mobile-menu__icon mobile-menu__icon_close"></div>
+                                    </div>
+                                    <div class="mobile-menu__item mobile-menu__item_open">
+                                        <div class="mobile-menu__icon mobile-menu__icon_open"></div>
+                                    </div>
+                                    <div class="mobile-menu__item">Меню</div>
+                                </div>
+                            </div>
+                            <div class="mobile-nav__item mobile-nav__item_avatar">
+                                <div class="avatar">
+                                    <div class="avatar__wrapper avatar__wrapper_xsmall">
+                                       <span class="avatar-image" th:classappend="${#strings.isEmpty(currentClient.avatar) ? 'avatar-image_default' : ''}">
+                                            <img th:if="${!#strings.isEmpty(currentClient.avatar)}" th:src="'/' + ${currentClient.avatar}" alt="">
+                                       </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="open-mobile-menu" js-mobile-menu  style="display: none">
+            <div class="open-mobile-menu__container">
+                <div class="main-nav__logo open-mobile-menu__logo">
+                    <div class="main-nav__item-wrapper open-mobile-menu__item-wrapper">
+                        <div class="main-nav__item-wrapper">
+                            <div class="main-nav__avatar">
+                                <div class="avatar">
+                                    <div class="avatar__wrapper avatar__wrapper_large">
+                               <span class="avatar-image avatar-image_large" th:classappend="${#strings.isEmpty(currentClient.avatar) ? 'avatar-image_default' : ''}">
+                                    <img th:if="${!#strings.isEmpty(currentClient.avatar)}" th:src="'/' + ${currentClient.avatar}" alt="">
+                               </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="main-nav__avatar-desc">
+                                <div class="main-nav__avatar-name" th:utext="${currentClient.name}"></div>
+                            </div>
+                        </div>
+                        <div class="open-mobile-menu__close" js-close-mobile-menu>
+                            <svg width="20" height="20" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.25352 6.50015L12.6369 10.8835C13.1211 11.3677 13.1211 12.1527 12.6369 12.6369C12.1527 13.121 11.3677 13.121 10.8835 12.6369L6.50017 8.25352L2.11681 12.6369C1.63262 13.121 0.847605 13.121 0.363427 12.6369C-0.120745 12.1527 -0.120739 11.3677 0.36344 10.8835L4.74682 6.50015L0.363138 2.11651C-0.121041 1.63233 -0.121047 0.847327 0.363125 0.363144C0.847302 -0.121044 1.63232 -0.121049 2.1165 0.363133L6.50017 4.74678L10.8838 0.363133C11.368 -0.121049 12.153 -0.121044 12.6372 0.363144C13.1214 0.847327 13.1214 1.63233 12.6372 2.11651L8.25352 6.50015Z" fill="black"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-nav__list-items open-mobile-menu__list-items">
+                    <div class="main-nav__items-wrapper">
+                        <a th:href="@{/user/courses/}" class="main-nav__item-wrapper" >
+                            <div class="main-nav__item main-nav__item_dashboard"  th:classappend="${module == 'courses' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">Мои курсы</div>
+                        </a>
+                    </div>
+                    <div class=" open-mobile-menu__exit">
+                        <a th:href="@{/logout}" class="main-nav__item-wrapper">
+                            <div class="main-nav__item main-nav__item_exit"></div>
+                            <div class="main-nav__item-title">Выйти из аккаунта</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+        <script th:src="@{/js/main.js}"></script>
+    </div>
+
+
+    <div th:fragment="user-nav" class="main-nav main-nav_none">
+        <div class="main-nav__wrapper">
+        <div class="main-nav__logo">
+            <div class="main-nav__item-wrapper">
+                <div class="main-nav__item-wrapper">
+                    <div class="main-nav__avatar">
+                        <div class="avatar">
+                            <div class="avatar__wrapper avatar__wrapper_large">
+                               <span class="avatar-image avatar-image_large" th:classappend="${#strings.isEmpty(currentClient.avatar) ? 'avatar-image_default' : ''}">
+                                    <img th:if="${!#strings.isEmpty(currentClient.avatar)}" th:src="'/' + ${currentClient.avatar}" alt="">
+                               </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-nav__avatar-desc">
+                        <div class="main-nav__avatar-name" th:utext="${currentClient.name}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-nav__list-items">
+            <div class="main-nav__items-wrapper">
+                <div class="main-nav__items-wrapper">
+                    <a th:href="@{/user/courses/}" class="main-nav__item-wrapper" >
+                        <div class="main-nav__item main-nav__item_dashboard"  th:classappend="${module == 'courses' ? ' main-nav__item_active' : ''}"></div>
+                        <div class="main-nav__item-title">Мои курсы</div>
+                    </a>
+                </div>
+            </div>
+            <div class="main-nav__items-wrapper">
+                <a th:href="@{/logout}" class="main-nav__item-wrapper">
+                    <div class="main-nav__item main-nav__item_exit"></div>
+                    <div class="main-nav__item-title">Выход</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div th:fragment="main-nav" class="main-nav">
+            <div class="main-nav__wrapper">
+                <div class="main-nav__logo" th:classappend="${logoClass}">
+                    <div class="main-nav__item-wrapper">
+                        <div class="company-logo">
+                            <div class="company-logo__wrapper">
+                               <span class="company-logo__image" th:classappend="${#strings.isEmpty(company.logo) ? 'company-logo__image_default' : ''}">
+                                    <img th:if="${!#strings.isEmpty(company.logo)}" th:src="'/' + ${company.logo}" alt="">
+                               </span>
+                            </div>
+                        </div>
+                        <div class="company-caption">
+                            <div class="company-title" th:utext="${company.name}"></div>
+                            <div class="company-subtitle" th:utext="${company.legalName}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-nav__list-items">
+                    <div class="main-nav__items-wrapper">
+                        <a th:href="@{/monitor/}" class="main-nav__item-wrapper" th:if="${role == 'ROLE_HEAD_MANAGER' || role == 'ROLE_MANAGER' || role == 'ROLE_ADMIN'}" >
+                            <div class="main-nav__item main-nav__item_dashboard"  th:classappend="${module == 'monitor' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">Рабочий стол</div>
+                        </a>
+
+                        <a  th:href="@{/head-manager-transactions/}" class="main-nav__item-wrapper" th:if="${role == 'ROLE_HEAD_MANAGER'}">
+                            <div class="main-nav__item main-nav__item_transactions"  th:classappend="${module == 'transactions' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">CRM</div>
+                        </a>
+
+                        <a  th:href="@{/transactions/}" class="main-nav__item-wrapper" th:if="${role == 'ROLE_MANAGER'}">
+                            <div class="main-nav__item main-nav__item_transactions"  th:classappend="${module == 'transactions' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">CRM</div>
+                        </a>
+
+                        <div class="main-nav__item-wrapper"  th:if="${role == 'ROLE_HEAD_MANAGER' || role == 'ROLE_MANAGER'}">
+                            <div class="main-nav__item main-nav__item_lk" th:classappend="${module == 'lk' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">Рабочий кабинет</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+<!--                                        <a class="setting-said__item" th:classappend="${tab == 'quality' ? ' setting-said__item_active' : ''}" th:href="@{/quality/}">Оценка работы</a>-->
+                                        <a class="setting-said__item" th:classappend="${tab == 'quality' ? ' setting-said__item_active' : ''}" th:href="@{/performance-assessment/}">Оценка работы</a>
+                                        <a class="setting-said__item" th:classappend="${tab == 'salary' ? ' setting-said__item_active' : ''}" th:href="@{/employee-salary/}">Вознаграждение</a>
+                                        <a class="setting-said__item" th:classappend="${tab == 'reports' ? ' setting-said__item_active' : ''}" th:href="@{/reports/}">Отчеты</a>
+                                        <a class="setting-said__item" th:classappend="${tab == 'password' ? ' setting-said__item_active' : ''}" th:href="@{/e-passwords/}">Пароли</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="main-nav__item-wrapper"  th:if="${role == 'ROLE_ADVERTISER'}">
+                            <div class="main-nav__item main-nav__item_lk" th:classappend="${module == 'lk' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">Рабочий кабинет</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+                                        <a class="setting-said__item" th:classappend="${tab == 'salary' ? ' setting-said__item_active' : ''}" th:href="@{/advertiser-salary/}">Зарплата</a>
+                                        <a class="setting-said__item" th:classappend="${tab == 'password' ? ' setting-said__item_active' : ''}" th:href="@{/e-passwords/}">Пароли</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a th:href="@{/funnel/traffic/}" class="main-nav__item-wrapper"  th:if="${role == 'ROLE_ADVERTISER'}">
+                            <div class="main-nav__item main-nav__item_analytics" th:classappend="${module == 'analytics' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">Аналитика</div>
+                        </a>
+
+                        <div th:unless="${role == 'ROLE_ADMIN' || role == 'ROLE_EXAMINER' || role == 'ROLE_CURATOR'}" class="main-nav__item-wrapper" >
+                            <div th:classappend="${module == 'corporate-center' ? ' main-nav__item_active' : ''}" class="main-nav__item main-nav__item_office"></div>
+                            <div class="main-nav__item-title">Онлайн-офис</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+                                        <a class="setting-said__item" th:classappend="${type == 'about-company' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/about-company/}">О компании</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'regulations' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/regulations/}">Регламенты</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'bookmarks' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/bookmarks/}">База знаний</a>
+                                        <a th:if="${role == 'ROLE_HEAD_MANAGER' || role == 'ROLE_MANAGER'}" class="setting-said__item" th:classappend="${type == 'training-center' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/training-center/manager/}">Обучающий центр</a>
+                                        <a th:if="${role == 'ROLE_ADVERTISER'}" class="setting-said__item" th:classappend="${type == 'training-center' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/training-center/advertiser/}">Обучающий центр</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'events' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/events/}">Мероприятия</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="main-nav__item-wrapper"  th:if="${role == 'ROLE_ADMIN'}">
+                            <div class="main-nav__item main-nav__item_analytics" th:classappend="${module == 'analytics' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">Аналитика</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+                                        <a class="setting-said__item" th:classappend="${settings == 'funnel' ? ' setting-said__item_active' : ''}" th:href="@{/funnel/}">Воронки продаж</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div th:if="${role == 'ROLE_ADMIN'}" class="main-nav__item-wrapper">
+                            <div th:classappend="${module == 'corporate-center' ? ' main-nav__item_active' : ''}" class="main-nav__item main-nav__item_office"></div>
+                            <div class="main-nav__item-title">Онлайн-офис</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+                                        <a class="setting-said__item" th:classappend="${type == 'about-company' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/about-company/}">О компании</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'regulations' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/regulations/}">Регламенты</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'bookmarks' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/bookmarks/}">База знаний</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'training-center' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/training-center/}">Обучающий центр</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'events' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/events/}">Мероприятия</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'production' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/production/}">Продакшн</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="main-nav__item-wrapper"  th:if="${role == 'ROLE_ADMIN'}">
+                            <div class="main-nav__item main-nav__item_finance"  th:classappend="${module == 'finance' ? ' main-nav__item_active' : ''}" ></div>
+                            <div class="main-nav__item-title">Финансы</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+                                        <a class="setting-said__item" th:classappend="${type == 'salary' ? ' setting-said__item_active' : ''}" th:href="@{/salary/}">Расчет ЗП</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'bonus' ? ' setting-said__item_active' : ''}" th:href="@{/salary/bonus/}">Награды</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div th:if="${role == 'ROLE_ADMIN'}" class="main-nav__item-wrapper">
+                            <div th:classappend="${module == 'team' ? ' main-nav__item_active' : ''}" class="main-nav__item main-nav__item_team"></div>
+                            <div class="main-nav__item-title">Команда</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+                                        <a class="setting-said__item" th:classappend="${settings == 'users' ? ' setting-said__item_active' : ''}" th:href="@{/settings/users/staff/}">Сотрудники</a>
+                                        <a class="setting-said__item" th:classappend="${settings == 'action' ? ' setting-said__item_active' : ''}" th:href="@{/settings/action/}">Акции</a>
+<!--                                        <a class="setting-said__item" th:classappend="${settings == 'quality' ? ' setting-said__item_active' : ''}" th:href="@{/quality/rating/}">Оценка работы</a>-->
+                                        <a class="setting-said__item" th:classappend="${settings == 'quality' ? ' setting-said__item_active' : ''}" th:href="@{/performance-assessment/rating/}">Оценка работы</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div  class="main-nav__item-wrapper" th:if="${role == 'ROLE_ADMIN' || role == 'ROLE_CURATOR'}">
+                            <div class="main-nav__item main-nav__item_products"  th:classappend="${module == 'products' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">Продукты</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+                                        <a class="setting-said__item" th:if="${role == 'ROLE_ADMIN'}" th:classappend="${setting == 'products' ? ' setting-said__item_active' : ''}" th:href="@{/products/}">Продукты</a>
+                                        <a class="setting-said__item" th:if="${role == 'ROLE_ADMIN'}" th:classappend="${setting == 'streams' ? ' setting-said__item_active' : ''}" th:href="@{/streams/}">Потоки</a>
+                                        <a class="setting-said__item" th:classappend="${setting == 'homework' ? ' setting-said__item_active' : ''}" th:href="@{/homework/}">Проверка ДЗ</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div th:if="${role == 'ROLE_EXAMINER'}" class="main-nav__item-wrapper">
+                            <div th:classappend="${module == 'team' ? ' main-nav__item_active' : ''}" class="main-nav__item main-nav__item_team"></div>
+                            <div class="main-nav__item-title">Команда</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+<!--                                        <a class="setting-said__item" th:classappend="${settings == 'quality' ? ' setting-said__item_active' : ''}" th:href="@{/quality/rating/}">Оценка работы</a>-->
+                                        <a class="setting-said__item" th:classappend="${settings == 'quality' ? ' setting-said__item_active' : ''}" th:href="@{/performance-assessment/rating/}">Оценка работы</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a th:href="@{/a-advertising/}" class="main-nav__item-wrapper" th:if="${role == 'ROLE_ADMIN'}">
+                            <div class="main-nav__item main-nav__item_marketing"  th:classappend="${module == 'advertising' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">Маркетинг</div>
+                        </a>
+
+                        <div  class="main-nav__item-wrapper" th:if="${role == 'ROLE_ADVERTISER'}" >
+                            <div class="main-nav__item main-nav__item_marketing" th:classappend="${module == 'advertising' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">Маркетинг</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+                                        <a class="setting-said__item" th:classappend="${type == 'undistributed' || type == 'distributed' ? ' setting-said__item_active' : ''}" th:href="@{/payment/page?id=1}">Распределение сделок</a>
+                                        <a class="setting-said__item" th:classappend="${type == 'links' ? ' setting-said__item_active' : ''}" th:href="@{/a-advertising/}">Распределение заявок</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a th:href="@{/deals/}" class="main-nav__item-wrapper" th:if="${role == 'ROLE_ADMIN'}">
+                            <div class="main-nav__item main-nav__item_transactions"  th:classappend="${module == 'transactions' ? ' main-nav__item_active' : ''}" ></div>
+                            <div class="main-nav__item-title">CRM</div>
+                        </a>
+
+                        <div th:href="@{/settings/users/finance/}" class="main-nav__item-wrapper" th:if="${role == 'ROLE_ADMIN'}">
+                            <div class="main-nav__item main-nav__item_setting" th:classappend="${module == 'settings' ? ' main-nav__item_active' : ''}" ></div>
+                            <div class="main-nav__item-title">Настройки</div>
+
+                            <div class="setting-said">
+                                <div class="setting-said__wrapper">
+                                    <div class="setting-said__list setting-said__list_hide custom-scroll">
+                                        <th:block th:if="${company.id == 1}">
+                                            <a class="setting-said__item" th:classappend="${settings == 'companies' ? ' setting-said__item_active' : ''}" th:href="@{/settings/companies/}">Организации</a>
+                                        </th:block>
+                                        <a class="setting-said__item" th:classappend="${settings == 'projects' ? ' setting-said__item_active' : ''}" th:href="@{/settings/projects/}">Проекты</a>
+                                        <a class="setting-said__item" th:classappend="${settings == 'lists' ? ' setting-said__item_active' : ''}" th:href="@{/settings/lists/payment-method/}">Способы оплаты</a>
+                                        <a class="setting-said__item" th:classappend="${settings == 'excel' ? ' setting-said__item_active' : ''}" th:href="@{/settings/plans/}">Excel</a>
+                                        <a class="setting-said__item" th:classappend="${settings == 'password' ? ' setting-said__item_active' : ''}" th:href="@{/settings/password/}">Пароли</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a th:href="@{/a-corporate-center/faq/management/}" class="main-nav__item-wrapper" th:if="${role == 'ROLE_ADMIN'}">
+                            <div class="main-nav__item main-nav__item_faq"  th:classappend="${module == 'faq' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">FAQ</div>
+                        </a>
+                        <a th:href="@{/corporate-center/faq/manager/}" class="main-nav__item-wrapper" th:if="${role == 'ROLE_HEAD_MANAGER' || role == 'ROLE_MANAGER'}">
+                            <div class="main-nav__item main-nav__item_faq"  th:classappend="${module == 'faq' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">FAQ</div>
+                        </a>
+                        <a th:href="@{/corporate-center/faq/advertiser/}" class="main-nav__item-wrapper" th:if="${role == 'ROLE_ADVERTISER'}">
+                            <div class="main-nav__item main-nav__item_faq"  th:classappend="${module == 'faq' ? ' main-nav__item_active' : ''}"></div>
+                            <div class="main-nav__item-title">FAQ</div>
+                        </a>
+                    </div>
+                    <div class="main-nav__items-wrapper">
+                        <div class="main-nav__item-wrapper" th:if="${avatar}">
+                            <div class="main-nav__avatar">
+                                <div class="avatar">
+                                    <div class="avatar__wrapper avatar__wrapper_large">
+                                       <span class="avatar-image avatar-image_large" th:classappend="${#strings.isEmpty(avatar.path) ? 'avatar-image_default' : ''}">
+                                            <img th:if="${!#strings.isEmpty(avatar.path)}" th:src="'/' + ${avatar.path}" alt="">
+                                       </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="main-nav__avatar-desc">
+                                <div class="main-nav__avatar-name" th:utext="${avatar.name}"></div>
+                                <div th:if="${avatar.currentScore != null}" class="main-nav__avatar-score" th:utext="${#numbers.formatDecimal(avatar.currentScore, 1, 'COMMA', 2, 'POINT')}"></div>
+                            </div>
+                        </div>
+
+                        <a th:href="@{/logout}" class="main-nav__item-wrapper">
+                            <div class="main-nav__item main-nav__item_exit"></div>
+                            <div class="main-nav__item-title">Выход</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <th:block th:fragment="training-center-nav">
+        <div class="content-top__nav">
+            <div class="top-nav">
+                <div class="top-nav__list-items">
+                    <a class="top-nav__item" th:classappend="${type == 'center' ? ' top-nav__item_active' : ''}" th:href="@{/training-center/}">Обучающий центр</a>
+                    <a class="top-nav__item" th:classappend="${type == 'documents' ? ' top-nav__item_active' : ''}" th:href="@{/documents/}">Документы</a>
+                    <a class="top-nav__item" th:classappend="${type == 'info' ? ' top-nav__item_active' : ''}" th:href="@{/information/}">Регламенты</a>
+                    <a class="top-nav__item" th:classappend="${type == 'events' ? ' top-nav__item_active' : ''}" th:href="@{/events/}">Мероприятия</a>
+                    <a th:if="${role == 'ROLE_ADMIN'}" class="top-nav__item" th:classappend="${type == 'production' ? ' top-nav__item_active' : ''}" th:href="@{/production/}">Продакшн</a>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="bookmarks-nav">
+        <div class="top-nav">
+            <div class="top-nav__list-items">
+                <div th:classappend="${subtype == 'all' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/corporate-center/bookmarks/}" class="top-nav__link">Общие</a></div>
+                <div th:if="${role == 'ROLE_ADVERTISER'}" th:classappend="${subtype == 'advertiser' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/corporate-center/bookmarks/advertiser/}" class="top-nav__link">Маркетинг</a></div>
+                <div th:if="${role == 'ROLE_HEAD_MANAGER' || role == 'ROLE_MANAGER'}" th:classappend="${subtype == 'manager' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/corporate-center/bookmarks/manager/}" class="top-nav__link">Продажи</a></div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="faq-nav">
+        <div class="top-nav">
+            <div class="top-nav__list-items">
+                <div th:if="${role == 'ROLE_ADVERTISER'}" th:classappend="${subtype == 'advertiser' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/corporate-center/faq/advertiser/}" class="top-nav__link">Маркетинг</a></div>
+                <div th:if="${role == 'ROLE_HEAD_MANAGER' || role == 'ROLE_MANAGER'}" th:classappend="${subtype == 'manager' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/corporate-center/faq/manager/}" class="top-nav__link">Продажи</a></div>
+            </div>
+        </div>
+    </th:block>
+
+    <div th:fragment="settings-said-nav" class="setting-said">
+        <div class="setting-said__wrapper">
+            <div class="setting-said__list setting-said__list_hide custom-scroll">
+                <th:block th:if="${company.id == 1}">
+                    <a class="setting-said__item" th:classappend="${settings == 'projects' ? ' setting-said__item_active' : ''}" th:href="@{/settings/projects/}">Проекты</a>
+                </th:block>
+                <a class="setting-said__item" th:classappend="${settings == 'users' ? ' setting-said__item_active' : ''}" th:href="@{/settings/users/sales/}">Сотрудники</a>
+                <a class="setting-said__item" th:classappend="${settings == 'mailling' ? ' setting-said__item_active' : ''}" th:href="@{/settings/mailling/}">Рассылки</a>
+                <a class="setting-said__item" th:classappend="${settings == 'course' ? ' setting-said__item_active' : ''}" th:href="@{/settings/directions/}">Курсы и продукты</a>
+                <a class="setting-said__item" th:classappend="${settings == 'colors' ? ' setting-said__item_active' : ''}" th:href="@{/settings/colors/}">Цвета</a>
+                <a class="setting-said__item" th:classappend="${settings == 'plans' ? ' setting-said__item_active' : ''}" th:href="@{/settings/plans/}">Планы</a>
+                <a class="setting-said__item" th:classappend="${settings == 'lists' ? ' setting-said__item_active' : ''}" th:href="@{/settings/lists/payment-method/}">Способы оплаты</a>
+<!--                <a class="setting-said__item" th:classappend="${settings == 'checks' ? ' setting-said__item_active' : ''}" th:href="@{/settings/sms-checks/}">SMS чеки</a>-->
+                <a class="setting-said__item" th:classappend="${settings == 'action' ? ' setting-said__item_active' : ''}" th:href="@{/settings/action/}">Акции</a>
+            </div>
+            <div class="setting-said__btn"></div>
+        </div>
+    </div>
+
+    <div th:fragment="a-corporate-center-nav" class="setting-said">
+        <div class="setting-said__wrapper">
+            <div class="setting-said__list setting-said__list_hide custom-scroll">
+                <a class="setting-said__item" th:classappend="${type == 'about-company' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/about-company/}">О компании</a>
+                <a class="setting-said__item" th:classappend="${type == 'regulations' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/regulations/}">Регламенты</a>
+                <a class="setting-said__item" th:classappend="${type == 'bookmarks' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/bookmarks/}">База знаний</a>
+                <a class="setting-said__item" th:classappend="${type == 'training-center' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/training-center/}">Обучающий центр</a>
+                <a class="setting-said__item" th:classappend="${type == 'events' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/events/}">Мероприятия</a>
+                <a class="setting-said__item" th:classappend="${type == 'production' ? ' setting-said__item_active' : ''}" th:href="@{/a-corporate-center/production/}">Продакшн</a>
+            </div>
+            <div class="setting-said__btn"></div>
+        </div>
+    </div>
+
+    <div th:fragment="funnel-nav" class="setting-said">
+        <div class="setting-said__wrapper">
+            <div class="setting-said__list setting-said__list_hide custom-scroll">
+                <a class="setting-said__item" th:classappend="${funnel == 'common' ? ' setting-said__item_active' : ''}" th:href="@{/funnel/}">Аналитика общая</a>
+                <a class="setting-said__item" th:classappend="${funnel == 'traffic' ? ' setting-said__item_active' : ''}" th:href="@{/funnel/traffic/}">Аналитика трафик</a>
+                <a class="setting-said__item" th:classappend="${funnel == 'additional' ? ' setting-said__item_active' : ''}" th:href="@{/funnel/additional/}">Аналитика допродажи</a>
+<!--                <a class="setting-said__item" th:classappend="${funnel == 'goods' ? ' setting-said__item_active' : ''}" th:href="@{/funnel/goods/}">Аналитика товарка</a>-->
+            </div>
+            <div class="setting-said__btn"></div>
+        </div>
+    </div>
+
+    <div th:fragment="salary-side-nav" class="setting-said">
+        <div class="setting-said__wrapper">
+            <div class="setting-said__list setting-said__list_hide custom-scroll">
+                <a class="setting-said__item" th:classappend="${type == 'salary' ? ' setting-said__item_active' : ''}" th:href="@{/salary/}">Зарплата</a>
+                <a class="setting-said__item" th:classappend="${type == 'bonus' ? ' setting-said__item_active' : ''}" th:href="@{/salary/bonus/}">Награды</a>
+            </div>
+            <div class="setting-said__btn"></div>
+        </div>
+    </div>
+
+    <div th:fragment="employee-salary-said-nav" class="setting-said">
+        <div class="setting-said__wrapper">
+            <div class="setting-said__list setting-said__list_hide custom-scroll">
+                <a class="setting-said__item" th:classappend="${type == 'salary' ? ' setting-said__item_active' : ''}" th:href="@{/employee-salary/}">Зарплата</a>
+                <a class="setting-said__item" th:classappend="${type == 'bonus' ? ' setting-said__item_active' : ''}" th:href="@{/employee-salary/bonus/}">Награды</a>
+            </div>
+            <div class="setting-said__btn"></div>
+        </div>
+    </div>
+
+    <div th:fragment="corporate-center-nav" class="setting-said">
+        <div class="setting-said__wrapper">
+            <div class="setting-said__list setting-said__list_hide custom-scroll">
+                <a class="setting-said__item" th:classappend="${type == 'about-company' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/about-company/}">О компании</a>
+                <a class="setting-said__item" th:classappend="${type == 'regulations' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/regulations/}">Регламенты</a>
+                <a class="setting-said__item" th:classappend="${type == 'bookmarks' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/bookmarks/}">База знаний</a>
+                <a th:if="${role == 'ROLE_MANAGER'}" class="setting-said__item" th:classappend="${type == 'training-center' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/training-center/manager/}">Обучающий центр</a>
+                <a th:if="${role == 'ROLE_ADVERTISER'}" class="setting-said__item" th:classappend="${type == 'training-center' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/training-center/advertiser/}">Обучающий центр</a>
+                <a class="setting-said__item" th:classappend="${type == 'events' ? ' setting-said__item_active' : ''}" th:href="@{/corporate-center/events/}">Мероприятия</a>
+            </div>
+            <div class="setting-said__btn"></div>
+        </div>
+    </div>
+
+    <div th:fragment="salary-tab" class="top-nav">
+        <div class="top-nav__list-items">
+            <div th:classappend="${department == 'manager' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/salary/}" class="top-nav__link">Продажи</a></div>
+            <div th:classappend="${department == 'advertiser' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/salary/advertiser/}" class="top-nav__link">Маркетинг</a></div>
+            <div th:classappend="${department == 'producer' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/salary/producer/}" class="top-nav__link">Продюсирование</a></div>
+        </div>
+    </div>
+
+    <div th:fragment="transition-loader" class="transition-loader">
+        <div class="transition-loader-inner">
+            <label></label>
+            <label></label>
+            <label></label>
+            <label></label>
+            <label></label>
+            <label></label>
+        </div>
+    </div>
+
+    <div th:fragment="dialog" dialog dialog-accept class="dialog display-none">
+        <div class="dialog__wrapper">
+            <div class="dialog__title"></div>
+            <div class="dialog__text"></div>
+            <div class="dialog__buttons">
+                <div class="button button_dialog" accept-dialog>Да</div>
+                <div class="button button_dialog button_white" close-dialog>Нет</div>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="constructor-common-blocks" class="constructor-blocks__wrapper">
+        <div class="constructor__title constructor__title_small">Информационные блоки</div>
+        <div data-type="video" class="constructor-block draggable">
+            <div class="constructor-block__wrapper constructor-block__wrapper_video">
+                <div class="constructor-block__title">Видео</div>
+            </div>
+        </div>
+        <div data-type="text" class="constructor-block draggable">
+            <div class="constructor-block__wrapper constructor-block__wrapper_text">
+                <div class="constructor-block__title">Текстовый блок</div>
+            </div>
+        </div>
+        <div data-type="document" class="constructor-block draggable">
+            <div class="constructor-block__wrapper constructor-block__wrapper_document">
+                <div class="constructor-block__title">Документ</div>
+            </div>
+        </div>
+        <div data-type="image" class="constructor-block draggable">
+            <div class="constructor-block__wrapper constructor-block__wrapper_image">
+                <div class="constructor-block__title">Изображение</div>
+            </div>
+        </div>
+        <div data-type="gallery" class="constructor-block draggable">
+            <div class="constructor-block__wrapper constructor-block__wrapper_gallery">
+                <div class="constructor-block__title">Галерея</div>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="constructor-not-common-blocks" class="not-common constructor-blocks__wrapper constructor-blocks__wrapper_hide">
+        <div class="constructor__title constructor__title_small">Задания и тесты</div>
+        <div data-type="question" class="constructor-block draggable">
+            <div class="constructor-block__wrapper constructor-block__wrapper_question">
+                <div class="constructor-block__title">Открытый вопрос</div>
+            </div>
+        </div>
+        <div data-type="test" class="constructor-block ">
+            <div class="constructor-block__wrapper constructor-block__wrapper_test">
+                <div class="constructor-block__title">Тест</div>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="dialog2" dialog dialog-info class="dialog display-none">
+        <div class="dialog__wrapper">
+            <div class="dialog__title"></div>
+            <div class="dialog__text"></div>
+            <div class="dialog__buttons">
+                <div class="button button_dialog button_white" close-dialog>Ок</div>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="users-nav" class="content-top__nav">
+        <div class="top-nav">
+            <div class="top-nav__list-items">
+                <a class="top-nav__item" th:classappend="${type == 'finance' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/finance/}">Финансы</a>
+                <a class="top-nav__item" th:classappend="${type == 'human-resource' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/human-resource/}">HR</a>
+                <a class="top-nav__item" th:classappend="${type == 'support' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/support/}">Тех-поддержка</a>
+                <a class="top-nav__item" th:classappend="${type == 'it' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/it/}">IT</a>
+                <a class="top-nav__item" th:classappend="${type == 'project-manager' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/project-manager/}">Менеджмент</a>
+                <a class="top-nav__item" th:classappend="${type == 'expert' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/expert/}">Эксперты</a>
+                <a class="top-nav__item" th:classappend="${type == 'marketing' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/marketing/}">Маркетинг</a>
+                <a class="top-nav__item" th:classappend="${type == 'sales' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/sales/}">Продажи</a>
+                <a class="top-nav__item" th:classappend="${type == 'supervision' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/supervision/}">Кураторство</a>
+                <a class="top-nav__item" th:classappend="${type == 'production' ? ' top-nav__item_active' : ''}" th:href="@{/settings/users/production/}">Продакшн</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="course-nav" class="content-top__nav">
+        <div class="top-nav">
+            <div class="top-nav__list-items">
+                <a class="top-nav__item" th:classappend="${type == 'course' ? ' top-nav__item_active' : ''}" th:href="@{/settings/directions/}">Направления и курсы</a>
+                <a class="top-nav__item" th:classappend="${type == 'goods' ? ' top-nav__item_active' : ''}" th:href="@{/settings/goods/}">Продукты</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="top-nav" th:fragment="transactions-nav">
+        <div class="top-nav__list-items">
+            <div th:classappend="${type == 'deals' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/transactions/}" class="top-nav__link">Сделки</a></div>
+            <div th:classappend="${type == 'bills' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/transactions/bills/}" class="top-nav__link">Счета</a></div>
+            <div th:classappend="${type == 'transaction' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/transactions/transaction/}" class="top-nav__link">Транзакции</a></div>
+            <div th:classappend="${type == 'sms-checks' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/sms-checks/}" class="top-nav__link">Чеки</a></div>
+        </div>
+    </div>
+
+    <div class="top-nav" th:fragment="head-manager-transactions-nav">
+        <div class="top-nav__list-items">
+            <div th:classappend="${type == 'deals' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/head-manager-transactions/}" class="top-nav__link">Сделки</a></div>
+            <div th:classappend="${type == 'bills' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/head-manager-transactions/bills/}" class="top-nav__link">Счета</a></div>
+            <div th:classappend="${type == 'transaction' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/head-manager-transactions/transaction/}" class="top-nav__link">Транзакции</a></div>
+            <div th:classappend="${type == 'sms-checks' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/sms-checks/}" class="top-nav__link">Чеки</a></div>
+        </div>
+    </div>
+
+    <div class="top-nav" th:fragment="deals-nav">
+        <div class="top-nav__list-items">
+            <div th:classappend="${type == 'deals' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/deals/}" class="top-nav__link">Сделки</a></div>
+            <div th:classappend="${type == 'bills' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/deals/bills/}" class="top-nav__link">Счета</a></div>
+            <div th:classappend="${type == 'transaction' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/deals/transaction/}" class="top-nav__link">Транзакции</a></div>
+            <div th:classappend="${type == 'sms-checks' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/sms-checks/}" class="top-nav__link">Чеки</a></div>
+        </div>
+    </div>
+
+    <div th:fragment="employee-salary-nav" class="content-top__nav">
+        <div class="top-nav">
+            <div class="top-nav__list-items">
+                <a class="top-nav__item" th:classappend="${type == 'salary' ? ' top-nav__item_active' : ''}" th:href="@{/employee-salary/}">Зарплата</a>
+                <a class="top-nav__item" th:classappend="${type == 'bonus' ? ' top-nav__item_active' : ''}" th:href="@{/employee-salary/bonus/}">Награды</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="advertising-nav" class="setting-said">
+        <div class="setting-said__wrapper">
+            <div class="setting-said__list setting-said__list_hide custom-scroll">
+                <a class="setting-said__item" th:classappend="${type == 'undistributed' || type == 'distributed' ? ' setting-said__item_active' : ''}" th:href="@{/payment/}">Распределение сделок</a>
+                <a class="setting-said__item" th:classappend="${type == 'links' ? ' setting-said__item_active' : ''}" th:href="@{/advertising/}">Распределение заявок</a>
+            </div>
+            <div class="setting-said__btn"></div>
+        </div>
+    </div>
+
+    <form th:fragment="common-funnel-filter" action="#" th:action="@{activeFilter}" th:object="${filter}" th:method="post">
+        <input type="hidden" th:field="*{active}" />
+        <input type="hidden" th:field="*{year}" />
+        <input type="hidden" th:field="*{idSort}" />
+        <input type="hidden" th:field="*{idManager}" />
+        <input type="hidden" th:field="*{project}" />
+        <input type="hidden" th:field="*{course}" />
+        <input type="hidden" th:field="*{startDate}" />
+        <input type="hidden" th:field="*{endDate}" />
+        <button class="content-top__filter" th:classappend="${filter.active} ? content-top__filter_active : ''" type="submit"></button>
+    </form>
+
+    <form th:fragment="traffic-funnel-filter" action="#" th:action="@{activeFilter}" th:object="${filter}" th:method="post">
+        <input type="hidden" th:field="*{active}" />
+        <input type="hidden" th:field="*{year}" />
+        <input type="hidden" th:field="*{idSort}" />
+        <input type="hidden" th:field="*{idManager}" />
+        <input type="hidden" th:field="*{project}" />
+        <input type="hidden" th:field="*{isMailing}" />
+        <input type="hidden" th:field="*{isTraffic}" />
+        <input type="hidden" th:field="*{course}" />
+        <input type="hidden" th:field="*{startDate}" />
+        <input type="hidden" th:field="*{endDate}" />
+        <button class="content-top__filter" th:classappend="${filter.active} ? content-top__filter_active : ''" type="submit"></button>
+    </form>
+
+    <div class="top-nav" th:fragment="a-quality-tab">
+        <div class="top-nav__list-items">
+            <div th:classappend="${tab == 'rating' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/quality/rating/}" class="top-nav__link">Оценки</a></div>
+            <div th:classappend="${tab == 'debate' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/quality/debate/}" class="top-nav__link">Споры</a></div>
+            <div th:classappend="${tab == 'setting' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/quality/setting/}" class="top-nav__link">Настройка</a></div>
+            <div th:classappend="${tab == 'template' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/quality/template/}" class="top-nav__link">Шаблоны</a></div>
+        </div>
+    </div>
+
+    <div class="top-nav" th:fragment="e-quality-tab">
+        <div class="top-nav__list-items">
+            <div th:classappend="${tab == 'rating' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/quality/rating/}" class="top-nav__link">Оценка</a></div>
+            <div th:classappend="${tab == 'debate' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/quality/debate/}" class="top-nav__link">Споры</a></div>
+        </div>
+    </div>
+
+    <div class="top-nav" th:fragment="products-tab">
+        <div class="top-nav__list-items">
+            <div th:if="${#lists.contains(saleTypeIds, 2)}" th:classappend="${tab == 'courses' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/products/courses/}" class="top-nav__link">Образовательные продукты</a></div>
+            <div th:if="${#lists.contains(saleTypeIds, 3)}" th:classappend="${tab == 'products' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/products/goods/}" class="top-nav__link">Товары</a></div>
+        </div>
+    </div>
+
+    <div class="top-nav" th:fragment="excel-tab">
+        <div class="top-nav__list-items">
+            <div th:classappend="${tab == 'plans' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/settings/plans/}" class="top-nav__link">Ссылки на планы</a></div>
+            <div th:classappend="${tab == 'links' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/a-advertising/links/}" class="top-nav__link">Ссылки на рекламу</a></div>
+        </div>
+    </div>
+
+    <div class="top-nav" th:fragment="performance-assessment-tab">
+        <div class="top-nav__list-items">
+            <div th:classappend="${tab == 'rating' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/performance-assessment/rating/}" class="top-nav__link">Оценки</a></div>
+            <div th:classappend="${tab == 'debate' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/performance-assessment/debate/}" class="top-nav__link">Споры</a></div>
+            <div th:if="${role == 'ROLE_ADMIN'}" th:classappend="${tab == 'list' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/performance-assessment/list/}" class="top-nav__link">Список оценок</a></div>
+        </div>
+    </div>
+
+    <div class="top-nav" th:fragment="m-performance-assessment-tab">
+        <div class="top-nav__list-items">
+            <div th:classappend="${settings == 'rating' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/performance-assessment/}" class="top-nav__link">Оценки</a></div>
+            <div th:classappend="${settings == 'debate' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/performance-assessment/debate-list/}" class="top-nav__link">Споры</a></div>
+        </div>
+    </div>
+
+    <div class="top-nav" th:fragment="funnel-tab">
+        <div class="top-nav__list-items">
+            <div th:if="${role == 'ROLE_ADMIN'}" th:classappend="${funnel == 'common' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/funnel/}" class="top-nav__link">Общая</a></div>
+            <div th:classappend="${funnel == 'traffic' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/funnel/traffic/}" class="top-nav__link">Трафик</a></div>
+            <div th:if="${role == 'ROLE_ADMIN'}" th:classappend="${funnel == 'additional' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_xsmall">
+                <a th:href="@{/funnel/additional/}" class="top-nav__link">Допродажи</a></div>
+        </div>
+    </div>
+
+    <div th:fragment="menu-view-client" js-menu-client-card class="menu">
+        <div class="menu__wrapper">
+            <div js-menu-client-card-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+            <div class="menu__content">
+                <form js-edit-client-form action="#" class="menu__content-side">
+                    <div class="menu__header-wrapper menu__header-wrapper_large">
+                        <div class="menu-header menu-input_small menu-input_bordered">
+                            <div class="menu-header__title ">
+                                <input disabled js-client-card-name name="name" class="menu-header__title menu-input__input_nonb menu-input__input_editable" required>
+                            </div>
+                        </div>
+                        <div class="menu-comment">
+                            <div class="menu-comment__header">
+                                <div class="menu-subtitle">Создан <span class="menu-subtitle_black" js-client-card-date></span></div>
+                                <div class="menu-subtitle">Кто добавил <span class="menu-subtitle_black" js-client-card-manager></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall menu-input_t20">
+                        <div class="menu-input__title">Ссылка ВК</div>
+                        <div class="menu-input__wrapper">
+                            <input check-required="edit-client-info" disabled js-client-card-link name="link" class="menu-input__input menu-input__input_small menu-input__input_editable">
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Номер телефона</div>
+                        <div class="menu-input__wrapper">
+                            <input check-required="edit-client-info" disabled js-client-card-phone name="phone" class="menu-input__input menu-input__input_small menu-input__input_editable">
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Email</div>
+                        <div class="menu-input__wrapper">
+                            <input check-required="edit-client-info" disabled js-client-card-email name="email" class="menu-input__input menu-input__input_small menu-input__input_editable">
+                        </div>
+                    </div>
+                    <div js-client-card-desc class="menu-input menu-input_xsmall display-none">
+                        <div class="menu-input__title">** Одно из полей должны быть обязательно заполнено</div>
+                    </div>
+
+                    <div class="menu__footer display-flex-none" js-edit-footer>
+                        <input js-client-card-id name="id" type="hidden" required/>
+                        <button js-edit-client-btn type="button" class="button">Сохранить изменения</button>
+                    </div>
+                </form>
+                <div class="menu__content-main custom-scroll menu__content-main_overy">
+                    <div js-deals-list class="menu__deal-wrapper">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="menu-view-deal" js-menu-view-deal class="menu">
+        <div class="menu__wrapper">
+            <div js-menu-view-deal-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+            <div class="menu__content menu__content_end">
+                <div class="menu__content-side menu__content-side_large">
+                    <div class="menu__header-wrapper">
+                        <div class="menu-header">
+                            <div class="menu-header__title">
+                                Просмотр сделки
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu__list menu__list_p0 custom-scroll">
+
+                        <div class="menu-input menu-input_xsmall menu-input_t30">
+                            <div class="menu-input__title">Статус сделки</div>
+                            <div class="menu-input__wrapper">
+                                <div d-view-status class="menu-input__input menu-input__input_small menu-input__input_select"></div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Канал связи</div>
+                            <div class="menu-input__wrapper">
+                                <div d-view-social class="menu-input__input menu-input__input_small menu-input__input_select">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Дата обращения</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                <div d-view-deal-date class="menu-input__input menu-input__input_small"></div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Тип продукта</div>
+                            <div class="menu-input__wrapper ">
+                                <div d-view-product class="menu-input__input menu-input__input_small menu-input__input_select">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Продукт</div>
+                            <div class="menu-input__wrapper">
+                                <div d-view-course class="menu-input__input menu-input__input_small menu-input__input_select">
+                                </div>
+                            </div>
+                        </div>
+                        <div view-deal-kind-block class="menu-input menu-input_xsmall menu-input_close">
+                            <div class="menu-input__title">Вид продукта</div>
+                            <div class="menu-input__wrapper">
+                                <div d-view-kind class="menu-input__input menu-input__input_small menu-input__input_select">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Тип продажи</div>
+                            <div class="menu-input__wrapper">
+                                <div d-view-type class="menu-input__input menu-input__input_small menu-input__input_select">
+                                </div>
+                            </div>
+                        </div>
+                        <div view-deal-start-date-block class="menu-input menu-input_xsmall menu-input_close">
+                            <div class="menu-input__title">Дата старта</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                <div d-view-start-date class="datepicker-here menu-input__input menu-input__input_small"></div>
+                            </div>
+                        </div>
+                        <div view-deal-mailing-block class="menu-input menu-input_msmall menu-input_close">
+                            <div class="input-element__input_row input-element__input_row_xscroll">
+                                <div class="input-element__checkbox">
+                                    <input d-view-mailing name="mailing" type="checkbox" id="viewMailing" class="checkbox" disabled value="Да">
+                                    <label class="checkbox-label checkbox-label_gray" for="viewMailing">Сделка является рассылкой</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div view-deal-trial-block class="menu-input menu-input_msmall menu-input_close">
+                            <div class="input-element__input_row input-element__input_row_xscroll">
+                                <div class="input-element__checkbox">
+                                    <input d-view-trial name="trial" type="checkbox" id="viewTrial" class="checkbox" value="true">
+                                    <label class="checkbox-label checkbox-label_gray" for="viewTrial">Пробный период</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall menu-input_close is-open">
+                            <div class="menu-input__wrapper menu-input__wrapper_price">
+                                <div class="menu-input__price-wrapper ">
+                                    <div class="menu-input__title menu-input__title_mr20">Стоимость продукта</div>
+                                    <div class="menu-input__wrapper_sum">
+                                        <div d-view-price class="menu-input__input menu-input__input_xsmall menu-input__input_price"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">ID рекламной кампании / Смайлик + база</div>
+                            <div class="menu-input__wrapper">
+                                <div d-view-tag class="menu-input__input menu-input__input_small"></div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Комментарий</div>
+                            <div class="menu-input__wrapper">
+                                <div d-view-comment class="menu-input__input menu-input__input_textarea menu-input__input_small"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu__footer">
+                        <button type="button" js-menu-view-deal-close-btn class="button button_white button_right">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:fragment="jquery">
+        <script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+        <script th:src="@{/js/jquery.validate.min.js}"></script>
+        <script th:src="@{/js/i18n/messages_ru.min.js}"></script>
+    </th:block>
+    <th:block th:fragment="scripts">
+        <script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+        <script th:src="@{/js/jquery.validate.min.js}"></script>
+        <script th:src="@{/js/i18n/messages_ru.min.js}"></script>
+        <script th:src="@{/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/datepicker.min.js}"></script>
+        <script th:src="@{/js/main.js}"></script>
+    </th:block>
+</body>
+</html>

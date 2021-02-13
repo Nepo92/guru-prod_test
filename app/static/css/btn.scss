@@ -1,0 +1,363 @@
+.btn {
+    cursor: pointer;
+    user-select: none;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    -ms-transition: none;
+    transition: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: 0 0;
+    font-style: normal;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0;
+}
+.btn_default {
+    cursor: default;
+}
+.btn__content {
+    -webkit-transition: .15s cubic-bezier(.645,.045,.355,1);
+    -moz-transition: .15s cubic-bezier(.645,.045,.355,1);
+    transition: .15s cubic-bezier(.645,.045,.355,1);
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: box;
+    display: flex;
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    -o-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -o-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    border-radius: 5px;
+    position: relative;
+    padding: 0 26px;
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background-color: #471F8A;
+    color: #fff;
+    border: 1px solid transparent;
+}
+.btn__content_small {
+    min-width: 100px;
+}
+.btn__content_medium {
+    min-width: 160px;
+}
+.btn__content_large {
+    min-width: 200px;
+}
+.btn__content_xlarge {
+    min-width: 240px;
+}
+.btn_outline .btn__content {
+    background: 0 0;
+    border: 1px solid #471F8A;
+    color: #471F8A;
+}
+.btn_outline-gray .btn__content {
+    background: 0 0;
+    border: 1px solid #C3C2C9;
+    color: #C3C2C9;
+}
+.btn_green .btn__content,
+.btn_rated .btn__content {
+    background: #27AE60;
+    border: 1px solid #27AE60;
+    color: #ffffff;
+}
+.btn_orange .btn__content,
+.btn_check .btn__content {
+    background: #FFA515;
+    border: 1px solid #FFA515;
+    color: #ffffff;
+}
+.btn_violet .btn__content,
+.btn_process .btn__content {
+    background: #481E8C;
+    border: 1px solid #481E8C;
+    color: #ffffff;
+}
+.btn_enable .btn__content,
+.btn_disable .btn__content {
+    background: rgba(191, 192, 196, 0.3);
+    color: rgba(72, 30, 140, 1);
+}
+.btn:disabled {
+    cursor: default;
+}
+.btn:disabled .btn__content {
+    background: 0 0;
+    border: 1px solid #EFEFF0;
+    color: rgba(180, 179, 187, 1);
+}
+.btn__title {
+    padding: 18px 0;
+}
+.btn__title_small {
+    padding: 12px 0;
+}
+.btn__title_xsmall {
+    padding: 8px 0;
+}
+.btn__title_medium {
+    box-sizing: border-box;
+    min-height: 60px;
+    padding: 12px 0;
+}
+.btn_title-text {
+    font-family: TTCommons;
+    font-size: 16px;
+    line-height: 1;
+}
+.btn_title-text_small {
+    font-size: 14px;
+}
+.btn__icon {
+    padding-left: 30px;
+    position: relative;
+}
+.btn__icon_arrow-left:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 15px;
+    width: 20px;
+
+    background-color: #481E8C;
+    -webkit-mask: url(../img/arrow-left.svg) no-repeat center;
+    mask: url(../img/arrow-left.svg) no-repeat center;
+
+    -webkit-mask-size: 20px 15px;
+    mask-size: 20px 15px;
+
+    transition: 0.4s;
+    transform: translateY(-50%);
+}
+.btn__icon_rated:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #1A994F;
+
+    transition: 0.4s;
+    transform: translateY(-50%);
+}
+.btn__icon_rated:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 6px;
+    height: 7px;
+    width: 9px;
+
+    background-color: #fff;
+    -webkit-mask: url(../img/arrow-check.svg) no-repeat center;
+    mask: url(../img/arrow-check.svg) no-repeat center;
+
+    -webkit-mask-size: 9px 7px;
+    mask-size: 9px 7px;
+
+    transition: 0.4s;
+    transform: translateY(-50%);
+}
+.btn__icon_check:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 20px;
+    width: 20px;
+
+    background-color: rgba(255, 255, 255, 0.6);
+    -webkit-mask: url(../img/clock-icon.svg) no-repeat center;
+    mask: url(../img/clock-icon.svg) no-repeat center;
+
+    -webkit-mask-size: 20px;
+    mask-size: 20px;
+
+    transition: 0.4s;
+    transform: translateY(-50%);
+}
+.btn__icon_process:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 18px;
+    width: 13px;
+
+    background-color: rgba(255, 255, 255, 0.6);
+    -webkit-mask: url(../img/play-icon.svg) no-repeat center;
+    mask: url(../img/play-icon.svg) no-repeat center;
+
+    -webkit-mask-size: 13px 18px;
+    mask-size: 13px 18px;
+
+    transition: 0.4s;
+    transform: translateY(-50%);
+}
+.btn__icon_like:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 20px;
+    width: 23px;
+
+    background-color: #27AE60;
+    -webkit-mask: url(../img/like.svg) no-repeat center;
+    mask: url(../img/like.svg) no-repeat center;
+
+    -webkit-mask-size: 23px 20px;
+    mask-size: 23px 20px;
+
+    transition: 0.4s;
+    transform: translateY(-50%);
+}
+.btn__icon_dislike:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 20px;
+    width: 23px;
+
+    background-color: #FF284F;
+    -webkit-mask: url(../img/dislike.svg) no-repeat center;
+    mask: url(../img/dislike.svg) no-repeat center;
+
+    -webkit-mask-size: 23px 20px;
+    mask-size: 23px 20px;
+
+    transition: 0.4s;
+    transform: translateY(-50%);
+}
+
+
+.upload-btn__wrapper {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: box;
+    display: flex;
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    -o-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -moz-box-pack: justify;
+    -o-box-pack: justify;
+    -ms-flex-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    margin-left: -10px;
+    margin-right: -10px;
+}
+.upload-btn__item {
+    width: 100%;
+
+    border: 1px dashed #B4B3BB;
+    box-sizing: border-box;
+    border-radius: 10px;
+
+    margin-left: 10px;
+    margin-right: 10px;
+
+    transition: 0.4s;
+}
+.upload-btn__item:hover {
+    border-color: #471F8A;
+}
+.upload-btn__item:hover .upload-btn__item-title {
+    color: #471F8A;
+}
+.upload-btn__item:hover .upload-btn__item-title:after {
+    background: #471F8A;
+}
+.upload-btn__item-file {
+    width: .1px;
+    height: .1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.upload-btn__item-label {
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+
+    padding: 35px 0px;
+
+    cursor: pointer;
+}
+.upload-btn__item-title {
+    padding-left: 60px;
+    position: relative;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 1.2;
+
+    color: #7C7B85;
+
+    transition: 0.4s;
+}
+.upload-btn__item-title:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 50px;
+    width: 50px;
+    -webkit-mask-size: auto 50px;
+    mask-size: auto 50px;
+    background-color: #B4B3BB;
+    -webkit-mask: url(../img/upload-img.svg) no-repeat center;
+    mask: url(../img/upload-img.svg) no-repeat center;
+    transition: 0.4s;
+    transform: translateY(-50%);
+}
+.upload-btn__item-title_file:after {
+    -webkit-mask: url(../img/upload-file.svg) no-repeat center;
+    mask: url(../img/upload-file.svg) no-repeat center;
+}

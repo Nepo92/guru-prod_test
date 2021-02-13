@@ -1,0 +1,204 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Чеки">
+
+    <title>Чеки</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-medium main-content_mw-unset">
+    <div class="content-top">
+        <div class="content-top__header">CRM</div>
+    </div>
+    <div class="content-top content-top_small">
+        <th:block  th:if="${role == 'ROLE_ADMIN'}">
+            <div th:replace="base :: deals-nav"></div>
+        </th:block>
+        <th:block  th:if="${role == 'ROLE_MANAGER'}">
+            <div th:replace="base :: transactions-nav"></div>
+        </th:block>
+        <th:block  th:if="${role == 'ROLE_HEAD_MANAGER'}">
+            <div th:replace="base :: head-manager-transactions-nav"></div>
+        </th:block>
+    </div>
+    <div class="content-main">
+        <div class="content-main__panel content-main__panel_large">
+            <div js-create-check class="button button_add">+ Добавить чек</div>
+        </div>
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_large content-main__panel_p">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                        <tr class="custom-table__header-row">
+                            <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                            <td class="custom-table__header-col custom-table__header-col_big">Дата</td>
+                            <td class="custom-table__header-col custom-table__header-col_big">Текст</td>
+                            <td class="custom-table__header-col custom-table__header-col_big">Менеджер</td>
+                            <td class="custom-table__header-col custom-table__header-col_big">Статус</td>
+                        </tr>
+                    </thead>
+                    <tbody table-body class="custom-table__body custom-table__body_white">
+                        <tr class="custom-table__body-row" th:each="smsCheck : ${smsChecks.pageItems}">
+                            <input type="hidden" s-id th:value="${smsCheck.id}" name="id" required>
+                            <td class="custom-table__body-col" th:utext="${smsCheck.id}"></td>
+                            <td class="custom-table__body-col custom-table__body-col_medium">
+                                <input s-date
+                                       name="date"
+                                       class="datepicker-here-sc menu-input__input menu-input__input_small editable"
+                                       autocomplete="off"
+                                       th:value="${smsCheck.date}"
+                                       disabled
+                                       data-autoclose="true"
+                                       placeholder="—"
+                                       required>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_full" >
+                                <input s-text name="text"
+                                       class="menu-input__input menu-input__input_small editable"
+                                       th:attr="title=${smsCheck.text}"
+                                       th:value="${smsCheck.text}"
+                                       disabled
+                                       placeholder="—"
+                                       required>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_medium">
+                                <th:block th:unless="${#strings.isEmpty(smsCheck.manager)}">
+                                    <div class="column-text" th:attr="title=${smsCheck.manager}" th:utext="${smsCheck.manager}"></div>
+                                </th:block>
+                                <th:block th:if="${#strings.isEmpty(smsCheck.manager)}">
+                                    <div>—</div>
+                                </th:block>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_medium">
+                                <div class="indicated-select menu-input__wrapper " th:classappend="'indicated-select_' + ${smsCheck.isUsed}">
+                                    <div class="menu-input__input menu-input__input_xxsmall menu-input__input_white">
+                                        <th:block th:if="${smsCheck.isUsed}">Забран</th:block>
+                                        <th:block th:if="${!smsCheck.isUsed}">Не забран</th:block>
+                                    </div>
+                                </div>
+                            </td>
+                            <th:block th:if="${role == 'ROLE_MANAGER'}">
+                                <td class="custom-table__body-col custom-table__body-col_last">
+                                    <div edit-btns class="column-links display-flex-none">
+                                        <div edit-check-accept class="column_mwidth column_mwidth-accept"></div>
+                                        <div edit-check-cancel class="column_mwidth column_mwidth-cancel"></div>
+                                    </div>
+                                    <div edit-menu class="column-links display-flex-none is-open">
+                                        <div edit-check class="column_mwidth div-table__body-col_center column_mwidth-edit column_mwidth-edit-b"></div>
+                                    </div>
+                                </td>
+                            </th:block>
+                            <th:block th:if="${role == 'ROLE_ADMIN'}">
+                                <td class="custom-table__body-col custom-table__body-col_last">
+                                    <div edit-btns class="column-links display-flex-none">
+                                        <div edit-check-accept class="column_mwidth column_mwidth-accept"></div>
+                                        <div edit-check-cancel class="column_mwidth column_mwidth-cancel"></div>
+                                    </div>
+                                    <div edit-menu class="column-links display-flex-none is-open">
+                                        <div edit-check class="column_mwidth div-table__body-col_center column_mwidth-edit"></div>
+                                        <div delete-check-form class="column-form">
+                                            <button delete-check type="button" class="column_mwidth column_mwidth-delete"></button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </th:block>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="content-main__panel content-main__panel_large">
+            <div class="pagination" th:if="${smsChecks.pagesAvailable > 1}" th:with="left=4,right=5">
+                <div class="pagination__wrapper">
+                    <a th:attrappend="href=${smsChecks.pageNumber - 1 > 0} ? 'page?id=' + ${smsChecks.pageNumber - 1} : ''"
+                       th:classappend="${smsChecks.pageNumber - 1} == 0 ? 'active' : ''"
+                       class="pagination__elem pagination__elem_prev"></a>
+
+                    <th:block th:if="${smsChecks.pagesAvailable <= 10}"
+                              th:with="start=1,end=${smsChecks.pagesAvailable}">
+                        <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                            <a th:attrappend="href='page?id=' + ${i}"
+                               th:classappend="${smsChecks.pageNumber == i} ? 'active' : ''"
+                               th:utext="${i}" class="pagination__elem"></a>
+                        </th:block>
+                    </th:block>
+                    <th:block th:unless="${smsChecks.pagesAvailable <= 10}">
+                        <th:block th:if="${smsChecks.pageNumber > left && smsChecks.pageNumber < (smsChecks.pagesAvailable - right)}"
+                                  th:with="start=${smsChecks.pageNumber - left},end=${smsChecks.pageNumber + right}">
+                            <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                                <a th:attrappend="href='page?id=' + ${i}"
+                                   th:classappend="${smsChecks.pageNumber == i} ? 'active' : ''"
+                                   th:utext="${i}" class="pagination__elem"></a>
+                            </th:block>
+                        </th:block>
+                        <th:block th:if="${smsChecks.pageNumber <= left}"  th:with="start=1,end=${smsChecks.pageNumber + (right + 1 + left - smsChecks.pageNumber)}">
+                            <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                                <a th:attrappend="href='page?id=' + ${i}"
+                                   th:classappend="${smsChecks.pageNumber == i} ? 'active' : ''"
+                                   th:utext="${i}" class="pagination__elem"></a>
+                            </th:block>
+                        </th:block>
+                        <th:block th:unless="${(smsChecks.pageNumber > left && smsChecks.pageNumber < (smsChecks.pagesAvailable - right)) || (smsChecks.pageNumber <= left)}"
+                                  th:with="start=${smsChecks.pageNumber - (left + right - (smsChecks.pagesAvailable - smsChecks.pageNumber))},end=${smsChecks.pagesAvailable}">
+                            <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                                <a th:attrappend="href='page?id=' + ${i}"
+                                   th:classappend="${smsChecks.pageNumber == i} ? 'active' : ''"
+                                   th:utext="${i}" class="pagination__elem"></a>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+
+                    <a th:attrappend="href=${smsChecks.pageNumber + 1 <= smsChecks.pagesAvailable } ? 'page?id=' + ${smsChecks.pageNumber + 1} : ''"
+                       th:classappend="${smsChecks.pageNumber + 1 > smsChecks.pagesAvailable} ? 'active' : ''"
+                       class="pagination__elem pagination__elem_next"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-create-check class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-check-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-check-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить чек
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Дата *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                            <input name="date" autocomplete="off" class="datepicker-here-sc menu-input__input menu-input__input_small" placeholder="Укажите дату"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Текст *</div>
+                        <div class="menu-input__wrapper">
+                            <textarea name="text" placeholder="Введите тест сообщения" class="menu-input__input menu-input__input_small menu-input__input-textarea" required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-check class="button button_white">Сохранить чек</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/sms-check-menu.js}"></script>
+</body>
+</html>

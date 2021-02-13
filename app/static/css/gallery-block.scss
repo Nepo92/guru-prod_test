@@ -1,0 +1,138 @@
+
+.gallery__wrapper {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: box;
+    display: flex;
+    margin: 0 -5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+}
+.content-element__gallery {
+    padding: 0px 30px;
+}
+.gallery__wrapper {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+.gallery__wrapper_small {
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+.gallery__list {
+    display: flex;
+    flex-wrap: nowrap;
+}
+.gallery__item {
+    margin-left: 5px;
+    margin-right: 5px;
+
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: .4s;
+}
+.gallery-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    align-self: center;
+
+    width: 217px;
+    height: 217px;
+}
+.gallery-item_small {
+    width: 100px;
+    height: 100px;
+}
+.gallery-item__title {
+    font-family: TTCommonsMedium;
+    font-weight: 900;
+    font-size: 28px;
+    line-height: 32px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    text-align: center;
+}
+.gallery-item__subtitle {
+    font-family: TT Commons;
+    font-size: 13px;
+    line-height: 20px;
+    text-align: center;
+    color: #FFFFFF;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+}
+.gallery-item_pdf {
+    background: #CE1126;
+}
+.gallery-item_xls,
+.gallery-item_xlsx
+{
+    background: #107C41;
+}
+.gallery-item_doc,
+.gallery-item_docx {
+    background: #4466AD;
+}
+.gallery-item_pptx,
+.gallery-item_ppt {
+    background: #f14524;
+}
+.gallery-item:hover:after {
+    content: '';
+    display: block;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background: rgba(72, 30, 140, 0.4);
+}
+.gallery__delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(72, 30, 140, 0.9);
+    cursor: pointer;
+    z-index: 10;
+}
+.gallery__delete-btn:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 9px;
+    height: 9px;
+    background-color: #ffffff;
+    -webkit-mask: url(../img/fail.svg) no-repeat center;
+    mask: url(../img/fail.svg) no-repeat center;
+    -webkit-mask-size: 9px;
+    mask-size: 9px;
+}
+.gallery__item:hover .gallery__delete-btn {
+    display: block;
+}
+.gallery-item__preview {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}

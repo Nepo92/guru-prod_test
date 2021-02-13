@@ -1,0 +1,127 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Распределение заявок">
+
+    <title>Распределение заявок</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: advertising-nav"></div>-->
+    <div class="content-top">
+        <div class="content-top__header">Распределение заявок</div>
+    </div>
+    <div class="content-main">
+        <div class="container-table">
+            <h4>Внешнии ссылки</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th>Ссылка</th>
+                        <th class="cell-120"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="oLink : ${outsideLinks}">
+                        <td th:text="${oLink.id}"></td>
+                        <td th:text="${oLink.name}"></td>
+                        <td th:text="${oLink.link}"></td>
+                        <td class="cell-120">
+                            <form class="table-form" action="#" th:action="@{'deleteOutsideLink/{id}'(id=${oLink.id})}" th:method="delete">
+                                <button class="btn btn-sm btn-outline-secondary">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form class="table-form" action="#" th:action="@{generateOutsideLink}" th:object="${outsideLink}" th:method="post">
+                        <tr>
+                            <td></td>
+                            <td><input class="input-sm input-large" th:field="*{name}" placeholder="Название" required></td>
+                            <td class="cell-120">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Сгенерировать</button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container-table">
+            <h4>Внутренние ссылки</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Группа</th>
+                        <th>Название</th>
+                        <th>(переходов)</th>
+                        <th class="cell-500">Ссылка</th>
+                        <th class="cell-40"></th>
+                        <th class="cell-120"></th>
+                        <th class="cell-40"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="iLink : ${insideLinks}">
+                        <td th:text="${iLink.id}"></td>
+                        <td th:text="${iLink.parentName}"></td>
+                        <td th:text="${iLink.name}"></td>
+                        <td th:text="${iLink.counter}"></td>
+                        <td class="cell-500" th:attr="title=${iLink.link}" th:text="${iLink.link}"></td>
+                        <td class="custom-table__body-col custom-table__body-col_center">
+                            <div class="column-links">
+                                <div js-copy-link th:attr="data-link=${iLink.link}" class="column_mwidth column_mwidth-copy"></div>
+                                <a th:href="${iLink.link}" target="_blank" class="column_mwidth column_mwidth-open"></a>
+                            </div>
+                        </td>
+                        <td class="cell-120">
+                            <form class="table-form" action="#" th:action="@{'deleteInsideLink/{id}'(id=${iLink.id})}" th:method="delete">
+                                <button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>
+                            </form>
+                        </td>
+                        <td class="cell-40">
+                            <form class="table-form" action="#" th:action="@{'updateLink'}" th:method="get">
+                                <input type="hidden" name="idInsideLink" th:value="${iLink.id}"/>
+                                <input type="hidden" name="isActive" th:value="${iLink.isActive()}"/>
+                                <button th:if="${iLink.isActive()}" class="btn btn-sm btn-large btn_green">включена</button>
+                                <button th:unless="${iLink.isActive()}" class="btn btn-sm btn-large btn_red">выключена</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form class="table-form" action="#" th:action="@{addInsideLink}" th:object="${insideLink}" th:method="post">
+                        <tr>
+                            <td></td>
+                            <td><select th:disabled="${outsideLinks.size() == 0}" class="filter__element mb-2 input-sm " filter-param th:field="*{parentName}">
+                                <option th:each="oLink : ${outsideLinks}"
+                                        th:value="${oLink.name}"
+                                        th:utext="${oLink.name}"></option>
+                            </select></td>
+                            <td colspan="2"><input th:disabled="${outsideLinks.size() == 0}" class="input-sm input-large" th:field="*{name}" placeholder="Название" required></td>
+                            <td><input th:disabled="${outsideLinks.size() == 0}" class="input-sm input-large" th:field="*{link}" placeholder="Ссылка" required></td>
+                            <td class="cell-120">
+                                <button th:disabled="${outsideLinks.size() == 0}" type="submit" class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

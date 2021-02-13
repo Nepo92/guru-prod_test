@@ -1,0 +1,471 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" th:attr="content=${lesson.title}">
+
+    <title th:utext="${lesson.title}"></title>
+
+    <link th:href="@{/css/u_main.css}" rel="stylesheet">
+    <link th:href="@{/css/gap.css}" rel="stylesheet">
+    <link th:href="@{/css/custom-tabs.css}" rel="stylesheet">
+    <link th:href="@{/css/available-course.css}" rel="stylesheet">
+    <link th:href="@{/css/info-blocks.css}" rel="stylesheet">
+    <link th:href="@{/css/progress-bar.css}" rel="stylesheet">
+    <link th:href="@{/css/jquery.fancybox.min.css}" rel="stylesheet">
+    <link th:href="@{/css/btn.css}" rel="stylesheet">
+    <link th:href="@{/css/gallery-block.css}" rel="stylesheet">
+    <link th:href="@{/css/comment-block.css}" rel="stylesheet">
+    <link th:href="@{/css/main-nav.css}" rel="stylesheet">
+</head>
+
+<body class="body">
+<div th:replace="base :: user-nav"></div>
+<div class="body__wrapper">
+    <div class="body__header">
+        <header class="header">
+            <div class="header__box block">
+                <div class="header__wrapper block-wrapper">
+                    <div class="header__main">
+                        <div class="header__items">
+                            <div class="header__items-wrapper">
+                                <div class="header__item header__item_title">
+                                    <h3>Модули курса</h3>
+                                </div>
+                                <div class="header__item header__item_btn">
+                                    <a th:href="'/user/courses/' + ${idDeal} + '/' + ${idModule} + '/'" class="btn btn_outline">
+                                        <div class="btn__content btn__content_large">
+                                            <span class="btn__title btn__title_small btn__icon btn__icon_arrow-left">
+                                                <span class="btn_title-text btn_title-text_small">К списку уроков</span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+    <div class="body__content">
+        <div class="lessons block -gap-inner-bottom_5 -gap-inner-top_5">
+            <div class="lessons__wrapper block-wrapper">
+                <div class="lessons__main">
+                    <div class="block-header -gap_5">
+                        <div class="title title-h2 -gap_0" th:utext="${lesson.title}"></div>
+                        <div class="subtitle subtitle-h5" th:utext="'Урок ' + ${lesson.index}"></div>
+                    </div>
+
+
+                    <th:block th:each="lessonBlock,stat : ${lesson.lessonBlocks}">
+                        <div class="content-element" th:if="${lessonBlock.type == 'video'}">
+                            <div class="content-element__wrapper">
+                                <div class="content-element__side">
+                                    <div class="content-element__header">
+                                        <div class="content-element__header-wrapper">
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+                                                    <div class="content-element__header-element">
+                                                        <span class="content-element__title title title-h6" th:utext="${lessonBlock.title}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-element__main">
+                                    <div class="content-element__video">
+                                        <div class="content-element__video-wrapper">
+                                            <a data-fancybox th:href="${lessonBlock.value}" class="content-video" th:data-videoLink="${lessonBlock.value}">
+                                                <img class="content-video__preview" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-element" th:if="${lessonBlock.type == 'text'}">
+                            <div class="content-element__wrapper">
+                                <div class="content-element__side">
+                                    <div class="content-element__header">
+                                        <div class="content-element__header-wrapper">
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+                                                    <div class="content-element__header-element">
+                                                        <span class="content-element__title title title-h6" th:utext="${lessonBlock.title}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-element__main">
+                                    <div class="content-element__text">
+                                        <div class="content-element__text-wrapper -gap_5" style="white-space: pre;" th:utext="${lessonBlock.value}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-element" th:if="${lessonBlock.type == 'document'}">
+                            <div class="content-element__wrapper">
+                                <div class="content-element__side content-element__side_small">
+                                    <div class="content-element__header">
+                                        <div class="content-element__header-wrapper">
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+                                                    <div class="document">
+                                                        <div class="document__wrapper">
+                                                            <th:block th:with="format=${#strings.substring(lessonBlock.value, #strings.indexOf(lessonBlock.value, '.') + 1)}">
+                                                                <div class="document__item" th:classappend="'document__item_' + ${format}">
+                                                                    <div class="document__title" th:utext="${format}"></div>
+                                                                </div>
+                                                            </th:block>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+                                                    <div class="content-element__header-element">
+                                                        <span class="content-element__title title title-h6" th:utext="${lessonBlock.title}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+<!--                                                    <div class="content-element__header-btn">-->
+<!--                                                        <a th:href="" class="btn btn_violet">-->
+<!--                                                            <div class="btn__content btn__content_medium">-->
+<!--                                                                <span class="btn__title btn__title_small">-->
+<!--                                                                    <span class="btn_title-text btn_title-text_small">Посмотреть</span>-->
+<!--                                                                </span>-->
+<!--                                                            </div>-->
+<!--                                                        </a>-->
+<!--                                                    </div>-->
+                                                    <div class="content-element__header-btn">
+                                                        <a th:href="${lessonBlock.id} + '/' + ${lessonBlock.value}" class="btn btn_outline">
+                                                            <div class="btn__content btn__content_medium">
+                                                                <span class="btn__title btn__title_small">
+                                                                    <span class="btn_title-text btn_title-text_small">Скачать</span>
+                                                                </span>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-element" th:if="${lessonBlock.type == 'image'}">
+                            <div class="content-element__wrapper">
+                                <div class="content-element__side">
+                                    <div class="content-element__header">
+                                        <div class="content-element__header-wrapper">
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+                                                    <div class="content-element__header-element">
+                                                        <span class="content-element__title title title-h6" th:utext="${lessonBlock.title}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-element__main">
+                                    <div class="content-element__image">
+                                        <div class="content-element__image-wrapper">
+                                            <a data-fancybox th:href="'/' + ${lessonBlock.value}" class="content-image">
+                                                <img th:src="'/' + ${lessonBlock.value}" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-element" th:if="${lessonBlock.type == 'gallery'}">
+                            <div class="content-element__wrapper">
+                                <div class="content-element__side">
+                                    <div class="content-element__header">
+                                        <div class="content-element__header-wrapper">
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+                                                    <div class="content-element__header-element">
+                                                        <span class="content-element__title title title-h6" th:utext="${lessonBlock.title}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-element__main">
+                                    <div class="content-element__gallery">
+                                        <div class="content-element__gallery-wrapper">
+                                            <div class="gallery">
+                                                <div class="gallery__wrapper custom-scroll">
+                                                    <div class="gallery__list">
+                                                        <th:block th:each="img : ${lessonBlock.blockValues}">
+                                                            <div class="gallery__item">
+                                                                <a data-fancybox th:href="'/' + ${img.value}" class="gallery-item">
+                                                                    <div class="gallery-item__preview" th:style="'background-image: url(/' + ${img.value} + ');'"></div>
+                                                                </a>
+                                                            </div>
+                                                        </th:block>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </th:block>
+
+                    <th:block th:unless="${isVoted}">
+                        <div class="block-delimiter"></div>
+
+                        <div class="content-element">
+                            <div class="content-element__wrapper">
+                                <div class="content-element__side content-element__side_small">
+                                    <div class="content-element__header">
+                                        <div vote-block-wrapper class="content-element__header-wrapper">
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+                                                    <div class="content-element__header-element">
+                                                        <span class="content-element__title title title-h6">Пожалуйста, оцените урок</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="content-element__header-item">
+                                                <div class="content-element__header-main">
+                                                    <div vote data-rate="1" class="content-element__header-btn">
+                                                        <div class="btn btn_outline-gray">
+                                                            <div class="btn__content btn__content_xlarge">
+                                                                <span class="btn__title btn__icon btn__icon_like btn__title_medium">
+                                                                    <span class="btn_title-text btn_title-text_small"> </span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div vote data-rate="0" class="content-element__header-btn">
+                                                        <div class="btn btn_outline-gray">
+                                                            <div class="btn__content btn__content_xlarge">
+                                                                <span class="btn__title btn__icon btn__icon_dislike btn__title_medium">
+                                                                    <span class="btn_title-text btn_title-text_small"> </span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+
+                    <th:block th:if="${lesson.type == 'homework'}">
+                        <th:block th:if="${!isHomeworkCompleted and allowHomeworkStart}">
+                            <div class="block-delimiter -gap_7" js-hide-on-complete></div>
+
+                            <div class="block-header -gap_5" js-hide-on-complete>
+                                <div class="title title-h2 -gap_0">Сдать домашнее задание</div>
+                            </div>
+
+                            <form save-homework-form action="#" upload-block class="content-element" js-hide-on-complete>
+                                <div class="content-element__wrapper">
+                                    <div class="content-element__side">
+                                        <div class="content-input">
+                                            <div class="content-input__wrapper">
+                                                <div class="content-input__title">Ваше сообщение</div>
+                                                <div class="content-input__item">
+                                                    <textarea name="comments[0].text" class="content-input__textarea" required placeholder="Введите ваше сообщение"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="gallery">
+                                            <div class="gallery__wrapper gallery__wrapper_small custom-scroll">
+                                                <div class="gallery__list" upload-list></div>
+                                            </div>
+                                        </div>
+                                        <div class="block-delimiter"></div>
+                                        <div class="upload-btn -gap_5">
+                                            <div class="upload-btn__wrapper">
+                                                <div class="upload-btn__item">
+                                                    <input type="file" data-name="comments[0].files" name="file" accept=".jpeg,.jpg,.png" id="imageFile" class="upload-btn__item-file" multiple>
+                                                    <label for="imageFile" class=" upload-btn__item-label">
+                                                        <span class="upload-btn__item-title js-fileName">Добавить фотографию</span>
+                                                    </label>
+                                                </div>
+                                                <div class="upload-btn__item">
+                                                    <input type="file" data-name="comments[0].files" name="file" accept=".doc,.pdf" id="docFile" class="upload-btn__item-file" multiple>
+                                                    <label for="docFile" class=" upload-btn__item-label upload-btn__item-label_file">
+                                                        <span class="upload-btn__item-title upload-btn__item-title_file js-fileName">Добавить файл</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button save-homework class="btn btn_violet">
+                                            <div class="btn__content btn__content_medium">
+                                                <span class="btn__title btn__title_small">
+                                                    <span class="btn_title-text btn_title-text_small">Отправить</span>
+                                                </span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </th:block>
+
+                        <th:block th:if="${isHomeworkCompleted}">
+
+                            <div class="content-element" th:if="${isHomeworkOnCheck}">
+                                <div class="content-element__wrapper">
+                                    <div class="homework-accepted">
+                                        <div class="homework-accepted__content">
+                                            Спасибо! Ваше домашнее задание принято на проверку, ответ получите в скором времени!
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="block-delimiter -gap_7" th:if="${!isHomeworkOnCheck}"></div>
+
+                            <div class="block-header -gap_5" th:if="${!isHomeworkOnCheck}">
+                                <div class="title title-h2 -gap_0">Домашнее задание</div>
+                            </div>
+
+                            <div class="content-element" th:if="${!isHomeworkOnCheck}">
+                                <div class="content-element__wrapper">
+                                    <div class="content-element__side">
+                                        <div class="comments">
+                                            <div class="comments__wrapper">
+                                                <div class="comments__item">
+                                                    <th:block th:each="comment : ${homework.comments}">
+                                                        <th:block th:if="${comment.type == 'user'}">
+                                                            <div class="comment">
+                                                                <div class="comment__header -gap_2">
+                                                                    <!--                                                            <div class="comment__header-item">-->
+                                                                    <!--                                                                <div class="comment__avatar" style="background-image: url('/img/test-preview.png');">-->
+                                                                    <!--                                                                </div>-->
+                                                                    <!--                                                            </div>-->
+                                                                    <div class="comment__header-item">
+                                                                        <div class="comment__title">Ваш комментарий</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="comment__body">
+                                                                    <div class="comment__text" th:utext="${comment.text}"></div>
+                                                                    <div class="gallery -gap-inner-top_5">
+                                                                        <div class="gallery__wrapper gallery__wrapper_small custom-scroll">
+                                                                            <div class="gallery__list">
+                                                                                <th:block th:each="homeworkFile : ${comment.homeworkFiles}">
+                                                                                    <th:block th:if="${homeworkFile.type == 'jpeg' || homeworkFile.type == 'jpg' || homeworkFile.type == 'png'}">
+                                                                                        <div class="gallery__item">
+                                                                                            <a th:href="${'/' + homeworkFile.path}" th:attr="data-fancybox=${homeworkFile.name}" class="gallery-item gallery-item_small">
+                                                                                                <img class="gallery-item__preview" th:src="${'/' + homeworkFile.path}">
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </th:block>
+                                                                                    <th:block th:if="${homeworkFile.type == 'doc' || homeworkFile.type == 'pdf'}">
+                                                                                        <a th:href="${homeworkFile.id + '/' + homeworkFile.path}" class="gallery__item">
+                                                                                            <div class="gallery-item gallery-item_small gallery-item_pdf">
+                                                                                                <div class="gallery-item__title" th:utext="${homeworkFile.type}"></div>
+                                                                                                <div class="gallery-item__subtitle" th:utext="${homeworkFile.name}"></div>
+                                                                                            </div>
+                                                                                        </a>
+                                                                                    </th:block>
+                                                                                </th:block>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </th:block>
+                                                        <th:block th:unless="${comment.type == 'user'}">
+                                                            <div class="comment comment_right">
+                                                                <div class="comment__header -gap_2">
+                                                                    <!--                                                            <div class="comment__header-item">-->
+                                                                    <!--                                                                <div class="comment__avatar" style="background-image: url('/img/test-preview.png');">-->
+                                                                    <!--                                                                </div>-->
+                                                                    <!--                                                            </div>-->
+                                                                    <div class="comment__header-item">
+                                                                        <div class="comment__title">Куратор</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="comment__body comment__body_violet">
+                                                                    <div class="comment__text" th:utext="${comment.text}"></div>
+                                                                    <div class="gallery -gap-inner-top_5">
+                                                                        <div class="gallery__wrapper gallery__wrapper_small custom-scroll">
+                                                                            <div class="gallery__list">
+                                                                                <th:block th:each="homeworkFile : ${comment.homeworkFiles}">
+                                                                                    <th:block th:if="${homeworkFile.type == 'jpeg' || homeworkFile.type == 'jpg' || homeworkFile.type == 'png'}">
+                                                                                        <div class="gallery__item">
+                                                                                            <a th:href="${'/' + homeworkFile.path}" th:attr="data-fancybox=${homeworkFile.name}" class="gallery-item gallery-item_small">
+                                                                                                <img class="gallery-item__preview" th:src="${'/' + homeworkFile.path}">
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </th:block>
+                                                                                    <th:block th:if="${homeworkFile.type == 'doc' || homeworkFile.type == 'pdf'}">
+                                                                                        <a th:href="${homeworkFile.id + '/' + homeworkFile.path}" class="gallery__item">
+                                                                                            <div class="gallery-item gallery-item_small gallery-item_pdf">
+                                                                                                <div class="gallery-item__title" th:utext="${homeworkFile.type}"></div>
+                                                                                                <div class="gallery-item__subtitle" th:utext="${homeworkFile.name}"></div>
+                                                                                            </div>
+                                                                                        </a>
+                                                                                    </th:block>
+                                                                                </th:block>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </th:block>
+                                                    </th:block>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                    </th:block>
+
+                    <div class="block-delimiter"></div>
+
+                    <div class="content-nav">
+                        <div class="content-nav__wrapper">
+                            <a th:href="'/user/courses/' + ${idDeal} + '/' + ${idModule} + '/' + ${prevLesson.id} + '/'" class="content-nav__item content-nav__item_prev" th:if="${prevLesson != null}">
+                                <div class="content-nav__item-number" th:utext="${prevLesson.index}"></div>
+                                <div class="content-nav__item-text" th:utext="${prevLesson.title}"></div>
+                            </a>
+                            <a th:href="'/user/courses/' + ${idDeal} + '/' + ${idModule} + '/' + ${nextLesson.id} + '/'" class="content-nav__item content-nav__item_next" th:if="${nextLesson != null}">
+                                <div class="content-nav__item-number" th:utext="${nextLesson.index}"></div>
+                                <div class="content-nav__item-text" th:utext="${nextLesson.title}"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<th:block th:insert="base :: jquery" />
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/jquery.fancybox.min.js}"></script>
+<script th:src="@{/js/progress-bar.js}"></script>
+<script th:src="@{/js/lesson-vote.js}"></script>
+<script th:src="@{/js/upload-item-files.js}"></script>
+<script th:src="@{/js/homework.js}"></script>
+<script th:src="@{/js/video-link-processor.js}"></script>
+</html>

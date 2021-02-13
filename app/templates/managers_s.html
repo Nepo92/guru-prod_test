@@ -1,0 +1,78 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Панель администратора">
+
+    <title>Настройки (менеджеры) | Панель администратора</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+    <!--<div class="main-content main-content_pl40">-->
+    <div class="main-content">
+        <!--<div th:replace="base :: settings-said-nav"></div>-->
+        <div class="content-top">
+            <div class="content-top__header">Менеджеры</div>
+        </div>
+        <div class="content-main">
+            <div class="container-table">
+                <h4>Ссылки на таблицы менеджеров</h4>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Имя менеджера</th>
+                            <th>Ссылка</th>
+                            <!--<th class="cell-120"></th>-->
+                            <th class="cell-120"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="manager : ${managers}">
+                            <td th:text="${manager.id}"></td>
+                            <td th:text="${manager.name}"></td>
+                            <td th:text="${manager.link}"></td>
+                            <!--<td class="cell-120">-->
+                                <!--<form class="table-form" action="#" th:action="@{'deleteManager/{id}'(id=${manager.id})}" th:method="delete">-->
+                                    <!--<button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>-->
+                                <!--</form>-->
+                            <!--</td>-->
+                            <td class="cell-120">
+                                <form class="table-form" action="#" th:action="@{'updateManager'}" th:method="get">
+                                    <input type="hidden" name="idManager" th:value="${manager.id}"/>
+                                    <input type="hidden" name="isNotDisMiss" th:value="${manager.isNotDisMiss()}"/>
+                                    <button th:if="${manager.isNotDisMiss()}" class="btn btn-sm btn-large btn_green">Работает</button>
+                                    <button th:unless="${manager.isNotDisMiss()}" class="btn btn-sm btn-large btn_red">Уволен</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <form class="table-form" action="#" th:action="@{addManager}" th:object="${manager}" th:method="post">
+                            <tr>
+                                <td></td>
+                                <td><select th:disabled="${users.size() == 0}" class="filter__element mb-2 input-sm " filter-param th:field="*{idUser}">
+                                    <option th:each="user : ${users}"
+                                            th:value="${user.id}"
+                                            th:utext="${user.name}"></option>
+                                </select></td>
+                                <td><input th:disabled="${users.size() == 0}" class="input-sm input-large" th:field="*{link}" placeholder="Ссылка" required></td>
+                                <td class="cell-120">
+                                    <button th:disabled="${users.size() == 0}" type="submit" class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>
+                                </td>
+                            </tr>
+                        </form>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

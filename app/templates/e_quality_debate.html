@@ -1,0 +1,196 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Оценка работы">
+
+    <title>Оценка работы</title>
+
+    <th:block th:insert="base :: links" />
+    <link th:href="@{/css/jquery.fancybox.min.css}" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="base :: dialog"></div>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-medium">
+    <div class="content-top content-top_btn">
+        <div class="content-top__header">Оценка работы</div>
+    </div>
+
+    <div class="content-top content-top_small">
+        <th:block th:if="${role == 'ROLE_ADMIN'}">
+            <div th:replace="base :: a-quality-tab"></div>
+        </th:block>
+        <th:block th:if="${role == 'ROLE_EXAMINER'}">
+            <div th:replace="base :: e-quality-tab"></div>
+        </th:block>
+    </div>
+
+    <div class="content-main">
+        <div class="content-main__wrapper content-main__wrapper_col">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+                <form qs-filter-form action="#" th:action="@{/quality/debate/}" th:object="${filter}" th:method="post" class="content-setting">
+                    <div class="menu-input__wrapper menu-input__wrapper_select menu-input__wrapper_medium menu-input__wrapper_mr">
+                        <select qs-filter class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{year}">
+                            <option th:each="year : ${years}"  th:value="${year}"  th:utext="${year}"></option>
+                        </select>
+                    </div>
+                    <div class="menu-input__wrapper menu-input__wrapper_select menu-input__wrapper_medium menu-input__wrapper_mr">
+                        <select qs-filter class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{month}">
+                            <option value="1">Январь</option>
+                            <option value="2">Февраль</option>
+                            <option value="3">Март</option>
+                            <option value="4">Апрель</option>
+                            <option value="5">Май</option>
+                            <option value="6">Июнь</option>
+                            <option value="7">Июль</option>
+                            <option value="8">Август</option>
+                            <option value="9">Сентябрь</option>
+                            <option value="10">Октбярь</option>
+                            <option value="11">Ноябрь</option>
+                            <option value="12">Декабрь</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="content-delim">
+                    <span></span>
+                </div>
+
+                <div class="content-wrapper">
+                    <div class="rating rating_told c-tooltip-wrapper" th:each="monthRate : ${monthRates}"
+                         th:attr="data-rating=${monthRate.id}">
+                        <div class="rating__avatar">
+                            <div class="employee">
+                                <div class="employee__avatar">
+                                    <div class="avatar">
+                                        <div avatar class="avatar__wrapper">
+                                    <span class="avatar-image" th:classappend="${(monthRate.employee.avatar == null || #strings.isEmpty(monthRate.employee.avatar)) ? 'avatar-image_default' : ''}">
+                                        <img th:if="${monthRate.employee.avatar}" th:src="'/' + ${monthRate.employee.avatar}" alt="">
+                                    </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="employee__desc">
+                                    <div class="employee-name" th:utext="${monthRate.employee.name}"></div>
+                                    <div class="employee__desc-wrapper">
+                                        <div class="employee-desc" th:utext="${monthRate.employee.position}"></div>
+                                        <div class="employee-delim"></div>
+                                        <div class="employee-desc" th:utext="${monthRate.employee.department}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rating__values" th:classappend="${monthRate.total >= 90 ? 'values_green' : (monthRate.total > 50 ? 'values_yellow' : 'values_red')}">
+                            <div class="rate-value" th:utext="${monthRate.total}"></div>
+                            <div class="rate-date" th:utext="${monthRate.date}"></div>
+                        </div>
+                        <div class="rating__fields custom-scroll">
+                            <div class="rate-field c-tooltip" th:each="field : ${monthRate.fields}">
+                                <div class="tooltip-content" th:if="${!#strings.isEmpty(field.comment) || !#strings.isEmpty(field.exComment)}">
+                                    <div th:if="${!#strings.isEmpty(field.comment)}" class="c-tooltip__text c-tooltip__text_title">Специалист по контролю</div>
+                                    <div th:if="${!#strings.isEmpty(field.comment)}" class="c-tooltip__text" th:utext="${field.comment}"></div>
+
+                                    <div th:if="${!#strings.isEmpty(field.exComment)}" class="c-tooltip__text c-tooltip__text_title">Cотрудник</div>
+                                    <div th:if="${!#strings.isEmpty(field.exComment)}" class="c-tooltip__text" th:utext="${field.exComment}"></div>
+                                </div>
+                                <div class="rate-field__title" th:utext="${field.field.fieldName}"></div>
+                                <div class="rate-field__weight rate-field__weight_pr24"
+                                     th:classappend="${!#strings.isEmpty(field.comment) || !#strings.isEmpty(field.exComment) ? 'rate-field__weight_icon' : ''}"
+                                     th:utext="${field.value}"></div>
+                            </div>
+                        </div>
+                        <div class="rating__footer">
+                            <div class="button_full">
+                                <input name="id" type="hidden" th:value="${monthRate.id}">
+<!--                                <div class="apply-block">-->
+<!--                                    <div apply class="apply-block__btn apply-block__btn_apply"></div>-->
+<!--                                    <div reject class="apply-block__btn apply-block__btn_reject"></div>-->
+<!--                                </div>-->
+                                <button type="button" class="button button_white button_full" examiner js-debate-rate-btn>
+                                    <span>Посмотреть</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="c-tooltip__wrapper c-tooltip__wrapper_left tooltip-wrapper"></div>
+<div js-menu-debate-rate class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-debate-rate-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-debate-rate-form action="#" class="menu__content-side menu__content-side_xxlarge">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Оспорить оценку
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__description-wrapper">
+                    <div class="employee">
+                        <div class="employee__avatar">
+                            <div class="avatar">
+                                <div rate-avatar class="avatar__wrapper avatar__wrapper_xlarge">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="employee__desc">
+                            <div rate-employee-name class="employee-name employee-name_big"></div>
+                            <div class="employee__desc-wrapper">
+                                <div rate-employee-position class="employee-desc"></div>
+                                <div class="employee-delim"></div>
+                                <div rate-employee-department class="employee-desc"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="desc-date">
+                        <div class="desc-date__description">Дата</div>
+                        <div rate-date class="desc-date__date"></div>
+                    </div>
+                </div>
+
+                <div class="menu__list menu__list_p0 menu__list_overflow-x custom-scroll menu__list_grow menu__list_gray">
+                    <div rate-fields class="menu-rate__fields">
+
+                    </div>
+                </div>
+
+                <div class="menu__footer menu__footer_start">
+                    <input rate-id type="hidden" name="id" value="0">
+
+                    <div class="apply-block">
+                        <div apply class="apply-block__btn apply-block__btn_apply"></div>
+                        <div reject class="apply-block__btn apply-block__btn_reject"></div>
+                    </div>
+
+                    <div class="element-delim"><span></span></div>
+                    <div class="grade">
+                        <div class="grade__values">
+                            <span total-fields-value class="grade-value grade-value_bold">0</span>
+                        </div>
+                        <div class="grade__title">Итого баллов</div>
+                    </div>
+                    <button js-menu-debate-rate-close-btn type="button" class="button button_white button_right">
+                        <span>Закрыть</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/quality-rating-menu.js}"></script>
+<script th:src="@{/js/jquery.fancybox.min.js}"></script>
+</body>
+</html>

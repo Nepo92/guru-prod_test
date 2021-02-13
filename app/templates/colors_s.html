@@ -1,0 +1,115 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Панель администратора">
+
+    <title>Настройки (цвета) | Панель администратора</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: settings-said-nav"></div>-->
+    <div class="content-top">
+        <div class="content-top__header">Цвета</div>
+    </div>
+    <div class="content-main">
+        <div class="container-table">
+            <h4>Цвет колонок в разделе зарплаты</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th>Зеленый</th>
+                        <th>Желтый</th>
+                        <th>Красный</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block >
+                        <form class="table-form" action="#" th:action="@{'updateSalaryColor'}" th:object="${salaryColorForm}" th:method="post">
+                            <tr th:each="lineColor, stat : *{lineColors}" >
+                                <td th:utext="${stat.index + 1}"></td>
+                                <td th:utext="${lineColor.name}"></td>
+                                <td>
+                                    <input class="input-sm input-medium" th:type="text" th:field="*{lineColors[__${stat.index}__].green}"/>
+                                </td>
+                                <td>
+                                    <input class="input-sm input-medium" th:field="*{lineColors[__${stat.index}__].yellow}"/>
+                                </td>
+                                <td>
+                                    <input class="input-sm input-medium" th:field="*{lineColors[__${stat.index}__].red}"/>
+                                </td>
+                                <input type="hidden" th:field="*{lineColors[__${stat.index}__].line}"/>
+                                <input type="hidden" th:field="*{lineColors[__${stat.index}__].id}"/>
+                                <input type="hidden" th:field="*{lineColors[__${stat.index}__].name}"/>
+                            </tr>
+                            <tr>
+                                <td class="cell-120">
+                                    <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Сохранить</button>
+                                </td>
+                            </tr>
+                        </form>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container-table">
+            <h4>Цвет строк</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th>Зеленый</th>
+                        <th>Желтый</th>
+                        <th>Красный</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block >
+                        <form class="table-form" action="#" th:action="@{'updateLineColor'}" th:object="${lineColorForm}" th:method="post">
+                            <tr th:each="lineColor, stat : *{lineColors}" >
+                                <td th:utext="${stat.index + 1}"></td>
+                                <td th:utext="${lineColor.name}"></td>
+                                <td>
+                                    <input class="input-sm input-medium" th:type="text" th:field="*{lineColors[__${stat.index}__].green}"/>
+                                </td>
+                                <td>
+                                    <input class="input-sm input-medium" th:field="*{lineColors[__${stat.index}__].yellow}"/>
+                                </td>
+                                <td>
+                                    <input class="input-sm input-medium" th:field="*{lineColors[__${stat.index}__].red}"/>
+                                </td>
+                                <input type="hidden" th:field="*{lineColors[__${stat.index}__].line}"/>
+                                <input type="hidden" th:field="*{lineColors[__${stat.index}__].id}"/>
+                                <input type="hidden" th:field="*{lineColors[__${stat.index}__].name}"/>
+                            </tr>
+                            <tr>
+                                <td class="cell-120">
+                                    <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Сохранить</button>
+                                </td>
+                            </tr>
+                        </form>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

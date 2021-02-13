@@ -1,0 +1,1031 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Сделки">
+
+    <title>Сделки | Панель администратора </title>
+
+    <th:block th:insert="base :: links" />
+    <link th:href="@{/css/jquery.fancybox.min.css}" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="base :: dialog"></div>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-medium ">
+    <div class="content-top">
+        <div class="content-top__header">CRM</div>
+    </div>
+    <div class="content-top content-top_small">
+        <div th:replace="base :: deals-nav"></div>
+    </div>
+    <div class="content-main">
+        <div class="content-main__panel content-main__panel_large">
+            <div class="button-filter button-filter_bordered" th:classappend="${filter.isCanClearWithManager() ? 'filtered' : ''}">
+                <button tr-filter-btn class="content-top__filter"></button>
+                <span class="button-filter__label">Фильтр</span>
+            </div>
+            <form action="#" th:action="@{/deals/search/}" th:object="${filter}" th:method="post" class="search-form menu-search__wrapper">
+                <input id="searchClient" th:field="*{searchRow}" class="menu-search__input menu-search__input_small" placeholder="Введите ссылку, ФИО или телефон клиента">
+                <label for="searchClient"></label>
+            </form>
+            <div class="counter counter_right counter_bordered" th:utext="${dealCounter.count} + ' сделки на сумму ' + ${#numbers.formatInteger(dealCounter.price,0,'WHITESPACE')} + ' / ' + ${#numbers.formatInteger(dealCounter.paid,0,'WHITESPACE') + ' ₽'}"></div>
+            <a th:href="@{/deals/download/deals.xlsx}" class="button button_download">Выгрузить в таблицу</a>
+        </div>
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                    <tr class="custom-table__header-row">
+                        <td class="custom-table__header-col custom-table__header-col_big">Дата</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Обращение</td>
+                        <td class="custom-table__header-col custom-table__header-col_xsmall custom-table__header-col_big"></td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Клиент</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Ссылка</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Менеджер</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Продукт</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Тип</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Цена / Получено</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Поток</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">ID кампании</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">
+                            <div class="column-mailing"></div>
+                        </td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Статус сделки</td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                    </tr>
+                    </thead>
+                    <tbody class="custom-table__body custom-table__body_white">
+                    <tr th:attr="data-deal=${deal.id}" class="custom-table__body-row" th:each="deal : ${deals.pageItems}">
+                        <td class="custom-table__body-col" th:utext="${deal.createDate}"></td>
+                        <td data-deal-date-deal class="custom-table__body-col" th:utext="${deal.dealDate}"></td>
+                        <td class="custom-table__body-col">
+                            <div data-deal-social class="deal-social deal-social_big" th:classappend="'deal-social_' + ${deal.socialCode}"></div>
+                        </td>
+
+                        <td class="custom-table__body-col">
+                            <div js-client-card class="column-link column-link_active">
+                                <input type="hidden" js-client-id th:attr="data-client=${deal.idClient}" th:value="${deal.idClient}">
+                                <span th:utext="${deal.clientName}"></span>
+                            </div>
+                            <div class="phone-column" th:attr="data-phone-client=${deal.idClient}">
+                                <th:block th:unless="${#strings.isEmpty(deal.clientPhone)}">
+                                    <div js-copy-link th:attr="data-link=${deal.clientPhone}" class="client-phone" th:utext="${deal.clientPhone}"></div>
+                                </th:block>
+                            </div>
+                        </td>
+
+                        <th:block th:if="${#strings.isEmpty(deal.clientLink)}">
+                            <td class="custom-table__body-col" th:attr="data-link-client=${deal.idClient}">
+                                <div>—</div>
+                            </td>
+                        </th:block>
+                        <th:block th:unless="${#strings.isEmpty(deal.clientLink)}">
+                            <td class="custom-table__body-col custom-table__body-col_center" th:attr="data-link-client=${deal.idClient}">
+                                <div class="column-links">
+                                    <div js-copy-link th:attr="data-link=${deal.clientLink}" class="column_mwidth column_mwidth-copy"></div>
+                                    <a th:href="${deal.clientLink}" target="_blank" class="column_mwidth column_mwidth-open"></a>
+                                </div>
+                            </td>
+                        </th:block>
+                        <td class="custom-table__body-col c-tooltip">
+                            <div class="c-tooltip__wrapper">
+                                <div class="c-tooltip__text" th:utext="${deal.managerAccessName}"></div>
+                            </div>
+                            <div class="column-text" th:utext="${deal.managerName}"></div>
+                        </td>
+                        <td class="custom-table__body-col">
+                            <form action="#" js-update-deal-form>
+                                <input name="id" type="hidden" th:value="${deal.id}">
+                                <div data-deal-course class="column-course" js-update-deal-btn
+                                     th:attr="title=${(deal.status != 1) ? deal.course + (!#strings.isEmpty(deal.kind) ? ' (' + deal.kind + ')' : '') : 'Целевая заявка' }"
+                                     th:utext="${(deal.status != 1) ? deal.course + (!#strings.isEmpty(deal.kind) ? ' (' + deal.kind + ')' : '') : 'Целевая заявка'}"></div>
+                            </form>
+                        </td>
+                        <td data-deal-type class="custom-table__body-col" th:utext="${deal.type}"></td>
+                        <td class="custom-table__body-col">
+                            <div class="column-paid" th:classappend="${deal.price <= deal.paid} ? 'column-paid_green' : ''">
+                                <div data-deal-price class="column_price" th:utext="${deal.price}"></div>
+                                <div class="column_price-del">/</div>
+                                <div data-deal-paid class="column_paid" th:utext="${deal.paid} + ' ₽'"></div>
+                                <form js-add-bill-form action="#" class="paid-form" th:classappend="${deal.isHidden} ? 'hidden-deal' : ''" th:if="${deal.status != 1}">
+                                    <input type="hidden" name="id" th:value="${deal.id}">
+                                    <input type="hidden" name="idClient" th:value="${deal.idClient}">
+                                    <button js-add-bill-btn  js-add-bill-up-client class="add-btn add-btn_small"></button>
+                                </form>
+                            </div>
+                        </td>
+                        <th:block th:if="${deal.idSaleType == 2}">
+                            <td data-deal-start-date class="custom-table__body-col" th:utext="${deal.startDate}"></td>
+                        </th:block>
+                        <th:block th:unless="${deal.idSaleType == 2}">
+                            <td data-deal-start-date class="custom-table__body-col">—</td>
+                        </th:block>
+                        <td data-deal-tag class="custom-table__body-col">
+                            <th:block th:if="${#strings.isEmpty(deal.tag)}">
+                                <div>—</div>
+                            </th:block>
+                            <th:block th:unless="${#strings.isEmpty(deal.tag)}">
+                                <div th:attr="title=${deal.tag}" class="column-msg">
+                                    <th:block th:utext="${deal.tag}"></th:block>
+                                </div>
+                            </th:block>
+                        </td>
+                        <td data-deal-mailing class="custom-table__body-col" th:utext="${deal.coupling}"></td>
+                        <td class="custom-table__body-col">
+                            <div class="column-status">
+                                <form action="#" class="deal-status__form" th:classappend="'deal-status__form_' + ${deal.statusCode}">
+                                    <input js-status-form type="hidden" name="id" th:value="${deal.id}">
+                                    <select js-form-status th:attr="id='status' + ${deal.id}" name="status" class="deal-status__select" th:disabled="${deal.status == 1}">
+                                        <th:block th:each="status : ${dealStatuses}">
+                                            <option js-deal-form-status
+                                                    th:attr="data-code=${status.code}"
+                                                    th:value="${status.id}"
+                                                    th:utext="${status.title}"
+                                                    th:selected="${status.id == deal.status}"></option>
+                                        </th:block>
+                                    </select>
+                                </form>
+                            </div>
+                        </td>
+                        <td class="custom-table__body-col">
+                            <div data-deal-reminder class="column-reminder column-reminder_mr10">
+                                <div class="reminder-wrapper" th:if="${deal.reminder}" >
+                                    <div class="reminder-date" th:utext="${deal.reminderDate}"></div>
+                                    <div class="reminder-msg" th:utext="${deal.reminderMessage}"></div>
+                                </div>
+                                <div class="reminder" th:classappend="${deal.reminder} ? (${deal.reminderExpiration} ? 'reminder_red' : (${deal.reminderToday} ? 'reminder_green' : 'reminder_gray')) : ''"></div>
+                                <div class="reminder-d" th:if="${deal.reminder}" th:utext="${deal.reminderDate}"></div>
+                            </div>
+                        </td>
+                        <td class="custom-table__body-col custom-table__body-col_xlast">
+                            <th:block th:unless="${deal.isHidden}">
+                                <form action="#" js-hide-deal-form>
+                                    <input th:attr="data-hide-deal=${deal.id}" name="id" type="hidden" th:value="${deal.id}">
+                                    <button type="button" class="button button_hide button_circle" js-hide-deal-btn>
+                                        <div class="hidden-btn hidden-btn_hide"></div>
+                                    </button>
+                                </form>
+                            </th:block>
+                            <th:block th:if="${deal.isHidden}">
+                                <form action="#" js-reveal-deal-form>
+                                    <input th:attr="data-hide-deal=${deal.id}" name="id" type="hidden" th:value="${deal.id}">
+                                    <button type="button" class="button button_hide button_circle" js-reveal-deal-btn>
+                                        <div class="hidden-btn hidden-btn_reveal"></div>
+                                    </button>
+                                </form>
+                            </th:block>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="content-main__panel content-main__panel_large">
+            <div class="pagination" th:if="${deals.pagesAvailable > 1}" th:with="left=4,right=5">
+                <div class="pagination__wrapper">
+                    <a th:attrappend="href=${deals.pageNumber - 1 > 0} ? 'page?id=' + ${deals.pageNumber - 1} : ''"
+                       th:classappend="${deals.pageNumber - 1} == 0 ? 'active' : ''"
+                       class="pagination__elem pagination__elem_prev"></a>
+
+                    <th:block th:if="${deals.pagesAvailable <= 10}"
+                              th:with="start=1,end=${deals.pagesAvailable}">
+                        <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                            <a th:attrappend="href='page?id=' + ${i}"
+                               th:classappend="${deals.pageNumber == i} ? 'active' : ''"
+                               th:utext="${i}" class="pagination__elem"></a>
+                        </th:block>
+                    </th:block>
+                    <th:block th:unless="${deals.pagesAvailable <= 10}">
+                        <th:block th:if="${deals.pageNumber > left && deals.pageNumber < (deals.pagesAvailable - right)}"
+                                  th:with="start=${deals.pageNumber - left},end=${deals.pageNumber + right}">
+                            <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                                <a th:attrappend="href='page?id=' + ${i}"
+                                   th:classappend="${deals.pageNumber == i} ? 'active' : ''"
+                                   th:utext="${i}" class="pagination__elem"></a>
+                            </th:block>
+                        </th:block>
+                        <th:block th:if="${deals.pageNumber <= left}"  th:with="start=1,end=${deals.pageNumber + (right + 1 + left - deals.pageNumber)}">
+                            <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                                <a th:attrappend="href='page?id=' + ${i}"
+                                   th:classappend="${deals.pageNumber == i} ? 'active' : ''"
+                                   th:utext="${i}" class="pagination__elem"></a>
+                            </th:block>
+                        </th:block>
+                        <th:block th:unless="${(deals.pageNumber > left && deals.pageNumber < (deals.pagesAvailable - right)) || (deals.pageNumber <= left)}"
+                                  th:with="start=${deals.pageNumber - (left + right - (deals.pagesAvailable - deals.pageNumber))},end=${deals.pagesAvailable}">
+                            <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                                <a th:attrappend="href='page?id=' + ${i}"
+                                   th:classappend="${deals.pageNumber == i} ? 'active' : ''"
+                                   th:utext="${i}" class="pagination__elem"></a>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+
+                    <a th:attrappend="href=${deals.pageNumber + 1 <= deals.pagesAvailable } ? 'page?id=' + ${deals.pageNumber + 1} : ''"
+                       th:classappend="${deals.pageNumber + 1 > deals.pagesAvailable} ? 'active' : ''"
+                       class="pagination__elem pagination__elem_next"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div tr-filter class="cfilter">
+    <div class="cfilter__wrapper">
+        <div tr-filter-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="filter-content">
+            <div class="filter-head">
+                <div class="filter-head__title">Фильтровать сделки</div>
+            </div>
+            <div class="filter-content__body custom-scroll">
+                <form tr-filter-form action="#" th:action="@{/deals/}" th:object="${filter}" th:method="post" class="filter-body">
+                    <div class="filter-body__wrapper">
+                        <div class="filter-column">
+                            <div class="filter-column__title">Параметры</div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_xxsmall">
+                                    <div class="menu-input__title">Проекты</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{projectId}">
+                                            <option th:value="0" selected>Все проекты</option>
+                                            <option th:each="project : ${projects}"
+                                                    th:value="${project.id}"
+                                                    th:utext="${project.name}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_xxsmall">
+                                    <div class="menu-input__title">Менеджеры</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select tr-social class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{idManager}">
+                                            <option th:value="0" selected>Все менеджеры</option>
+                                            <option th:each="manager : ${managers}"
+                                                    th:value="${manager.id}"
+                                                    th:utext="${manager.name}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_xxsmall">
+                                    <div class="menu-input__title">Способ оплаты</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{paymentMethod}">
+                                            <option th:value="all" selected>Все способы</option>
+                                            <option th:each="paymentMethod : ${paymentMethods}"
+                                                    th:value="${paymentMethod.title}"
+                                                    th:utext="${paymentMethod.title}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_xxsmall">
+                                    <div class="menu-input__title">Соц-сеть</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select tr-social class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{idSocial}">
+                                            <option th:value="0" selected>Все соц.сети</option>
+                                            <option th:each="social : ${socials}"
+                                                    th:value="${social.id}"
+                                                    th:utext="${social.title}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_xxsmall">
+                                    <div class="menu-input__title">Тип продажи</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select  class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{saleType}">
+                                            <option th:value="all" selected>Все типы продаж</option>
+                                            <option th:value="traffic">Трафик</option>
+                                            <option th:value="additional">Допродажи</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_xxsmall">
+                                    <div class="menu-input__title">Продукты</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select filter-courses class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{product}">
+                                            <option th:value="all" selected>Все продукты</option>
+                                            <option th:each="product : ${products}"
+                                                    th:value="${product.name}"
+                                                    th:utext="${product.name}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_xxsmall">
+                                    <div class="menu-input__title">Тип курса</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select filter-course-kinds class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{kind}">
+                                            <option th:value="all" selected>Все типы</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_xxsmall">
+                                    <div class="menu-input__title">Напоминание</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select tr-social class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{reminder}">
+                                            <option th:value="0" selected>Все</option>
+                                            <option th:value="1" >Все задачи</option>
+                                            <option th:value="2" >Задачи на сегодня</option>
+                                            <option th:value="3" >Задачи на завтра</option>
+                                            <option th:value="4" >Просроченные задачи</option>
+                                            <option th:value="5" >Без задач</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_xxsmall menu-input_w100">
+                                    <div class="menu-input__title">Пробный период</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_row">
+                                        <div class="input-element__radio input-element__radio_list">
+                                            <input type="radio" id="trialYes" class="radio" name="trial" value="true" th:field="*{trial}">
+                                            <label for="trialYes" >
+                                                <span>Да</span>
+                                            </label>
+                                        </div>
+                                        <div class="input-element__radio input-element__radio_list">
+                                            <input type="radio" id="trialNo" class="radio" name="trial" value="false" th:field="*{trial}">
+                                            <label for="trialNo" >
+                                                <span>Нет</span>
+                                            </label>
+                                        </div>
+                                        <div class="input-element__radio input-element__radio_list">
+                                            <input type="radio" id="trialAll" class="radio" name="trial" value="all" th:field="*{trial}">
+                                            <label for="trialAll" >
+                                                <span>Показать все</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row filter-column__row_bordered">
+                                <div class="menu-input menu-input_xxsmall menu-input_w100">
+                                    <div class="menu-input__title">Расслыка</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_row">
+                                        <div class="input-element__radio input-element__radio_list">
+                                            <input type="radio" id="mailingYes" class="radio" name="maillig" value="FALSETRUE" th:field="*{mailing}">
+                                            <label for="mailingYes" >
+                                                <span>Да</span>
+                                            </label>
+                                        </div>
+                                        <div class="input-element__radio input-element__radio_list">
+                                            <input type="radio" id="mailingNo" class="radio" name="maillig" value="FALSEFALSE" th:field="*{mailing}">
+                                            <label for="mailingNo" >
+                                                <span>Нет</span>
+                                            </label>
+                                        </div>
+                                        <div class="input-element__radio input-element__radio_list">
+                                            <input type="radio" id="mailingAll" class="radio" name="maillig" value="all" th:field="*{mailing}">
+                                            <label for="mailingAll" >
+                                                <span>Показать все</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_xxsmall menu-input_w100">
+                                    <div class="menu-search__title">ID рекламной кампании / Смайлик + база</div>
+                                    <div class="menu-search__wrapper">
+                                        <input class="menu-search__input menu-search__input_small" placeholder=" Введите ID рекламной кампании / смайлик + база" th:field="*{tag}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_xxsmall menu-input_w100">
+                                    <div class="menu-search__title">Комментарий</div>
+                                    <div class="menu-search__wrapper">
+                                        <input class="menu-search__input menu-search__input_small" placeholder="Введите комментарий" th:field="*{comment}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-column">
+                            <div class="filter-column__title">Статусы сделок</div>
+                            <div class="filter-column__row">
+                                <div class="input-element__checkbox-wrapper">
+                                    <div class="input-element__checkbox" th:each="status : ${dealStatuses}">
+                                        <input type="checkbox" th:id="st + ${status.id}" th:field="*{statuses}" class="checkbox" th:value="${status.id}">
+                                        <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="st + ${status.id}" th:utext="${status.title}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-column filter-column_row">
+                            <div class="filter-column">
+                                <div class="filter-column__title filter-column__title_m">Даты и цены</div>
+                                <div class="filter-column__title filter-column__title_l">Даты</div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_reverse">
+                                        <div class="menu-input__title">Дата старта (от и до)</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату от" th:field="*{startDateFrom}">
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_xxxsmall">
+                                        <div class="menu-input__title"></div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату до" th:field="*{startDateTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_reverse">
+                                        <div class="menu-input__title">Дата создания (от и до)</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату от" th:field="*{createDateFrom}">
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_xxxsmall">
+                                        <div class="menu-input__title"></div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату до" th:field="*{createDateTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_reverse">
+                                        <div class="menu-input__title">Дата обращения (от и до)</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату от" th:field="*{dealDateFrom}">
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_xxxsmall">
+                                        <div class="menu-input__title"></div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату до" th:field="*{dealDateTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_reverse">
+                                        <div class="menu-input__title">Дата оплаты (от и до)</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату от" th:field="*{payDateFrom}">
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_xxxsmall">
+                                        <div class="menu-input__title"></div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату до" th:field="*{payDateTo}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="filter-column__row">
+                                    <div class="input-element__checkbox-wrapper input-element__checkbox-wrapper_sm">
+                                        <div class="input-element__checkbox">
+                                            <input  type="checkbox" th:id="fps" class="checkbox" th:field="*{other}" th:value="firstPaymentSearch">
+                                            <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="fps">Первая оплата</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_reverse">
+                                        <div class="menu-input__title">Дата напоминания (от и до)</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату от" th:field="*{reminderDateFrom}">
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_xxxsmall">
+                                        <div class="menu-input__title"></div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                            <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату до" th:field="*{reminderDateTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column">
+                                <div class="filter-column__title filter-column__title_l">Цена и получено</div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_reverse">
+                                        <div class="menu-input__title">Цена (от и до)</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                            <input class="menu-input__input menu-input__input_small menu-input__input_white" placeholder="Укажите сумму" th:field="*{priceFrom}">
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_xxxsmall">
+                                        <div class="menu-input__title"></div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                            <input class="menu-input__input menu-input__input_small menu-input__input_white" placeholder="Укажите сумму"th:field="*{priceTo}" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_reverse">
+                                        <div class="menu-input__title">Получено (от и до)</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                            <input class="menu-input__input menu-input__input_small menu-input__input_white" placeholder="Укажите сумму" th:field="*{paidFrom}">
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_xxxsmall">
+                                        <div class="menu-input__title"></div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                            <input class="menu-input__input menu-input__input_small menu-input__input_white" placeholder="Укажите сумму" th:field="*{paidTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-column">
+                            <div class="filter-column__title">Пустые поля</div>
+                            <div class="filter-column__row">
+                                <div class="input-element__checkbox-wrapper">
+                                    <div class="input-element__checkbox">
+                                        <input  type="checkbox" th:id="e1" class="checkbox" th:field="*{empties}" th:value="link">
+                                        <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="e1">Ссылка</label>
+                                    </div>
+                                    <div class="input-element__checkbox">
+                                        <input  type="checkbox" th:id="e2" class="checkbox" th:field="*{empties}" th:value="phone">
+                                        <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="e2">Номер телефона</label>
+                                    </div>
+                                    <div class="input-element__checkbox">
+                                        <input  type="checkbox" th:id="e3" class="checkbox" th:field="*{empties}" th:value="comment">
+                                        <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="e3">SMS / Чек</label>
+                                    </div>
+                                    <div class="input-element__checkbox">
+                                        <input  type="checkbox" th:id="e4" class="checkbox" th:field="*{empties}" th:value="accountNumber">
+                                        <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="e4">№ счёта</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="filter-content__footer">
+                <div tr-filter-form-btn class="button">Применить фильтры</div>
+                <div th:if="${filter.isCanClearWithManager()}" class="clear-filter clear-filter_bordered">
+                    <form tr-clear-form action="#" th:action="@{/deals/clearFilter}" th:method="post" class="clear-filter__form">
+                        <button tr-clear-form-btn class="button button_clear">Сбросить фильтры</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-client-card class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-client-card-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content">
+            <div class="menu__content-side">
+                <form js-edit-client-form action="#" >
+                    <div class="menu__header-wrapper menu__header-wrapper_large">
+                        <div class="menu-header menu-input_small menu-input_bordered">
+                            <div js-edit-btn class="menu-header__title_edit">
+                                <input disabled js-client-card-name name="name" class="menu-header__title menu-input__input_nonb menu-input__input_editable" required>
+                            </div>
+                        </div>
+                        <div class="menu-comment">
+                            <div class="menu-comment__header">
+                                <div class="menu-subtitle">Создан <span class="menu-subtitle_black" js-client-card-date></span></div>
+                                <div class="menu-subtitle">Кто добавил <span class="menu-subtitle_black" js-client-card-manager></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall menu-input_t20">
+                        <div class="menu-input__title">Ссылка ВК</div>
+                        <div class="menu-input__wrapper">
+                            <input check-required="edit-client-info" disabled js-client-card-link name="link" class="menu-input__input menu-input__input_small menu-input__input_editable">
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Номер телефона</div>
+                        <div class="menu-input__wrapper">
+                            <input check-required="edit-client-info" disabled js-client-card-phone name="phone" class="menu-input__input menu-input__input_small menu-input__input_editable">
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Email</div>
+                        <div class="menu-input__wrapper">
+                            <input check-required="edit-client-info" disabled js-client-card-email name="email" class="menu-input__input menu-input__input_small menu-input__input_editable">
+                        </div>
+                    </div>
+                    <div js-client-card-desc class="menu-input menu-input_xsmall display-none">
+                        <div class="menu-input__title">** Одно из полей должны быть обязательно заполнено</div>
+                    </div>
+
+                    <div class="menu__footer display-flex-none" js-edit-footer>
+                        <input js-client-card-id name="id" type="hidden" required/>
+                        <button js-edit-client-btn type="button" class="button">Сохранить изменения</button>
+                    </div>
+                </form>
+                <div class="menu-input menu-input_xsmall">
+                    <hr class="hr-without-margin">
+                </div>
+                <div js-register-info-btn class="menu-input_xsmall menu-input">
+                    <button class="add-button">
+                        Сгенерировать доступ
+                    </button>
+                </div>
+                <div js-register-info class="menu-input menu-input_xsmall hide">
+                    <div js-register-info-container class="client-card__register-info">
+                        <div js-copy-register-info class="client-card__register-info-button">
+                            <img src="/img/copy-button.svg" alt="copy">
+                        </div>
+                        <div class="client-card__register-info-label">
+                            Ссылка на авторизацию
+                        </div>
+                        <div class="client-card__register-info-value" js-client-url>
+                            https://alpha.guruplatform.ru/login
+                        </div>
+                        <div class="client-card__register-info-label">
+                            Логин
+                        </div>
+                        <div class="client-card__register-info-value" js-client-login>
+                            vasilyeva_ekaterina
+                        </div>
+                        <div class="client-card__register-info-label">
+                            Пароль
+                        </div>
+                        <div class="client-card__register-info-value" js-client-password>
+                            Afeqee235taqf235
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu__content-main custom-scroll menu__content-main_overy">
+                <div js-deals-list class="menu__deal-wrapper">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-deal class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-deal-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-form-deal action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать сделку
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+
+                    <div>
+                        <div class="menu-input menu-input_xsmall menu-input_t30">
+                            <div class="menu-input__title">Статус сделки *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                <select check-target-status js-update-form-deal-status id="js-update-form-deal-status" name="status" class="menu-input__input menu-input__input_small menu-input__input_select" placeholder="Выберите статус" required>
+                                    <option value="" disabled>Выберите статус</option>
+                                    <th:block th:each="status : ${dealStatuses}">
+                                        <option th:value="${status.id}" th:utext="${status.title}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Канал связи *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                <select check-social js-update-form-deal-social id="js-update-form-deal-social" name="social" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                    <option value="" disabled>Выберите канал связи откуда поступило обращение</option>
+                                    <th:block th:each="social : ${socials}">
+                                        <option th:value="${social.id}" th:utext="${social.title}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Дата обращения *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                <input js-update-form-deal-deal-date name="dealDate" autocomplete="off" class="datepicker-here-deal menu-input__input menu-input__input_small" placeholder="Укажите дату обращения" required/>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Тип продажи *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                <select js-update-form-deal-sale-type id="js-update-form-deal-sale-type" name="type" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                    <option value="" disabled>Выберите тип продажи</option>
+                                    <option value="traffic">Трафик</option>
+                                    <option value="additional">Допродажа</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div js-update-form-deal-mailing-block class="menu-input menu-input_msmall menu-input_close">
+                            <div class="input-element__input_row input-element__input_row_xscroll">
+                                <div class="input-element__checkbox">
+                                    <input js-update-form-deal-mailing name="mailing" type="checkbox" id="mailingUp" class="checkbox" value="Да">
+                                    <label class="checkbox-label checkbox-label_gray" for="mailingUp">Сделка является рассылкой</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div whatsap-required class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">ID рекламной кампании / Смайлик + база</div>
+                            <div class="menu-input__wrapper">
+                                <input js-update-form-deal-tag name="tag" class="menu-input__input menu-input__input_small"/>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Комментарий</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_border">
+                                <textarea js-update-form-deal-comment name="comment" placeholder="Введите ваш комментарий"  class="menu-input__input menu-input__input_textarea menu-input__input_small"></textarea>
+                            </div>
+                        </div>
+
+                        <div not-target class="">
+                            <div u-product-types-block class="menu-input menu-input_xsmall menu-input_close">
+                                <div class="menu-input__title">Тип продукта *</div>
+                                <div class="menu-input__wrapper menu-input__wrapper_select">
+                                    <select u-product-types id="u-product-types" name="saleType" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                        <option value="" disabled selected>Выберите тип продукта</option>
+                                        <th:block th:each="saleType : ${saleTypes}">
+                                            <option th:attr="data-id=${saleType.id}" th:value="${saleType.code}" th:utext="${saleType.name}"></option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                            </div>
+                            <div u-product-category-block class="menu-input menu-input_xsmall menu-input_close">
+                                <div class="menu-input__title">Категория товара *</div>
+                                <div class="menu-input__wrapper menu-input__wrapper_select">
+                                    <select u-product-category id="u-product-category" name="productType" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                        <option value="" disabled selected>Выберите категорию товара</option>
+                                        <th:block th:each="productType : ${productTypes}">
+                                            <option th:value="${productType.id}" th:utext="${productType.name}"></option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                            </div>
+                            <div u-product-block class="menu-input menu-input_xsmall menu-input_close">
+                                <div class="menu-input__title">Продукт *</div>
+                                <div class="menu-input__wrapper menu-input__wrapper_select">
+                                    <select js-update-form-deal-pr id="js-update-form-deal-pr" name="course" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                        <option value="" disabled selected>Выберите продукт</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div js-update-form-kind-block class="menu-input menu-input_xsmall menu-input_close">
+                                <div class="menu-input__title">Вид продукта *</div>
+                                <div class="menu-input__wrapper menu-input__wrapper_select">
+                                    <select js-update-form-kind name="kind" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div u-start-date-block class="menu-input menu-input_xsmall menu-input_close">
+                                <div class="menu-input__title">Дата старта *</div>
+                                <div class="menu-input__wrapper menu-input__wrapper_select">
+                                    <select js-update-form-deal-start-date name="idStream" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div u-trial-block class="menu-input menu-input_msmall menu-input_close">
+                                <div class="input-element__input_row input-element__input_row_xscroll">
+                                    <div class="input-element__checkbox">
+                                        <input js-update-form-deal-trial name="trial" type="checkbox" id="trialUp" class="checkbox" value="true">
+                                        <label class="checkbox-label checkbox-label_gray" for="trialUp">Пробный период</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div js-update-form-deal-price-block class="menu-input menu-input_xsmall menu-input_close is-open">
+                                <div class="menu-input__wrapper menu-input__wrapper_price">
+                                    <div class="menu-input__price-wrapper ">
+                                        <div class="menu-input__title menu-input__title_mr20">Стоимость продукта</div>
+                                        <div class="menu-input__wrapper_sum">
+                                            <input js-update-form-deal-price name="price" value="0" class="menu-input__input menu-input__input_xsmall menu-input__input_price" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="input-element__checkbox">
+                                <input js-deal-open-lessons type="checkbox" id="open-lessons-update" value="true"
+                                       class="checkbox" name="allModulesHomeworkAllowed">
+                                <label class="checkbox-label checkbox-label_gray checkbox-label_told" for="open-lessons-update">
+                                    Отключить стоп-уроки
+                                </label>
+                            </div>
+                        </div>
+
+                        <div js-update-form-deal-reminder-btn class="menu-input menu-input_xsmall menu-input_close is-open">
+                            <div class="menu-input__wrapper ">
+                                <button type="button" js-update-open-reminder class="button button_not-allowed button_white button_medium">Добавить напоминание</button>
+                            </div>
+                        </div>
+                        <div js-update-form-deal-reminder-block class="menu-input menu-input_xsmall menu-input_close">
+                            <div class="menu-input__title menu-input__title_big">Добавить напоминание</div>
+                            <input js-update-form-deal-reminder name="reminder" type="checkbox" id="reminderUp" class="checkbox" value="true">
+                            <div class="menu-input__title">Дата когда напомнить *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                <input js-update-form-deal-reminder-date name="reminderDate" autocomplete="off" data-position="top left" class="datepicker-here menu-input__input menu-input__input_small" placeholder="Укажите дату напоминания" required/>
+                            </div>
+                        </div>
+                        <div js-update-form-deal-reminder-block class="menu-input menu-input_xsmall menu-input_close">
+                            <div class="menu-input__title">Текст напоминания</div>
+                            <div class="menu-input__wrapper ">
+                                <textarea js-update-form-deal-reminder-msg name="reminderMessage" placeholder="Введите текст напоминания"  class="menu-input__input menu-input__input_textarea menu-input__input_small"></textarea>
+                            </div>
+                        </div>
+                        <div js-update-form-deal-reminder-block class="menu-input menu-input_xsmall menu-input_close">
+                            <div class="menu-input__wrapper ">
+                                <button type="button" js-update-close-reminder class="button button_white button_small">Отмена</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="menu__footer">
+                    <input js-update-form-deal-product-type type="hidden" value="" name="product" required>
+                    <input js-update-form-deal-product-id type="hidden" value="" name="idProduct" required>
+                    <input js-update-form-deal-client type="hidden" value="" name="idClient" required>
+                    <input js-update-form-deal-manager type="hidden"  value="" name="idManager" required>
+                    <input js-update-form-deal-id type="hidden"  value="" name="id" required>
+
+                    <button type="button" js-update-deal class="button button_white">Обновить сделку</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-bills class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-bills-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <div  class="menu__content-side menu__content-side_xxlarge">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Выставленные счета
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll menu__list_grow">
+                    <div class="client-wrapper">
+                        <div class="client-title">На имя</div>
+                        <div js-client-name-copy js-copy-link data-link class="client-name"></div>
+                    </div>
+                    <div js-bills class="bills">
+                        <div class="bills__wrapper">
+
+                            <div class="div-table">
+                                <div class="div-table__header div-table__header_bordered">
+                                    <div class="div-table__header-row">
+                                        <div class="div-table__header-col div-table__header-col_exxsmall"></div>
+                                        <div class="div-table__header-col div-table__header-col_medium">Менеджер</div>
+                                        <div class="div-table__header-col div-table__header-col_small">Выставлен</div>
+                                        <div class="div-table__header-col div-table__header-col_xsmall">Сумма</div>
+                                        <div class="div-table__header-col div-table__header-col_xxsmall">Способ</div>
+                                        <div class="div-table__header-col div-table__header-col_r10 div-table__header-col_medium">Номер счета</div>
+                                        <div class="div-table__header-col div-table__header-col_medium">Дата оплаты</div>
+                                        <div class="div-table__header-col div-table__header-col_small">Статус</div>
+                                        <div class="div-table__header-col div-table__header-col_small">Тип</div>
+                                        <div class="div-table__header-col div-table__header-col_xxsmall">Ссылка</div>
+                                        <div class="div-table__header-col div-table__header-col_medium">Чек</div>
+                                        <div class="div-table__header-col div-table__header-col_xxxsmall"></div>
+                                    </div>
+                                </div>
+                                <div js-bills-body class="div-table__body">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-reminder class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-reminder-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-form-reminder action="#" class="menu__content-side menu__content-side_large">
+                <input js-update-form-reminder-id-deal type="hidden"  value="" name="idDeal" required>
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать напоминание
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Дата когда напомнить *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                            <input js-update-form-reminder-date name="reminderDate" autocomplete="off" class="datepicker-here menu-input__input menu-input__input_small" placeholder="Укажите дату напоминания" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Текст напоминания</div>
+                        <div class="menu-input__wrapper ">
+                            <textarea js-update-form-reminder-msg name="reminderMessage" placeholder="Введите текст напоминания"  class="menu-input__input menu-input__input_textarea menu-input__input_small"></textarea>
+                        </div>
+                    </div>
+
+                    <div js-delete-reminder-block class="menu-input__delim menu-input_close">
+                        <span></span>
+                    </div>
+                    <div js-delete-reminder-block class="menu-input menu-input_xsmall menu-input_close">
+                        <div class="menu-input__wrapper">
+                            <div js-delete-reminder class="menu-input__input menu-input__delete">
+                                <span>Удалить напоминание</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-update-reminder class="button button_white">Сохранить напоминание</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-sms-checks-list class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-sms-checks-list-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-sms-checks-list-form action="#" class="menu__content-side menu__content-side_xxlarge">
+                <input js-id-bill type="hidden" name="idBill" required/>
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Выберите SMS
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-input menu-input_xsmall menu-input_t30">
+                    <div class="menu-input__title">Поиск по сообщения</div>
+                    <div class="menu-input__wrapper">
+                        <input js-sms-checks-search id="checks-search" class="menu-search__input menu-search__input_small" placeholder="Выберите текст сообщения"/>
+                        <label for="checks-search"></label>
+                    </div>
+                </div>
+
+                <div class="menu-input__delim menu-input__delim_p30">
+                    <span></span>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="div-table">
+                        <div class="div-table__header">
+                            <div class="div-table__wrapper">
+                                <div class="div-table__header-row">
+                                    <div class="div-table__header-col div-table__header-col_exsmall"></div>
+                                    <div class="div-table__header-col div-table__header-col_small">Дата</div>
+                                    <div class="div-table__header-col div-table__header-col_full">Текст сообщения</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="div-table__body">
+                            <div sms-checks-list class="div-table__wrapper">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <div js-select-sms-check js-select-sms-check-btn class="button">Выбрать SMS</div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/bills-functions.js}"></script>
+<script th:src="@{/js/transactions-filter.js}"></script>
+<script th:src="@{/js/a-deals-menu.js}"></script>
+<script th:src="@{/js/update-client-info.js}"></script>
+<script th:src="@{/js/deals-common.js}"></script>
+<script th:src="@{/js/deals-client-card.js}"></script>
+<script th:src="@{/js/copy.js}"></script>
+<script th:src="@{/js/sms-checks-function.js}"></script>
+<script th:src="@{/js/jquery.fancybox.min.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    setStatusesList(/*[[${dealStatuses}]]*/);
+    setPaymentMethodList(/*[[${paymentMethods}]]*/);
+    setFilter(/*[[${filter}]]*/);
+    setCourseKindsList(/*[[${courseKinds}]]*/);
+    setCoursesList(/*[[${courses}]]*/);
+    setProductMap(/*[[${productMap}]]*/);
+    /*]]>*/
+</script>
+</body>
+</html>

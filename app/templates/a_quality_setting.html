@@ -1,0 +1,135 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Оценка работы">
+
+    <title>Оценка работы</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-medium">
+    <div class="drop-message">
+        <div class="drop-message__title">Измнены параметры, сохранить изменения?</div>
+
+        <form setting-form action="#" class="channel-form">
+            <button setting-btn class="input-element__input input-element__input_xsmall input-element__input_drop-message">Да, сохранить</button>
+        </form>
+    </div>
+
+
+    <div class="content-top content-top_btn">
+        <div class="content-top__header">Оценка работы</div>
+    </div>
+
+    <div class="content-top content-top_small">
+        <div th:replace="base :: a-quality-tab"></div>
+    </div>
+
+    <div class="content-main">
+        <div class="content-main__wrapper content-main__wrapper_col">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+                <div class="content-setting">
+                    <div class="menu-input__wrapper menu-input__wrapper_select menu-input__wrapper_medium menu-input__wrapper_mr">
+                        <form qs-filter-form action="#" th:action="@{/quality/setting/}" th:object="${filter}" th:method="post">
+                            <select qs-filter class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{year}">
+                                <option th:each="year : ${years}"  th:value="${year}"  th:utext="${year}"></option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="content-delim">
+                    <span></span>
+                </div>
+            </div>
+
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_col">
+                <div class="template-setting" th:each="department : ${departments}" th:attr="data-department=${department.id}" th:if="${#lists.size(templateEmployee.get(department.id)) != 0}">
+                    <div class="template-setting__title" th:utext="${department.title}"></div>
+                    <table class="custom-table">
+                        <thead class="custom-table__header">
+                            <tr class="custom-table__header-row">
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_emp">Сотрудник</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Январь</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Февраль</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Март</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Апрель</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Май</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Июнь</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Июль</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Август</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Сентябрь</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Октябрь</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Ноябрь</td>
+                                <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_large">Декабрь</td>
+                            </tr>
+                        </thead>
+                        <tbody class="custom-table__body custom-table__body_white">
+                            <tr class="custom-table__body-row" th:each="employee : ${templateEmployee.get(department.id)}" th:attr="data-employee=${employee.id}">
+                                <td class="custom-table__body-col custom-table__body-col_emp">
+                                    <div class="employee">
+                                        <div class="employee__avatar">
+                                            <div class="avatar">
+                                                <div class="avatar__wrapper">
+                                                    <span class="avatar-image" th:classappend="${(employee.avatar == null || #strings.isEmpty(employee.avatar)) ? 'avatar-image_default' : ''}">
+                                                        <img th:if="${employee.avatar}" th:src="'/' + ${employee.avatar}" alt="">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="employee__desc">
+                                            <div class="employee-name" th:utext="${employee.name}"></div>
+                                            <div class="employee-position" th:utext="${employee.position}"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th:block th:each="iter : ${#numbers.sequence(1, 12, 1)}">
+                                    <td class="custom-table__body-col" th:classappend="${iter == 12 ? 'custom-table__body-col_r16' : ''}" th:attr="data-month=${iter}">
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select template-setting class=" menu-input__input menu-input__input_large menu-input__input_select menu-input__input_white">
+                                                <option value="0" selected disabled>Выберите шаблон</option>
+                                                <th:block th:if="${#maps.size(templateSettings.get(department.id)) != 0
+                                                && templateSettings.get(department.id).get(employee.id) != null
+                                                && templateSettings.get(department.id).get(employee.id).get(iter) != null}">
+                                                    <th:block th:each="template : ${templateMap.get(department.id)}">
+                                                        <option th:value="${template.id}"
+                                                                th:utext="${template.name}"
+                                                                th:selected="${templateSettings.get(department.id).get(employee.id).get(iter).id == template.id}"></option>
+                                                    </th:block>
+
+
+                                                    <th:block th:if="${templateSettings.get(department.id).get(employee.id).get(iter).isEnabled == false}">
+                                                        <option selected=selected
+                                                                th:value="${templateSettings.get(department.id).get(employee.id).get(iter).id}"
+                                                                th:utext="${templateSettings.get(department.id).get(employee.id).get(iter).name}"></option>
+                                                    </th:block>
+                                                </th:block>
+                                                <th:block th:unless="${#maps.size(templateSettings.get(department.id)) != 0
+                                                && templateSettings.get(department.id).get(employee.id) != null
+                                                && templateSettings.get(department.id).get(employee.id).get(iter) != null}">
+                                                    <option th:each="template : ${templateMap.get(department.id)}"
+                                                            th:value="${template.id}"
+                                                            th:utext="${template.name}"></option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </th:block>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/quality-setting-menu.js}"></script>
+</body>
+</html>

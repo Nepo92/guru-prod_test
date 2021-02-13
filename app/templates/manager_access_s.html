@@ -1,0 +1,104 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Доступ менеджеров">
+
+    <title>Доступ менеджеров</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content">
+    <div class="content-top">
+        <div class="content-top__header">Доступ менеджеров</div>
+    </div>
+    <div class="content-main">
+        <div class="content-main__panel content-main__panel_large">
+            <div js-create-row class="button button_add">+ Добавить</div>
+        </div>
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                    <tr class="custom-table__header-row">
+                        <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Менеждер</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Доступ к</td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                    </tr>
+                    </thead>
+                    <tbody class="custom-table__body custom-table__body_white" table-body>
+                    <tr class="custom-table__body-row" th:each="managerAccess, stat : ${managerAccesses}">
+                        <input type="hidden" ma-id th:value="${managerAccess.id}" name="id" required>
+                        <td class="custom-table__body-col" th:utext="${stat.count}"></td>
+                        <td class="custom-table__body-col custom-table__body-col_xlarge" th:utext="${managerAccess.managerName}"></td>
+                        <td class="custom-table__body-col custom-table__body-col_xlarge" th:utext="${managerAccess.managerAccessName}"></td>
+
+                        <td class="custom-table__body-col custom-table__body-col_last">
+                            <div edit-menu class="column-links display-flex-none is-open">
+                                <div delete-ma-form class="column-form">
+                                    <button delete-ma type="button" class="column_mwidth column_mwidth-delete"></button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-create-row class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-row-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-row-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить доступ менеджера
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_grow menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Менеджер *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select name="idManager" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="" disabled selected>Выберите менеджера</option>
+                                <th:block th:each="manager : ${managers}">
+                                    <option th:value="${manager.id}" th:utext="${manager.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Доступ к *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select name="idManagerAccess" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="" disabled selected>Выберите менеджера</option>
+                                <th:block th:each="manager : ${managersAccess}">
+                                    <option th:value="${manager.id}" th:utext="${manager.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-row class="button button_white">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/access-manager-menu.js}"></script>
+</body>
+</html>

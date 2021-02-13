@@ -1,0 +1,89 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Панель администратора">
+
+    <title>POWER service | Вход</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/login.css}" rel="stylesheet">
+</head>
+
+<body>
+<div class="authorization">
+    <div class="authorization-wrapper">
+        <div class="authorization-header">
+            <div class="authorization-header__logo">
+                <div class="auth-logo"></div>
+                <div class="auth-logo-caption">alpha</div>
+            </div>
+            <div class="authorization-header__contacts">
+                <div class="auth-contact">8 800 350-4401</div>
+            </div>
+        </div>
+
+        <div class="authorization-content">
+            <div class="authorization-content__main">
+                <img src="/img/login-title.svg" class="auth-title-img">
+                <div class="auth-subtitles">
+                    <div class="auth-subtitles__wrapper">
+                        <div class="auth-subtitle">Для запуска</div>
+                        <div class="auth-subtitle">и развития</div>
+                        <div class="auth-subtitle">онлайн-школ</div>
+                    </div>
+                </div>
+            </div>
+            <div class="authorization-content__side">
+                <form action="#" class="auth-form" th:action="@{/perform_login}" method="post">
+                    <div class="auth-form__element">
+                        <label for="username" class="auth-element__label">Логин</label>
+                        <input id="username"
+                               name="username"
+                               type="text" class="auth-element__input" placeholder="Введите ваш логин" required>
+                    </div>
+                    <div class="auth-form__element">
+                        <label for="password" class="auth-element__label">Пароль</label>
+                        <input id="password"
+                               name="password"
+                               type="password" class="auth-element__input" placeholder="Введите ваш пароль" required>
+                    </div>
+                    <div class="auth-form__delim"></div>
+                    <div class="auth-form__element auth-form__element_submit">
+                        <button class="auth-element__button auth-element__button_violet">
+                            <span class="auth-element__button-value">Войти</span>
+                        </button>
+
+                        <!--<div class="auth-element__checkbox ml-3">-->
+                        <!--<input id="mem" type="checkbox" checked disabled class="auth-checkbox">-->
+                        <!--<label for="mem" class="auth-checkbox-label">Запомнить меня</label>-->
+                        <!--</div>-->
+                    </div>
+                    <div class="auth-form__error" th:if="${param.error}">
+                        <div class="auth-form__error-msg">
+                            Неверное имя пользователя или пароль
+                        </div>
+                    </div>
+                </form>
+                <div class="auth-text auth-text_center mt-3">Доступ к платформе можно получить по <a href="https://vk.com/app5898182_-185779370#s=425692" class="auth-link">ссылке</a></div>
+            </div>
+        </div>
+
+        <div class="authorization-footer">
+            <div class="authorization-footer__text">
+                <div class="footer-text">Полное наименование организации ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "ПАУЭР" ,</div>
+                <div class="footer-text">Юридический адрес организации 656056, РОССИЯ, АЛТАЙСКИЙ КРАЙ, Г БАРНАУЛ, УЛ ПАРТИЗАНСКАЯ, Д 40, ОФ 3 , ИНН 2225195169 ,</div>
+                <div class="footer-text">ОГРН 1182225028567 , КПП 222501001</div>
+            </div>
+            <div class="authorization-footer__socials">
+                <a class="footer-social footer-social_vk" href="https://vk.com/powerbz"></a>
+                <a class="footer-social footer-social_insta" href="https://instagram.com/power.bz"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

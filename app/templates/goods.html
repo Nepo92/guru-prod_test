@@ -1,0 +1,195 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Аналитика товарка">
+
+    <title>Аналитика товарка</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+    <div th:replace="base :: main-nav"></div>
+
+    <!--<div class="main-content main-content_pl40">-->
+    <div class="main-content ">
+        <!--<div th:replace="base :: funnel-nav"></div>-->
+        <div class="content-top">
+            <div th:replace="base :: common-funnel-filter"></div>
+            <div class="content-top__delimiter"></div>
+            <div class="content-top__header">Аналитика товарка</div>
+        </div>
+        <div class="content-main">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="filter custom-lg-2 custom-lg-2_big" th:classappend="${filter.active} ? '' : custom-lg-2_active">
+                        <form class="filter__wrapper d-flex flex-lg-column" th:classappend="${filter.active} ? '' : filter__wrapper_none" filter-form action="#" th:action="@{/funnel/goods/}" th:object="${filter}" th:method="post">
+
+                            <div class="filter__element mb-4">
+                                <div class="filter-header">
+                                    Периоды воронки
+                                </div>
+                            </div>
+                            <select class="filter__element mb-2 input-sm" filter-param-year th:field="*{year}">
+                                <option th:each="y : ${ys}" th:value="${y}" th:utext="${y}"></option>
+                            </select>
+                            <select class="filter__element mb-2 input-sm" filter-param th:field="*{idSort}">
+                                <option th:value="0" selected>По месяцам</option>
+                                <option th:value="1">По неделям</option>
+                                <option th:value="2">По дням</option>
+                            </select>
+
+                            <div class="filter__element mb-4 mt-4">
+                                <div class="filter-header">
+                                    Параметры
+                                </div>
+                            </div>
+                            <select class="filter__element mb-2 input-sm " filter-param th:field="*{idManager}">
+                                <option th:value="0" selected>Все менеджеры</option>
+                                <option th:each="manager : ${managers}"
+                                        th:value="${manager.id}"
+                                        th:utext="${manager.name}"></option>
+                            </select>
+                            <select class="filter__element mb-2 input-sm" filter-param th:field="*{project}">
+                                <option th:value="0" selected>Все проекты</option>
+                                <option th:each="project : ${projects}"
+                                        th:value="${project.id}"
+                                        th:utext="${project.name}"></option>
+                            </select>
+                            <select class="filter__element mb-2 input-sm" filter-param th:field="*{course}">
+                                <option th:value="'all'" selected th:utext="(*{project} == 0) ? 'Все курсы' : 'Курсы проекта'"></option>
+                                <option th:each="course : ${courses}"
+                                        th:value="${course}"
+                                        th:utext="${course}"></option>
+                            </select>
+
+
+                            <div class="filter__element mb-4 mt-4">
+                                <div class="filter-header">
+                                    Настройки воронки
+                                </div>
+                            </div>
+                            <div class="filter__element mb-2">
+                                <input class="input-sm datepicker-here" filter-param-input th:value="${startDate}" th:field="*{startDate}" filter-param-date data-date-format="dd-mm-yyyy" placeholder="00-00-0000" >
+                            </div>
+                            <div class="filter__element mb-2">
+                                <input class="input-sm datepicker-here" filter-param-input th:value="${endDate}" th:field="*{endDate}" filter-param-date data-date-format="dd-mm-yyyy" placeholder="00-00-0000" >
+                            </div>
+                            <input type="hidden" th:field="*{active}" />
+                        </form>
+                    </div>
+                    <div class="custom-lg-10 custom-lg-10_big" th:classappend="${filter.active} ? '' : custom-lg-10_active">
+                        <div class="table-response d-flex">
+                            <div class="table table_fixed d-flex flex-column">
+                                <div class="table-header">
+                                    <div class="table-header__row">
+                                        <div class="table-header__cell mr-2" th:utext="${filter.startDate} + '<br>' + ${filter.endDate}"></div>
+                                        <div class="table-header__cell table-header__cell_caption mr-2"></div>
+                                    </div>
+                                </div>
+                                <div class="table-body">
+                                    <div class="table-body__row mb-2 mt-2 row_green">
+                                        <button class="table-body__accordion" data-toggle="collapse" data-target="#mProductProceeds" aria-expanded="false" aria-controls="mProductProceeds">+</button>
+                                        <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(proceeds.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                        <div class="table-body__cell table-body__cell_caption mr-2">Выручка</div>
+                                    </div>
+                                    <div id="mProductProceeds" class="collapse">
+                                        <div class="table-body__row row_light-gray" th:each="manager : ${mProductProceeds}">
+                                            <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                            <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-body__row mb-2 mt-2 row_blue">
+                                        <button class="table-body__accordion" data-toggle="collapse" data-target="#mSalesProduct" aria-expanded="false" aria-controls="mSalesProduct">+</button>
+                                        <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(salesProduct.sum,0,'WHITESPACE')}"></div>
+                                        <div class="table-body__cell table-body__cell_caption mr-2">Продаж</div>
+                                    </div>
+                                    <div id="mSalesProduct" class="collapse">
+                                        <div class="table-body__row row_light-gray" th:each="manager : ${mSalesProduct}">
+                                            <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE')}"></div>
+                                            <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-body__row mb-2 mt-2 row_green">
+                                        <button class="table-body__accordion" data-toggle="collapse" data-target="#mAverageCheck" aria-expanded="false" aria-controls="mAverageCheck">+</button>
+                                        <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(averageCheck.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                        <div class="table-body__cell table-body__cell_caption mr-2">Средний чек</div>
+                                    </div>
+                                    <div id="mAverageCheck" class="collapse">
+                                        <div class="table-body__row row_light-gray" th:each="manager : ${mAverageCheck}">
+                                            <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                            <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-body__row mb-2 mt-2 row_gold">
+                                        <button class="table-body__accordion" data-toggle="collapse" data-target="#mClientToProduct" aria-expanded="false" aria-controls="mClientToProduct">+</button>
+                                        <div class="table-body__cell font-weight-bold mr-2" th:utext="${clientToProduct.sum + '%'}"></div>
+                                        <div class="table-body__cell table-body__cell_caption mr-2">CV из новых клиентов в товарку</div>
+                                    </div>
+                                    <div id="mClientToProduct" class="collapse">
+                                        <div class="table-body__row row_light-gray" th:each="manager : ${mClientToProduct}">
+                                            <div class="table-body__cell mr-2" th:utext="${manager.value.sum + '%'}"></div>
+                                            <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table">
+                                <div class="table-header">
+                                    <div class="table-header__row">
+                                        <div class="table-header__cell" th:each="date : ${dates}" th:utext="${date.start_date} + '<br>' + ${date.end_date}"></div>
+                                    </div>
+                                </div>
+                                <div class="table-body">
+                                    <div class="table-body__row mb-2 mt-2 row_green">
+                                        <div class="table-body__cell font-weight-bold" th:each="a : ${proceeds.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                    </div>
+                                    <div id="mProductProceeds" class="collapse">
+                                        <div class="table-body__row row_light-gray" th:each="manager : ${mProductProceeds}">
+                                            <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-body__row mb-2 mt-2 row_blue">
+                                        <div class="table-body__cell font-weight-bold" th:each="a : ${salesProduct.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                                    </div>
+                                    <div id="mSalesProduct" class="collapse">
+                                        <div class="table-body__row row_light-gray" th:each="manager : ${mSalesProduct}">
+                                            <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-body__row mb-2 mt-2 row_green">
+                                        <div class="table-body__cell font-weight-bold" th:each="a : ${averageCheck.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                    </div>
+                                    <div id="mAverageCheck" class="collapse">
+                                        <div class="table-body__row row_light-gray" th:each="manager : ${mAverageCheck}">
+                                            <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-body__row mb-2 mt-2 row_gold">
+                                        <div class="table-body__cell font-weight-bold" th:each="a : ${clientToProduct.sums}" th:utext="${a + '%'}"></div>
+                                    </div>
+                                    <div id="mClientToProduct" class="collapse">
+                                        <div class="table-body__row row_light-gray" th:each="manager : ${mClientToProduct}">
+                                            <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${a + '%'}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

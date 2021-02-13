@@ -1,0 +1,394 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Корпоративный центр">
+
+    <title th:utext="${title}"></title>
+
+    <link th:href="@{/css/jquery.fancybox.min.css}" rel="stylesheet">
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: transition-loader"></div>
+<div th:replace="base :: main-nav"></div>
+
+<!--<div class="main-content main-content_pl40 main-content_white-top">-->
+<div class="main-content main-content_white-top">
+    <!--<div th:replace="base :: a-corporate-center-nav"></div>-->
+    <div class="content-top content-top_btn">
+        <div th:attr="type=${subtype}" js-type class="content-top__header" th:utext="${title}"></div>
+        <div js-create-tutorial class="add-button add-button_right add-button_violet">+ Добавить курс</div>
+    </div>
+    <div class="content-top">
+        <div class="top-nav">
+            <div class="top-nav__list-items">
+                <div th:classappend="${subtype == 'admin' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/a-corporate-center/training-center/}" class="top-nav__link">Управление</a></div>
+                <div th:classappend="${subtype == 'advertiser' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/a-corporate-center/training-center/advertiser/}" class="top-nav__link">Маркетинг</a></div>
+                <div th:classappend="${subtype == 'manager' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/a-corporate-center/training-center/manager/}" class="top-nav__link">Продажи</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="content-main theme-container">
+        <th:block th:each="lesson, counter : ${lessons}">
+            <th:block th:unless="${lesson.key.editable}">
+                <div class="theme " th:attr="data-tutorial=${lesson.key.id}">
+                    <div class="theme-wrapper">
+                        <div class="theme__title-wrapper theme__title-wrapper_b20">
+                            <div tutorial-name class="theme-title" th:utext="${lesson.key.name}"></div>
+                        </div>
+                        <div class="theme__img">
+                            <img tutorial-preview class="article__img" th:src="'/' + ${lesson.key.previewImg}">
+                        </div>
+                        <div class="theme__lessons">
+                            <div class="lesson" th:each="ls, counter : ${lesson.value}" th:attr="data-lesson=${ls.id}">
+                                <div class="lesson__header">
+                                    <div class="lesson-header__number">
+                                        <span lesson-counter th:utext="${counter.count}">#</span>
+                                        <span>урок</span>
+                                    </div>
+                                    <div class="lesson-header__title"  th:utext="${ls.name}"></div>
+                                </div>
+                                <div class="lesson__content">
+                                    <div class="lesson__content-wrapper">
+                                        <div class="lesson-content__side">
+                                            <a th:href="${ls.videoLink}" class="lesson-video js-fancybox">
+                                                <img th:src="'//img.youtube.com/vi/' + ${#strings.substring(ls.videoLink, #strings.indexOf(ls.videoLink, '.be/') + 4, #strings.length(ls.videoLink))} + '/hqdefault.jpg'" class="lesson-video__preview" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="lesson-content__main">
+                                            <div class="lesson-description" th:utext="${ls.description}"></div>
+                                            <div class="lesson__documents">
+                                                <th:block th:each="document : ${lessonDocuments.get(ls.id)}">
+                                                    <a th:href="${document.path}" class="lesson-document">
+                                                        <div class="lesson-document__type" th:classappend="' lesson-document__type_' + ${document.type}" th:utext="${document.type}"></div>
+                                                        <div class="lesson-document__name" th:utext="${document.name}"></div>
+                                                    </a>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+            <th:block th:if="${lesson.key.editable}">
+                <div class="theme " th:attr="data-tutorial=${lesson.key.id}">
+                    <div class="theme-wrapper">
+                        <div class="theme__title-wrapper theme__title-wrapper_b20">
+                            <div tutorial-name class="theme-title theme-title_delim" th:utext="${lesson.key.name}"></div>
+                            <div js-update-tutorial class="theme-setting"></div>
+                            <div js-create-lesson class="add-button add-button_right">+ Добавить урок</div>
+                        </div>
+                        <div class="theme__img">
+                            <img tutorial-preview class="article__img" th:src="'/' + ${lesson.key.previewImg}">
+                        </div>
+                        <div class="theme__lessons">
+                            <div class="lesson" th:each="ls, counter : ${lesson.value}" th:attr="data-lesson=${ls.id}">
+                                <div js-update-lesson class="theme-setting theme-setting_top theme-setting_absolute theme-setting_big"></div>
+                                <div class="lesson__header">
+                                    <div class="lesson-header__number">
+                                        <span lesson-counter th:utext="${counter.count}">#</span>
+                                        <span>урок</span>
+                                    </div>
+                                    <div class="lesson-header__title"  th:utext="${ls.name}"></div>
+                                </div>
+                                <div class="lesson__content">
+                                    <div class="lesson__content-wrapper">
+                                        <div class="lesson-content__side">
+                                            <a th:href="${ls.videoLink}" class="lesson-video js-fancybox">
+                                                <img th:src="'//img.youtube.com/vi/' + ${#strings.substring(ls.videoLink, #strings.indexOf(ls.videoLink, '.be/') + 4, #strings.length(ls.videoLink))} + '/hqdefault.jpg'" class="lesson-video__preview" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="lesson-content__main">
+                                            <div class="lesson-description" th:utext="${ls.description}"></div>
+                                            <div class="lesson__documents">
+                                                <th:block th:each="document : ${lessonDocuments.get(ls.id)}">
+                                                    <a th:href="${document.path}" class="lesson-document">
+                                                        <div class="lesson-document__type" th:classappend="' lesson-document__type_' + ${document.type}" th:utext="${document.type}"></div>
+                                                        <div class="lesson-document__name" th:utext="${document.name}"></div>
+                                                    </a>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </th:block>
+    </div>
+</div>
+
+<div js-menu-create-tutorial class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-tutorial-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-tutorial-form action="#" class="menu__content-side menu__content-side_large" >
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Создать курс
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Тип *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-tutorial-form-type name="type" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="admin">Управление</option>
+                                <option value="advertiser">Маркетинг</option>
+                                <option value="manager">Продажи</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Название курса *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-tutorial-form-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="input-element__input input-element__input_transparent input-element__img">
+                            <input type="file" name="img" accept="image/*,image/jpeg" id="file" required class="input-file">
+                            <label for="file" class="js-labelFile js-upload-banner">
+                                <span class="menu-input__title js-fileName">Загрузите обложку курса 1180x350</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__footer">
+                    <button type="button" js-save-tutorial class="button button_white">Создать курс</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-tutorial class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-tutorial-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-tutorial-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать курс
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input js-update-tutorial-form-id type="hidden" name="id" required>
+                    <input js-update-tutorial-form-img type="hidden" name="previewImg" required>
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Тип *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-update-tutorial-form-type name="type" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="admin">Управление</option>
+                                <option value="advertiser">Маркетинг</option>
+                                <option value="manager">Продажи</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Название курса *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-update-tutorial-form-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="input-element__input input-element__input_transparent input-element__img">
+                            <input type="file" name="img" accept="image/*,image/jpeg" id="file2" class="input-file">
+                            <label for="file2" class="js-labelFile js-upload-banner">
+                                <span class="menu-input__title js-fileName">Загрузите обложку курса 1180x350</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__wrapper">
+                            <div js-delete-tutorial class="menu-input__input menu-input__delete">
+                                <span>Удалить курс</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__footer">
+                    <button type="button" js-update-save-tutorial class="button button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-lesson class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-lesson-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-lesson-form action="#" class="menu__content-side menu__content-side_large" enctype="multipart/form-data">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать урок
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input js-update-lesson-form-id type="hidden" name="id" required>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Название урока *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-update-lesson-form-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Описание урока *</div>
+                        <div class="menu-input__wrapper">
+                            <textarea js-update-lesson-form-desc name="description" placeholder="Введите название" class="menu-input__input menu-input__input_small menu-input__input-textarea" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Ссылка на видео *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-update-lesson-form-video-link name="videoLink" placeholder="Введите ссылку на видео " class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="input-element__input input-element__input_transparent input-element__img">
+                            <input type="file" id="filesUpdate" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" class="input-upload-file" multiple>
+                            <label for="filesUpdate" class="input-upload-label js-upload-banner">
+                                <span class="menu-input__title">Загрузите файл (PDF, DOC, PPT, XLS)</span>
+                            </label>
+                        </div>
+                        <div class="input-element__documents">
+                            <div js-update-lesson-form-documents class="input-element__documents-old"></div>
+                            <div class="input-element__documents-new"></div>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__wrapper">
+                            <div js-delete-lesson class="menu-input__input menu-input__delete">
+                                <span>Удалить урок</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__footer">
+                    <button type="button" js-update-save-lesson class="button button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-create-lesson class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-lesson-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-lesson-form action="#" class="menu__content-side menu__content-side_large" enctype="multipart/form-data">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить урок
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input js-lesson-form-id-tutorial type="hidden" name="idTutorial" required>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Название урока *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-lesson-form-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Описание урока *</div>
+                        <div class="menu-input__wrapper">
+                            <textarea js-lesson-form-desc name="description" placeholder="Введите название" class="menu-input__input menu-input__input_small menu-input__input-textarea" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Ссылка на видео *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-lesson-form-video-link name="videoLink" placeholder="Введите ссылку на видео " class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="input-element__input input-element__input_transparent input-element__img">
+                            <input type="file" id="files" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" class="input-upload-file" multiple>
+                            <label for="files" class="input-upload-label js-upload-banner">
+                                <span class="menu-input__title">Загрузите файл (PDF, DOC, PPT, XLS)</span>
+                            </label>
+                        </div>
+                        <div class="input-element__documents">
+                            <div class="input-element__documents-new"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__footer">
+                    <button type="button" js-save-lesson class="button button_white">Сохранить урок</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/transition-loader.js}"></script>
+<script th:src="@{/js/upload-img.js}"></script>
+<script th:src="@{/js/upload-files.js}"></script>
+<script th:src="@{/js/tutorials-menu.js}"></script>
+<script th:src="@{/js/open-lesson-content.js}"></script>
+<script th:src="@{/js/lessons-menu.js}"></script>
+<script th:src="@{/js/jquery.fancybox.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Акции">
+
+    <title>Акции</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: settings-said-nav"></div>-->
+    <div class="content-top">
+        <div class="content-top__header">Акции</div>
+    </div>
+
+    <div class="content-main">
+        <div class="content-main__panel content-main__panel_large">
+            <div js-create-action class="button button_add">+ Добавить акцию</div>
+        </div>
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_large content-main__panel_p">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                    <tr class="custom-table__header-row">
+                        <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Дата</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Название акции</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Вид акции</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Механика</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Менеджер(ы)</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Что учитывать</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Дата от</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Дата до</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Значение</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Тип награды</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Награда</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Победитель</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Статус акции</td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                    </tr>
+                    </thead>
+                    <tbody class="custom-table__body custom-table__body_white">
+                    <tr class="custom-table__body-row" th:each="historyRow, statCount : ${historyRows}">
+                        <td class="custom-table__body-col" th:utext="${historyRow.id}"></td>
+                        <td class="custom-table__body-col" th:utext="${historyRow.processDate}"></td>
+                        <td class="custom-table__body-col" >
+                            <div th:attr="title=${historyRow.name}" class="column-text" th:utext="${historyRow.name}"></div>
+                        </td>
+                        <td class="custom-table__body-col">
+                            <div th:attr="title=${historyRow.type}" class="column-text" th:utext="${historyRow.type}"></div>
+                        </td>
+                        <td class="custom-table__body-col" th:utext="${historyRow.mechanics}"></td>
+                        <td class="custom-table__body-col">
+                            <div th:attr="title=${historyRow.managers}" class="column-text" th:utext="${historyRow.managers}"></div>
+                        </td>
+                        <td class="custom-table__body-col" th:utext="${historyRow.proceedType}"></td>
+                        <td class="custom-table__body-col" th:utext="${historyRow.startDate}"></td>
+                        <td class="custom-table__body-col" th:utext="${historyRow.endDate}"></td>
+                        <td class="custom-table__body-col" >
+                            <div th:attr="title=${historyRow.value}" class="column-text" th:utext="${historyRow.value}"></div>
+                        </td>
+                        <td class="custom-table__body-col" th:utext="${historyRow.bonusType}"></td>
+                        <td class="custom-table__body-col">
+                            <div th:attr="title=${historyRow.bonus}" class="column-text" th:utext="${historyRow.bonus}"></div>
+                        </td>
+                        <td class="custom-table__body-col">
+                            <div th:attr="title=${historyRow.winner}" class="column-text" th:utext="${historyRow.winner}"></div>
+                        </td>
+                        <td class="custom-table__body-col" >
+                            <span class="end-status" th:utext="${historyRow.statusTitle}"></span>
+                        </td>
+                        <td class="body__cell">
+                            <form action="#" th:action="@{deleteAction}" th:method="get">
+                                <input type="hidden" name="id" th:value="${historyRow.id}"/>
+                                <input class="btn_delete" type="submit" value="">
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-create-action class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-action-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-action-form id="actionForm" action="#" class="menu__content-side menu__content-side_large" enctype="multipart/form-data">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Создать акцию
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название акции *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-action-form-name name="name" placeholder="Введите название акции" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input__wrapper menu-input__wrapper_row">
+                        <div class="menu-input menu-input_full">
+                            <div class="menu-input__title">Дата от *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                <input js-action-form-start-date name="startDate" autocomplete="off" class="datepicker-here-start menu-input__input menu-input__input_small" placeholder="Укажите дату от" required/>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_full">
+                            <div class="menu-input__title">Дата до *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                <input js-action-form-end-date name="endDate" autocomplete="off" class="datepicker-here-cs menu-input__input menu-input__input_small" placeholder="Укажите дату до" required/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="input-element__input input-element__input_transparent input-element__img">
+                            <input type="file" name="img" accept="image/*,image/jpeg" id="file" required class="input-file">
+                            <label for="file" class="js-labelFile js-upload-banner">
+                                <span class="menu-input__title js-fileName">Загрузите изображение акции 420x340</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_margin">
+                        <div class="menu-input menu-input_m">
+                            <div class="menu-input__title">Шрифт *</div>
+                            <div class="menu-input__wrapper  menu-input__wrapper_row">
+                                <div class="input-element__radio-wrapper">
+                                    <div class="input-element__radio input-element__radio_big">
+                                        <input type="radio" id="dark" class="radio radio_circle-colored" name="theme" value="dark" required>
+                                        <label for="dark" class="colored-circle colored-circle_dark"></label>
+                                    </div>
+                                    <div class="input-element__radio input-element__radio_big">
+                                        <input type="radio" id="light" class="radio radio_circle-colored" name="theme" value="light" checked required>
+                                        <label for="light" class="colored-circle colored-circle_light"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_m  menu-input_full">
+                            <div class="menu-input__title">Фон баннера *</div>
+                            <div class="menu-input__wrapper">
+                                <input type="color" value="#402198"  name="bgColor" class="menu-input__input menu-input__input_small menu-input__input_color" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Вид акции *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-action-form-action-type name="actionType" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="1">Командная акция</option>
+                                <option value="2">Рейтинговая акция</option>
+                                <option value="3">Индивидуальная акция</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Менеджеры *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-action-form-manager-type name="managerType" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="1">Весь отдел продаж</option>
+                                <option value="2">Менеджеры</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div js-managers-row class="menu-input menu-input_xsmall display-none">
+                        <div class="menu-input__title">Выберите участвующих менеджеров</div>
+                        <div class="menu-input__checkbox-wrapper">
+                            <div class="input-element__checkbox" th:each="manager,st : ${managers}">
+                                <input type="checkbox" th:id="${manager.name}" class="checkbox" name="managers" th:value="${manager.id}"/>
+                                <label class="checkbox-label" th:for="${manager.name}" th:utext="${manager.name}"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Механика акции *</div>
+                        <div class="input-element__input input-element__input_violet input-element__input_row">
+                            <div js-action-form-mech class="input-element__radio" th:each="amt, st : ${actionMechanicTypes}">
+                                <input type="radio" th:id="${amt.key}" th:checked="${st.index == 0}" class="radio radio-mech" name="mechanicsType" th:value="${amt.value}"/>
+                                <label th:for="${amt.key}" th:utext="${amt.key}"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Что учитывать *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-action-form-type name="type" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <th:block th:each="apt : ${actionProceedTypes}">
+                                    <option th:value="${apt.value}" th:utext="${apt.key}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Пробный период *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-action-form-trial name="checkTrial" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="true">Учитывать</option>
+                                <option value="false">Не учитывать</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Стоимость *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-action-form-price name="discount" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="0">Все</option>
+                                <th:block th:each="dp : ${discountPrice}">
+                                    <option th:value="${dp.id}" th:utext="${dp.text}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div js-action-indiv class="menu-input menu-input_xsmall display-none">
+                        <div class="menu-input__title">Тип акции *</div>
+                        <div class="input-element__input input-element__input_violet input-element__input_row">
+                            <div class="input-element__radio">
+                                <input type="radio" th:id="Период" class="radio radio-mech" name="periodType" value="1" checked/>
+                                <label th:for="Период" th:utext="Период"></label>
+                            </div>
+                            <div class="input-element__radio">
+                                <input type="radio" th:id="Ежедневная" class="radio radio-mech" name="periodType" value="2"/>
+                                <label th:for="Ежедневная" th:utext="Ежедневная"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Тип награды *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-action-form-bonus-type name="bonusType" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <th:block th:each="abt : ${actionBonusTypes}">
+                                    <option th:value="${abt.value}" th:utext="${abt.key}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+                    <div js-action-unrank js-action-indiv data-level="1" class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_margin">
+                        <div class="menu-input menu-input_m menu-input_full">
+                            <div class="menu-input__title">Значение *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                <input js-mech js-action-form-value name="value" class="menu-input__input menu-input__input_small" placeholder="Введите значение" required/>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_m  menu-input_full">
+                            <div class="menu-input__title">Награда *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                <input js-bonus js-action-form-bonus name="bonus" class="menu-input__input menu-input__input_small" placeholder="Введите награду" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div js-action-indiv class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_margin display-none">
+                        <div class="menu-input menu-input_m  menu-input_full">
+                            <div class="menu-input__wrapper">
+                                <div js-delete-level  class="add-button add-button_violet">Удалить уровень</div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_m  menu-input_full">
+                            <div class="menu-input__wrapper ">
+                                <div js-add-level  class="add-button add-button_violet">Добавить уровень</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div js-action-rank class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_margin display-none">
+                        <div class="menu-input menu-input_m menu-input_full">
+                            <div class="menu-input__title">Минимум *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                <input js-min js-action-form-minimum name="minimum" class="menu-input__input menu-input__input_small" placeholder="Введите значение" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div js-action-rank data-place="1" class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_margin display-none">
+                        <div class="menu-input menu-input_m  menu-input_full">
+                            <div class="menu-input__title">1 место *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                <input js-place js-action-form-first-place name="places" class="menu-input__input menu-input__input_small" placeholder="Введите награду" required/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div js-action-rank class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_margin display-none">
+                        <div class="menu-input menu-input_m  menu-input_full">
+                            <div class="menu-input__wrapper">
+                                <div js-delete-place  class="add-button add-button_violet">Удалить место</div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_m  menu-input_full">
+                            <div class="menu-input__wrapper ">
+                                <div js-add-place  class="add-button add-button_violet">Добавить место</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-action class="button button_white">Добавить акцию</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/upload-img.js}"></script>
+<script th:src="@{/js/actions-menu.js}"></script>
+</body>
+</html>

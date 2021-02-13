@@ -1,0 +1,448 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Оценка работы">
+
+    <title>Продукты</title>
+
+    <th:block th:insert="base :: links" />
+    <link th:href="@{/css/products.css}" rel="stylesheet">
+    <link th:href="@{/css/block.css}" rel="stylesheet">
+    <link th:href="@{/css/tabs.css}" rel="stylesheet">
+    <link th:href="@{/css/jquery.fancybox.min.css}" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="base :: dialog"></div>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-medium">
+    <div class="content-top content-top_btn">
+        <div class="content-top__header">Продукты</div>
+    </div>
+
+    <div class="content-top content-top_small">
+        <th:block>
+            <div th:replace="base :: products-tab"></div>
+        </th:block>
+    </div>
+
+    <div class="content-main">
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+                <th:block th:each="project : ${projects}">
+                    <div class="products" th:attr="data-project=${project.id}">
+                        <div class="products__wrapper">
+                            <div class="products__title">
+                                <div class="block-title" th:utext="${project.name}"></div>
+                                <div class="block-subtitle" th:utext="${project.tag}"></div>
+                                <div js-create-product-type class="add-button add-button_right">+ Добавить категорию</div>
+                            </div>
+                            <div class="products__content">
+                                <div class="tabs">
+                                    <div class="tabs__wrapper">
+                                        <div class="tabs__list">
+                                            <div class="tabs__list-wrapper">
+                                                <div js-tab class="tab hidden-setting active" data-tab="all">Все</div>
+                                                <th:block th:each="productType, stat : ${productTypesByProjects.get(project.id)}">
+                                                    <div js-tab class="tab hidden-setting" th:attr="data-cat=${productType.id}, data-tab=${project.id + 'type' + productType.id}">
+                                                        <span th:utext="${productType.name}"></span>
+                                                        <div js-update-category class="hidden-setting__wrapper"></div>
+                                                    </div>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                        <div class="tabs__blocks">
+                                            <div js-tab-panel data-type="all" data-tab="all" class="tab-content is-open">
+                                                <div class="tab-content__wrapper tab-content__wrapper_overflow-unset">
+                                                    <div class="products__list">
+                                                        <th:block th:each="productType, stat : ${productTypesByProjects.get(project.id )}">
+                                                            <th:block th:each="product : ${productsMap.get(project.id).get(productType.id)}">
+                                                                <div js-update-product th:attr="data-product=${product.id}, data-project=${project.id}, data-type=${productType.id}" class="product-block" th:style="${'background: ' + product.backgroundColor + ';'}">
+                                                                    <div class="product-block__wrapper" th:classappend="${product.theme}">
+                                                                        <div class="product-block__background" th:if="${product.backgroundImage != null}">
+                                                                            <img th:src="@{'/' + ${product.backgroundImage}}" alt="">
+                                                                        </div>
+                                                                        <div class="product-block__title" th:utext="${product.name}"></div>
+                                                                        <div category class="product-block__type" th:utext="${product.productType}"></div>
+                                                                        <div class="product-block__text product-block__text_gray" th:utext="${'Арт: ' + product.vendorCode}"></div>
+                                                                        <div class="product-block__text product-block__text_desc" th:utext="${product.description}"></div>
+                                                                        <div class="product-block__price" th:utext="${#numbers.formatInteger(product.price,0,'WHITESPACE') + ' ₽'}"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </th:block>
+                                                        </th:block>
+                                                        <div js-create-product th:attr="data-project=${project.id}" class="product-block product-block_create">
+                                                            <div class="product-block__message">Добавить товар</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <th:block th:each="productType, stat : ${productTypesByProjects.get(project.id )}">
+                                                <div js-tab-panel th:attr="data-type=${productType.id}, data-tab=${project.id + 'type' + productType.id}" class="tab-content " >
+                                                    <div class="tab-content__wrapper tab-content__wrapper_overflow-unset">
+                                                        <div class="products__list">
+                                                            <th:block th:each="product : ${productsMap.get(project.id).get(productType.id)}">
+                                                                <div js-update-product th:attr="data-product=${product.id}, data-project=${project.id}, data-type=${productType.id}" class="product-block" th:style="${'background: ' + product.backgroundColor + ';'}">
+                                                                    <div class="product-block__wrapper" th:classappend="${product.theme}">
+                                                                        <div class="product-block__background" th:if="${product.backgroundImage != null}">
+                                                                            <img th:src="@{'/' + ${product.backgroundImage}}" alt="">
+                                                                        </div>
+                                                                        <div class="product-block__title" th:utext="${product.name}"></div>
+                                                                        <div category class="product-block__type" th:utext="${product.productType}"></div>
+                                                                        <div class="product-block__text product-block__text_gray" th:utext="${'Арт: ' + product.vendorCode}"></div>
+                                                                        <div class="product-block__text product-block__text_desc" th:utext="${product.description}"></div>
+                                                                        <div class="product-block__price" th:utext="${#numbers.formatInteger(product.price,0,'WHITESPACE') + ' ₽'}"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </th:block>
+                                                            <div js-create-product th:attr="data-type=${productType.id}, data-project=${project.id}" class="product-block product-block_create">
+                                                                <div class="product-block__message">Добавить товар</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-product class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-product-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content">
+            <form js-product-form action="#" class="menu__content-side menu__content-side_full menu__content-side_gray">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить товар
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-block">
+                        <div class="menu-block__wrapper menu-block__wrapper_large menu-block__wrapper_pb10">
+                            <div class="menu-block__side">
+                                <div class="menu-block__title">Настройки</div>
+                                <div class="menu-block__content">
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Проект *</div>
+                                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                                <select product-project id="js-product-project" name="idProject" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                                    <th:block th:each="project : ${projects}">
+                                                        <option th:value="${project.id}" th:utext="${project.name}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Категория товара *</div>
+                                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                                <select product-type id="js-product-type" name="idProductType" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Название товара *</div>
+                                            <div class="menu-input__wrapper">
+                                                <input name="name" class="menu-input__input menu-input__input_small" placeholder="Введите название" required="">
+                                            </div>
+                                        </div>
+                                        <div class="menu-input menu-input_block-menu menu-input_f50">
+                                            <div class="menu-input__title">Артикул *</div>
+                                            <div class="menu-input__wrapper">
+                                                <input name="vendorCode" class="menu-input__input menu-input__input_small" placeholder="Введите артикул" required="">
+                                            </div>
+                                        </div>
+                                        <div class="menu-input menu-input_block-menu menu-input_f50">
+                                            <div class="menu-input__title">Стоимость *</div>
+                                            <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                                <input name="price" class="menu-input__input menu-input__input_small" placeholder="Введите стоимость" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Описание товара *</div>
+                                            <div class="menu-input__wrapper ">
+                                                <textarea name="description" placeholder="Введите описание"  class="menu-input__input menu-input__input_textarea menu-input__input_small" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-block__wrapper menu-block__wrapper_large menu-block__wrapper_pb10">
+                            <div class="menu-block__side flex-basic_30">
+                                <div class="menu-block__title">Оформление карточки</div>
+                                <div class="menu-block__content">
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="menu-input menu-input_block-menu menu-input_f-auto">
+                                            <div class="menu-input__title">Шрифт *</div>
+                                            <div class="menu-input__wrapper  menu-input__wrapper_row">
+                                                <div class="input-element__radio-wrapper input-element__radio-wrapper_dark">
+                                                    <div class="input-element__radio input-element__radio_big">
+                                                        <input type="radio" id="dark" class="radio radio_circle-colored" name="theme" value="dark" checked>
+                                                        <label for="dark" class="colored-circle colored-circle_dark"></label>
+                                                    </div>
+                                                    <div class="input-element__radio input-element__radio_big">
+                                                        <input type="radio" id="light" class="radio radio_circle-colored" name="theme" value="light">
+                                                        <label for="light" class="colored-circle colored-circle_light"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Цвет фона *</div>
+                                            <div class="menu-input__wrapper">
+                                                <input type="color" name="backgroundColor" value="#ffffff" class="menu-input__input menu-input__input_small menu-input__input_color" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="upload-image">
+                                            <div class="upload-image__wrapper">
+                                                <input type="file" name="img" accept="image/*,image/jpeg" id="backgroundImage" class="input-file">
+                                                <label for="backgroundImage" class="js-labelFile upload-image__block">
+                                                    <span class="upload-image__title js-fileName">Загрузите изображение (290x240px)</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-product class="button button_not-allowed button_white">Добавить товар</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div js-menu-update class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content">
+            <form js-update-form action="#" class="menu__content-side menu__content-side_full menu__content-side_gray">
+                <input up-product-id name="id" type="hidden" required>
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать товар
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-block">
+                        <div class="menu-block__wrapper menu-block__wrapper_large menu-block__wrapper_pb10">
+                            <div class="menu-block__side">
+                                <div class="menu-block__title">Настройки</div>
+                                <div class="menu-block__content">
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Проект *</div>
+                                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                                <select product-project id="up-product-project" name="idProject" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                                    <th:block th:each="project : ${projects}">
+                                                        <option th:value="${project.id}" th:utext="${project.name}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Категория товара *</div>
+                                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                                <select product-type id="up-product-type" name="idProductType" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Название товара *</div>
+                                            <div class="menu-input__wrapper">
+                                                <input up-product-name name="name" class="menu-input__input menu-input__input_small" placeholder="Введите название" required="">
+                                            </div>
+                                        </div>
+                                        <div class="menu-input menu-input_block-menu menu-input_f50">
+                                            <div class="menu-input__title">Артикул *</div>
+                                            <div class="menu-input__wrapper">
+                                                <input up-product-vendor name="vendorCode" class="menu-input__input menu-input__input_small" placeholder="Введите артикул" required="">
+                                            </div>
+                                        </div>
+                                        <div class="menu-input menu-input_block-menu menu-input_f50">
+                                            <div class="menu-input__title">Стоимость *</div>
+                                            <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                                <input up-product-price name="price" class="menu-input__input menu-input__input_small" placeholder="Введите стоимость" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Описание товара *</div>
+                                            <div class="menu-input__wrapper ">
+                                                <textarea up-product-description name="description" placeholder="Введите описание"  class="menu-input__input menu-input__input_textarea menu-input__input_small" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-block__wrapper menu-block__wrapper_large menu-block__wrapper_pb10">
+                            <div class="menu-block__side flex-basic_30">
+                                <div class="menu-block__title">Оформление карточки</div>
+                                <div class="menu-block__content">
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="menu-input menu-input_block-menu menu-input_f-auto">
+                                            <div class="menu-input__title">Шрифт *</div>
+                                            <div class="menu-input__wrapper  menu-input__wrapper_row">
+                                                <div class="input-element__radio-wrapper input-element__radio-wrapper_dark">
+                                                    <div class="input-element__radio input-element__radio_big">
+                                                        <input up-product-theme type="radio" id="darkUp" class="radio radio_circle-colored" name="theme" value="dark">
+                                                        <label for="darkUp" class="colored-circle colored-circle_dark"></label>
+                                                    </div>
+                                                    <div class="input-element__radio input-element__radio_big">
+                                                        <input up-product-theme type="radio" id="lightUp" class="radio radio_circle-colored" name="theme" value="light">
+                                                        <label for="lightUp" class="colored-circle colored-circle_light"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Цвет фона *</div>
+                                            <div class="menu-input__wrapper">
+                                                <input up-product-bg id="up-product-b" type="color" name="backgroundColor" value="#ffffff" class="menu-input__input menu-input__input_small menu-input__input_color" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="upload-image">
+                                            <div class="upload-image__wrapper">
+                                                <input type="file" name="img" accept="image/*,image/jpeg" id="backgroundImageUp" class="input-file">
+                                                <label for="backgroundImageUp" class="js-labelFile upload-image__block">
+                                                    <span class="upload-image__title js-fileName">Загрузите изображение (290x240px)</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div update-footer class="menu__footer">
+                    <button type="button" js-update class="button button_not-allowed button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div js-menu-product-type class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-product-type-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-product-type-form action="#" class="menu__content-side menu__content-side_large">
+                <input js-product-type-id-project type="hidden" name="idProject" required>
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить категорию
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Проект</div>
+                        <div class="menu-input__wrapper">
+                            <div class="block-wrapper">
+                                <div js-product-type-project class="block-title block-title_small"></div>
+                                <div js-product-type-project-tag class="block-subtitle block-subtitle_small"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Название категории *</div>
+                        <div class="menu-input__wrapper">
+                            <input name="name" autocomplete="off" class="menu-input__input menu-input__input_small" placeholder="Введите название категории" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-product-type class="button button_white">Добавить категорию</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-category class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-category-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-category-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать категорию
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input js-update-category-id type="hidden" name="id" required>
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название категории *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-update-category-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div delete-category-block class="menu-input__delim  menu-input_close">
+                        <span></span>
+                    </div>
+                    <div delete-category-block class="menu-input menu-input_xsmall menu-input_close">
+                        <div class="menu-input__wrapper">
+                            <input js-update-category-id type="hidden" name="idDelete" required>
+                            <input js-update-category-project type="hidden" name="idProject" required>
+                            <div js-delete-category class="menu-input__input menu-input__delete">
+                                <span>Удалить категорию</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__footer">
+                    <button type="button" js-save-update-category class="button button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/products.js}"></script>
+<script th:src="@{/js/tabs.js}"></script>
+<script th:src="@{/js/upload-img.js}"></script>
+</body>
+</html>

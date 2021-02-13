@@ -1,0 +1,96 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Оценка работы">
+
+    <title>Оценка работы</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: dialog"></div>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-medium">
+    <div class="content-top">
+        <div class="content-top__header">Оценка работы</div>
+        <a th:href="@{/quality/template/}" class="add-button add-button_link add-button_right">Список шаблонов</a>
+    </div>
+
+    <div class="content-top content-top_small">
+        <div th:replace="base :: a-quality-tab"></div>
+    </div>
+
+    <div class="content-main">
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+
+                <div class="templates" th:each="department : ${departments}"
+                     th:attr="data-department=${department.id}"
+                        th:if="${#lists.size(templateMap.get(department.id))} > 0">
+                    <div class="templates__wrapper">
+                        <div class="templates__title" th:utext="${department.title}"></div>
+                        <div class="templates__list">
+                            <div class="template"
+                                 th:each="template : ${templateMap.get(department.id)}"
+                                 th:attr="data-template=${template.id}">
+                                <div class="template__header">
+                                    <div class="template-title" th:utext="${template.name}"></div>
+                                </div>
+                                <div class="template__fields template__fields_told custom-scroll">
+                                    <div class="template-field" th:each="field : ${template.templateFields}">
+                                        <div class="template-field__title" th:utext="${field.fieldName}"></div>
+                                        <div class="template-field__value" th:utext="${field.fieldValue}"></div>
+                                    </div>
+                                </div>
+                                <div class="template__fields">
+                                    <div class="template-field">
+                                        <div class="template-field__title">Коэффициенты</div>
+                                        <div class="template-field__tooltip c-tooltip">
+                                            <div class="c-tooltip__wrapper c-tooltip__wrapper_medium">
+                                                <th:block th:each="coeff : ${template.templateCoefficients}">
+                                                    <div class="c-tooltip__text c-tooltip__text_flex">
+                                                        <span th:utext="${coeff.levelFrom + ' — ' + coeff.levelTo}"></span>
+                                                        <span class="c-tooltip__note" th:utext="${coeff.levelCoefficient}"></span>
+                                                    </div>
+                                                </th:block>
+                                            </div>
+                                            <span th:utext="${template.templateCoefficients[0].levelCoefficient + ' — ' + template.templateCoefficients[#lists.size(template.templateCoefficients) - 1].levelCoefficient}"></span>
+                                        </div>
+                                    </div>
+                                    <div class="template-field">
+                                        <div class="template-field__title">Метрики учитываются</div>
+                                        <div class="template-field__tooltip c-tooltip">
+                                            <div class="c-tooltip__wrapper c-tooltip__wrapper_medium">
+                                                <th:block th:each="metric : ${template.metrics}">
+                                                    <div class="c-tooltip__text" th:utext="${metric.name}"></div>
+                                                </th:block>
+                                            </div>
+                                            <span th:utext="${#lists.size(template.metrics)}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template__footer">
+                                    <form class="button_full" action="#" js-enable-template-form>
+                                        <input name="id" type="hidden" th:value="${template.id}">
+                                        <button type="button" class="button button_white button_full" js-enable-template-btn>
+                                            <span class="hidden-btn hidden-btn_right hidden-btn_right-medium hidden-btn_reveal">Восстановить шаблон</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/quality-template-menu.js}"></script>
+</body>
+</html>

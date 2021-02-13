@@ -1,0 +1,2114 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Воронки продаж">
+
+    <title>Воронки продаж</title>
+
+    <th:block th:insert="base :: links" />
+    <script th:src="@{/js/chart.min.js}"></script>
+    <script th:src="@{/js/utils.js}"></script>
+    <script th:src="@{/js/format.min.js}"></script>
+</head>
+
+<body>
+    <div th:replace="base :: main-nav"></div>
+
+    <div class="main-content main-content_white-top-medium main-content_mw-unset">
+        <div class="content-top">
+            <div class="content-top__header">Воронки продаж</div>
+            <div js-funnel-setting class="theme-setting theme-setting_violet"></div>
+        </div>
+        <div class="content-top content-top_small">
+            <div th:replace="base :: funnel-tab"></div>
+        </div>
+        <div class="content-main">
+            <div class="content-main__panel content-main__panel_large">
+                <div class="button-filter" th:classappend="${filter.isCanClear() ? 'filtered' : ''}">
+                    <button tr-filter-btn class="content-top__filter content-top__filter_small"></button>
+                    <span class="button-filter__label">Фильтр</span>
+                </div>
+
+                <form action="#" th:action="@{/funnel/traffic/chart/}" th:object="${filter}" th:method="post" class="content-main__panel-side">
+                    <div class="input-element__input input-element__input_violet input-element__input_transp input-element__input_row input-element__input_l30">
+                        <div class="input-element__radio input-element__radio_small">
+                            <input filter-parameter type="radio" id="Месяц" class="radio radio-mech" th:field="*{idSort}" th:value="0" th:checked="${filter.idSort == 0}">
+                            <label for="Месяц">Месяц</label>
+                        </div>
+                        <div class="input-element__radio-delim"></div>
+                        <div class="input-element__radio input-element__radio_small">
+                            <input filter-parameter type="radio" id="Неделя" class="radio radio-mech" th:field="*{idSort}" th:value="1" th:checked="${filter.idSort == 1}">
+                            <label for="Неделя">Неделя</label>
+                        </div>
+                        <div class="input-element__radio-delim"></div>
+                        <div class="input-element__radio input-element__radio_small">
+                            <input filter-parameter type="radio" id="День" class="radio radio-mech" th:field="*{idSort}" th:value="2" th:checked="${filter.idSort == 2}">
+                            <label for="День">День</label>
+                        </div>
+                    </div>
+
+                    <div class="input-element__input input-element__input_violet input-element__input_transp input-element__input_row input-element__input_l30">
+                        <div class="input-element__radio input-element__radio_small">
+                            <a class="radio-link " th:classappend="${type == 'table'} ? active : ''" th:href="@{/funnel/traffic/}">Таблица</a>
+                        </div>
+                        <div class="input-element__radio-delim"></div>
+                        <div class="input-element__radio input-element__radio_small">
+                            <a class="radio-link " th:classappend="${type == 'chart'} ? active : ''" th:href="@{/funnel/traffic/chart/}">График</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="custom-lg-10 custom-lg-10_big" th:classappend="${filter.active} ? '' : custom-lg-10_active">
+                        <div class="charts">
+                            <div class="charts__wrapper">
+                                <div class="chart chart_mb60">
+                                    <div class="chart-legend">
+                                        <form class="chart-legend__wrapper" common-chart-form action="#" th:action="@{/funnel/traffic/chart/changeLine}" th:object="${selector}" th:method="post" >
+                                            <select common-chart-line th:field="*{firstLine}" class="chart-legend__input chart-legend__input_large">
+                                                <option th:each="d : ${dataset}"
+                                                        th:value="${d.key}"
+                                                        th:utext="${d.value}"></option>
+                                            </select>
+                                            <div class="chart-legend__line chart-legend__line_red"></div>
+                                            <div class="chart-legend__delim"></div>
+
+                                            <select common-chart-line th:field="*{secondLine}" class="chart-legend__input chart-legend__input_large">
+                                                <option th:each="d : ${dataset}"
+                                                        th:value="${d.key}"
+                                                        th:utext="${d.value}"></option>
+                                            </select>
+                                            <div class="chart-legend__line chart-legend__line_yellow"></div>
+                                        </form>
+                                    </div>
+                                    <div class="chart-wrapper custom-scroll" th:classappend="${filter.scrollType} == 2 ? chart-wrapper_scroll : '' ">
+                                        <div class="canvas-wrapper"  th:classappend="${filter.idSort} == 0 ? chart-wrapper_m : (${filter.idSort} == 1 ? chart-wrapper_w : (${filter.idSort} == 2 ? chart-wrapper_d : ''))">
+                                            <canvas id="chartCommon"></canvas>
+                                        </div>
+                                    </div>
+                                    <script th:inline="javascript">
+                                        var lineChartData = {
+                                            labels: [[${dates}]],
+                                            datasets: [{
+                                                label: [[${selector.firstLine}]],
+                                                borderColor: window.chartColors.custom_red,
+                                                backgroundColor: window.chartColors.custom_red,
+                                                fill: false,
+                                                data: setData([[${selector.firstLine}]]),
+                                                yAxisID: 'y-axis-1'
+                                            },{
+                                                label: [[${selector.secondLine}]],
+                                                borderColor: window.chartColors.custom_yellow,
+                                                backgroundColor: window.chartColors.custom_yellow,
+                                                fill: false,
+                                                data: setData([[${selector.secondLine}]]),
+                                                yAxisID: 'y-axis-2'
+                                            }]
+                                        };
+
+                                        function setData(line) {
+                                            var data;
+                                            if (line === 'proceeds') {
+                                                data = [[${proceeds.sums}]];
+                                            }
+                                            if (line === 'prepaymentProceeds') {
+                                                data = [[${prepaymentProceeds.sums}]];
+                                            }
+                                            if (line === 'surchargeProceeds') {
+                                                data = [[${surchargeProceeds.sums}]];
+                                            }
+                                            if (line === 'advPrice') {
+                                                data = [[${advPrice.sums}]];
+                                            }
+                                            if (line === 'profit') {
+                                                data = [[${profit.sums}]];
+                                            }
+                                            if (line === 'profitPercent') {
+                                                data = [[${profitPercent.sums}]];
+                                            }
+                                            if (line === 'kpd') {
+                                                data = [[${kpd.sums}]];
+                                            }
+                                            if (line === 'advShows') {
+                                                data = [[${advShows.sums}]];
+                                            }
+                                            if (line === 'advClick') {
+                                                data = [[${advClick.sums}]];
+                                            }
+                                            if (line === 'advApplication') {
+                                                data = [[${advApplication.sums}]];
+                                            }
+                                            if (line === 'invoices') {
+                                                data = [[${invoices.sums}]];
+                                            }
+                                            if (line === 'salesNewClient') {
+                                                data = [[${salesNewClient.sums}]];
+                                            }
+                                            if (line === 'salesNewClientNM') {
+                                                data = [[${salesNewClientNM.sums}]];
+                                            }
+                                            if (line === 'salesNewClientM') {
+                                                data = [[${salesNewClientM.sums}]];
+                                            }
+                                            if (line === 'salesSurcharge') {
+                                                data = [[${salesSurcharge.sums}]];
+                                            }
+                                            if (line === 'newClientsDo') {
+                                                data = [[${newClientsDo.sums}]];
+                                            }
+                                            if (line === 'newClientsTraffic') {
+                                                data = [[${newClientsTraffic.sums}]];
+                                            }
+                                            if (line === 'newClientsAll') {
+                                                data = [[${newClientsAll.sums}]];
+                                            }
+                                            if (line === 'newClientsWithoutMailing') {
+                                                data = [[${newClientsWithoutMailing.sums}]];
+                                            }
+                                            if (line === 'newClientsWithMailing') {
+                                                data = [[${newClientsWithMailing.sums}]];
+                                            }
+                                            if (line === 'averageCheck') {
+                                                data = [[${averageCheck.sums}]];
+                                            }
+                                            if (line === 'averageCheckPrepayment') {
+                                                data = [[${averageCheckPrepayment.sums}]];
+                                            }
+                                            if (line === 'averageCheckSurcharge') {
+                                                data = [[${averageCheckSurcharge.sums}]];
+                                            }
+                                            if (line === 'showPrice') {
+                                                data = [[${showPrice.sums}]];
+                                            }
+                                            if (line === 'clickPrice') {
+                                                data = [[${clickPrice.sums}]];
+                                            }
+                                            if (line === 'applicationPrice') {
+                                                data = [[${applicationPrice.sums}]];
+                                            }
+                                            if (line === 'invoicePrice') {
+                                                data = [[${invoicePrice.sums}]];
+                                            }
+                                            if (line === 'clientPrice') {
+                                                data = [[${clientPrice.sums}]];
+                                            }
+                                            if (line === 'clientPriceDo') {
+                                                data = [[${clientPriceDo.sums}]];
+                                            }
+                                            if (line === 'showToClick') {
+                                                data = [[${showToClick.sums}]];
+                                            }
+                                            if (line === 'clickToApplication') {
+                                                data = [[${clickToApplication.sums}]];
+                                            }
+                                            if (line === 'applicationToInvoice') {
+                                                data = [[${applicationToInvoice.sums}]];
+                                            }
+                                            if (line === 'invoiceToClient') {
+                                                data = [[${invoiceToClient.sums}]];
+                                            }
+                                            if (line === 'applicationToClient') {
+                                                data = [[${applicationToClient.sums}]];
+                                            }
+                                            if (line === 'clickToApplicationDo') {
+                                                data = [[${clickToApplicationDo.sums}]];
+                                            }
+                                            return data;
+                                        }
+                                    </script>
+                                </div>
+
+                                <div class="row">
+                                    <div class="chart" th:classappend="${filter.groupingType} == 1 ? col-lg-12 : (${filter.groupingType} == 2 ? col-lg-6 : (${filter.groupingType} == 3 ? col-lg-4 : col-lg-12))">
+                                        <div class="chart-header">Выручка и расходы на рекламу</div>
+                                        <div class="chart-wrapper custom-scroll" th:classappend="${filter.scrollType} == 2 ? chart-wrapper_scroll : '' ">
+                                            <div class="canvas-wrapper"   th:classappend="${filter.idSort} == 0 ? chart-wrapper_m : (${filter.idSort} == 1 ? chart-wrapper_w : (${filter.idSort} == 2 ? chart-wrapper_d : ''))">
+                                                <canvas id="chartProceeds"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="chart-legend">
+                                            <div class="chart-legend__wrapper chart-legend__wrapper_negative">
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockProceed}">
+                                                    <div class="chart-legend__line chart-legend__line_green"></div>
+                                                    <div class="chart-legend__text">Выручка</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockPrepaymentProceed}">
+                                                    <div class="chart-legend__line chart-legend__line_red"></div>
+                                                    <div class="chart-legend__text">Выручка предоплаты</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockSurchargeProceed}">
+                                                    <div class="chart-legend__line chart-legend__line_blue"></div>
+                                                    <div class="chart-legend__text">Выручка доплаты</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockAdvertisingExpenses}">
+                                                    <div class="chart-legend__line chart-legend__line_yellow"></div>
+                                                    <div class="chart-legend__text">Расходы на рекламу</div>
+                                                </div>
+                                                <div class="chart-legend__description"  th:if="${filter.visableSetting.blockProceedAdvertisingExpenses}">
+                                                    <div class="chart-legend__line chart-legend__line_violet"></div>
+                                                    <div class="chart-legend__text">Выручка - Расходы на рекламу</div>
+                                                </div>
+
+                                                <div class="chart-legend__delim chart-legend__delim_small"></div>
+
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockPercentNetProceed}">
+                                                    <div class="chart-legend__line chart-legend__line_pink"></div>
+                                                    <div class="chart-legend__text">% чистой выручки</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var datasets2 = [];
+                                            if ([[${filter.visableSetting.blockProceed}]]) {
+                                                datasets2[datasets2.length] = {
+                                                    label: 'proceeds',
+                                                    borderColor: window.chartColors.custom_green,
+                                                    backgroundColor: window.chartColors.custom_green,
+                                                    fill: false,
+                                                    data: [[${proceeds.sums}]],
+                                                    yAxisID: 'proceeds-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockPrepaymentProceed}]]) {
+                                                datasets2[datasets2.length] = {
+                                                    label: 'prepaymentProceeds',
+                                                    borderColor: window.chartColors.custom_red,
+                                                    backgroundColor: window.chartColors.custom_red,
+                                                    fill: false,
+                                                    data: [[${prepaymentProceeds.sums}]],
+                                                    yAxisID: 'proceeds-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockSurchargeProceed}]]) {
+                                                datasets2[datasets2.length] = {
+                                                    label: 'surchargeProceeds',
+                                                    borderColor: window.chartColors.custom_blue,
+                                                    backgroundColor: window.chartColors.custom_blue,
+                                                    fill: false,
+                                                    data: [[${surchargeProceeds.sums}]],
+                                                    yAxisID: 'proceeds-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockAdvertisingExpenses}]]) {
+                                                datasets2[datasets2.length] = {
+                                                    label: 'advPrice',
+                                                    borderColor: window.chartColors.custom_yellow,
+                                                    backgroundColor: window.chartColors.custom_yellow,
+                                                    fill: false,
+                                                    data: [[${advPrice.sums}]],
+                                                    yAxisID: 'proceeds-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockProceedAdvertisingExpenses}]]) {
+                                                datasets2[datasets2.length] = {
+                                                    label: 'profit',
+                                                    borderColor: window.chartColors.custom_violet,
+                                                    backgroundColor: window.chartColors.custom_violet,
+                                                    fill: false,
+                                                    data: [[${profit.sums}]],
+                                                    yAxisID: 'proceeds-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockPercentNetProceed}]]) {
+                                                datasets2[datasets2.length] = {
+                                                    label: 'profitPercent',
+                                                    borderColor: window.chartColors.custom_pink,
+                                                    backgroundColor: window.chartColors.custom_pink,
+                                                    fill: false,
+                                                    data: [[${profitPercent.sums}]],
+                                                    yAxisID: 'proceeds-axis-2'
+                                                };
+                                            }
+
+                                            var lineChartData2 = {
+                                                labels: [[${dates}]],
+                                                datasets: datasets2
+                                            };
+                                        </script>
+                                    </div>
+
+                                    <div class="chart" th:classappend="${filter.groupingType} == 1 ? col-lg-12 : (${filter.groupingType} == 2 ? col-lg-6 : (${filter.groupingType} == 3 ? col-lg-4 : col-lg-12))">
+                                        <div class="chart-header">Показатели этапов воронки</div>
+                                        <div class="chart-wrapper custom-scroll" th:classappend="${filter.scrollType} == 2 ? chart-wrapper_scroll : '' ">
+                                            <div class="canvas-wrapper"   th:classappend="${filter.idSort} == 0 ? chart-wrapper_m : (${filter.idSort} == 1 ? chart-wrapper_w : (${filter.idSort} == 2 ? chart-wrapper_d : ''))">
+                                                <canvas id="chartIndicators"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="chart-legend">
+                                            <div class="chart-legend__wrapper chart-legend__wrapper_negative">
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockShows}">
+                                                    <div class="chart-legend__line chart-legend__line_green"></div>
+                                                    <div class="chart-legend__text">Показов</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockClicks}">
+                                                    <div class="chart-legend__line chart-legend__line_red"></div>
+                                                    <div class="chart-legend__text">Кликов</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockApplications}">
+                                                    <div class="chart-legend__line chart-legend__line_blue"></div>
+                                                    <div class="chart-legend__text">Заявок</div>
+                                                </div>
+
+                                                <div class="chart-legend__delim chart-legend__delim_small"></div>
+
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockBills}">
+                                                    <div class="chart-legend__line chart-legend__line_yellow"></div>
+                                                    <div class="chart-legend__text">Заказов</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockSales}">
+                                                    <div class="chart-legend__line chart-legend__line_violet"></div>
+                                                    <div class="chart-legend__text">Оплат всего</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockSalesWithoutSales}">
+                                                    <div class="chart-legend__line chart-legend__line_pink"></div>
+                                                    <div class="chart-legend__text">Оплат без рассылки</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockSalesWithSales}">
+                                                    <div class="chart-legend__line chart-legend__line_light_blue"></div>
+                                                    <div class="chart-legend__text">Оплат с рассылки</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockSurcharges}">
+                                                    <div class="chart-legend__line chart-legend__line_orange"></div>
+                                                    <div class="chart-legend__text">Доплаты</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var datasets3 = [];
+                                            if ([[${filter.visableSetting.blockShows}]]) {
+                                                datasets3[datasets3.length] = {
+                                                    label: 'advShows',
+                                                    borderColor: window.chartColors.custom_green,
+                                                    backgroundColor: window.chartColors.custom_green,
+                                                    fill: false,
+                                                    data: [[${advShows.sums}]],
+                                                    yAxisID: 'indicators-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockClicks}]]) {
+                                                datasets3[datasets3.length] = {
+                                                    label: 'advClick',
+                                                    borderColor: window.chartColors.custom_red,
+                                                    backgroundColor: window.chartColors.custom_red,
+                                                    fill: false,
+                                                    data: [[${advClick.sums}]],
+                                                    yAxisID: 'indicators-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockApplications}]]) {
+                                                datasets3[datasets3.length] = {
+                                                    label: 'advApplication',
+                                                    borderColor: window.chartColors.custom_blue,
+                                                    backgroundColor: window.chartColors.custom_blue,
+                                                    fill: false,
+                                                    data: [[${advApplication.sums}]],
+                                                    yAxisID: 'indicators-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockBills}]]) {
+                                                datasets3[datasets3.length] = {
+                                                    label: 'invoices',
+                                                    borderColor: window.chartColors.custom_yellow,
+                                                    backgroundColor: window.chartColors.custom_yellow,
+                                                    fill: false,
+                                                    data: [[${invoices.sums}]],
+                                                    yAxisID: 'indicators-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockSales}]]) {
+                                                datasets3[datasets3.length] = {
+                                                    label: 'salesNewClient',
+                                                    borderColor: window.chartColors.custom_violet,
+                                                    backgroundColor: window.chartColors.custom_violet,
+                                                    fill: false,
+                                                    data: [[${salesNewClient.sums}]],
+                                                    yAxisID: 'indicators-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockSalesWithoutSales}]]) {
+                                                datasets3[datasets3.length] = {
+                                                    label: 'salesNewClientNM',
+                                                    borderColor: window.chartColors.custom_pink,
+                                                    backgroundColor: window.chartColors.custom_pink,
+                                                    fill: false,
+                                                    data: [[${salesNewClientNM.sums}]],
+                                                    yAxisID: 'indicators-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockSalesWithSales}]]) {
+                                                datasets3[datasets3.length] = {
+                                                    label: 'salesNewClientM',
+                                                    borderColor: window.chartColors.custom_light_blue,
+                                                    backgroundColor: window.chartColors.custom_light_blue,
+                                                    fill: false,
+                                                    data: [[${salesNewClientM.sums}]],
+                                                    yAxisID: 'indicators-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockSurcharges}]]) {
+                                                datasets3[datasets3.length] = {
+                                                    label: 'salesSurcharge',
+                                                    borderColor: window.chartColors.custom_orange,
+                                                    backgroundColor: window.chartColors.custom_orange,
+                                                    fill: false,
+                                                    data: [[${salesSurcharge.sums}]],
+                                                    yAxisID: 'indicators-axis-2'
+                                                };
+                                            }
+
+                                            var lineChartData3 = {
+                                                labels: [[${dates}]],
+                                                datasets: datasets3
+                                            };
+                                        </script>
+                                    </div>
+
+                                    <div class="chart" th:classappend="${filter.groupingType} == 1 ? col-lg-12 : (${filter.groupingType} == 2 ? col-lg-6 : (${filter.groupingType} == 3 ? col-lg-4 : col-lg-12))">
+                                        <div class="chart-header">Клиенты по дате обращения</div>
+                                        <div class="chart-wrapper custom-scroll" th:classappend="${filter.scrollType} == 2 ? chart-wrapper_scroll : '' ">
+                                            <div class="canvas-wrapper "   th:classappend="${filter.idSort} == 0 ? chart-wrapper_m : (${filter.idSort} == 1 ? chart-wrapper_w : (${filter.idSort} == 2 ? chart-wrapper_d : ''))">
+                                                <canvas id="chartClients" ></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="chart-legend">
+                                            <div class="chart-legend__wrapper chart-legend__wrapper_negative">
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockClientsDO}">
+                                                    <div class="chart-legend__line chart-legend__line_green"></div>
+                                                    <div class="chart-legend__text">Новых клиентов по ДО</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockClientsTraffic}">
+                                                    <div class="chart-legend__line chart-legend__line_red"></div>
+                                                    <div class="chart-legend__text">Новых клиентов с трафика за период</div>
+                                                </div>
+
+                                                <div class="chart-legend__delim chart-legend__delim_small"></div>
+
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockSalesDo}">
+                                                    <div class="chart-legend__line chart-legend__line_blue"></div>
+                                                    <div class="chart-legend__text">Дотекло клиентов по ДО</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockSalesDoWithoutMailing}">
+                                                    <div class="chart-legend__line chart-legend__line_yellow"></div>
+                                                    <div class="chart-legend__text">Дотекло клиентов по ДО (без рассылки)</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockSalesDoWithMailing}">
+                                                    <div class="chart-legend__line chart-legend__line_violet"></div>
+                                                    <div class="chart-legend__text">Дотекло клиентов по ДО (по рассылке)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var datasets4 = [];
+                                            if ([[${filter.visableSetting.blockClientsDO}]]) {
+                                                datasets4[datasets4.length] = {
+                                                    label: 'newClientsDo',
+                                                    borderColor: window.chartColors.custom_green,
+                                                    backgroundColor: window.chartColors.custom_green,
+                                                    fill: false,
+                                                    data: [[${newClientsDo.sums}]],
+                                                    yAxisID: 'clients-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockClientsTraffic}]]) {
+                                                datasets4[datasets4.length] = {
+                                                    label: 'newClientsTraffic',
+                                                    borderColor: window.chartColors.custom_red,
+                                                    backgroundColor: window.chartColors.custom_red,
+                                                    fill: false,
+                                                    data: [[${newClientsTraffic.sums}]],
+                                                    yAxisID: 'clients-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockSalesDo}]]) {
+                                                datasets4[datasets4.length] = {
+                                                    label: 'newClientsAll',
+                                                    borderColor: window.chartColors.custom_blue,
+                                                    backgroundColor: window.chartColors.custom_blue,
+                                                    fill: false,
+                                                    data: [[${newClientsAll.sums}]],
+                                                    yAxisID: 'clients-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockSalesDoWithoutMailing}]]) {
+                                                datasets4[datasets4.length] = {
+                                                    label: 'newClientsWithoutMailing',
+                                                    borderColor: window.chartColors.custom_yellow,
+                                                    backgroundColor: window.chartColors.custom_yellow,
+                                                    fill: false,
+                                                    data: [[${newClientsWithoutMailing.sums}]],
+                                                    yAxisID: 'clients-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockSalesDoWithMailing}]]) {
+                                                datasets4[datasets4.length] = {
+                                                    label: 'newClientsWithMailing',
+                                                    borderColor: window.chartColors.custom_violet,
+                                                    backgroundColor: window.chartColors.custom_violet,
+                                                    fill: false,
+                                                    data: [[${newClientsWithMailing.sums}]],
+                                                    yAxisID: 'clients-axis-2'
+                                                };
+                                            }
+
+                                            var lineChartData4 = {
+                                                labels: [[${dates}]],
+                                                datasets: datasets4
+                                            };
+                                        </script>
+                                    </div>
+
+                                    <div class="chart" th:classappend="${filter.groupingType} == 1 ? col-lg-12 : (${filter.groupingType} == 2 ? col-lg-6 : (${filter.groupingType} == 3 ? col-lg-4 : col-lg-12))">
+                                        <div class="chart-header">Средний чек</div>
+                                        <div class="chart-wrapper custom-scroll" th:classappend="${filter.scrollType} == 2 ? chart-wrapper_scroll : '' ">
+                                            <div class="canvas-wrapper" th:classappend="${filter.idSort} == 0 ? chart-wrapper_m : (${filter.idSort} == 1 ? chart-wrapper_w : (${filter.idSort} == 2 ? chart-wrapper_d : ''))">
+                                                <canvas id="chartAverage"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="chart-legend">
+                                            <div class="chart-legend__wrapper chart-legend__wrapper_negative">
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockAverage}">
+                                                    <div class="chart-legend__line chart-legend__line_green"></div>
+                                                    <div class="chart-legend__text">Средний чек</div>
+                                                </div>
+
+                                                <div class="chart-legend__delim chart-legend__delim_small"></div>
+
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockAveragePrepayment}">
+                                                    <div class="chart-legend__line chart-legend__line_red"></div>
+                                                    <div class="chart-legend__text">Средний чек предоплаты</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockAverageSurcharge}">
+                                                    <div class="chart-legend__line chart-legend__line_blue"></div>
+                                                    <div class="chart-legend__text">Средний чек доплаты</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var datasets5 = [];
+                                            if ([[${filter.visableSetting.blockAverage}]]) {
+                                                datasets5[datasets5.length] = {
+                                                    label: 'averageCheck',
+                                                    borderColor: window.chartColors.custom_green,
+                                                    backgroundColor: window.chartColors.custom_green,
+                                                    fill: false,
+                                                    data: [[${averageCheck.sums}]],
+                                                    yAxisID: 'average-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockAveragePrepayment}]]) {
+                                                datasets5[datasets5.length] = {
+                                                    label: 'averageCheckPrepayment',
+                                                    borderColor: window.chartColors.custom_red,
+                                                    backgroundColor: window.chartColors.custom_red,
+                                                    fill: false,
+                                                    data: [[${averageCheckPrepayment.sums}]],
+                                                    yAxisID: 'average-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockAverageSurcharge}]]) {
+                                                datasets5[datasets5.length] = {
+                                                    label: 'averageCheckSurcharge',
+                                                    borderColor: window.chartColors.custom_blue,
+                                                    backgroundColor: window.chartColors.custom_blue,
+                                                    fill: false,
+                                                    data: [[${averageCheckSurcharge.sums}]],
+                                                    yAxisID: 'average-axis-2'
+                                                };
+                                            }
+
+                                            var lineChartData5 = {
+                                                labels: [[${dates}]],
+                                                datasets: datasets5
+                                            };
+                                        </script>
+                                    </div>
+
+                                    <div class="chart" th:classappend="${filter.groupingType} == 1 ? col-lg-12 : (${filter.groupingType} == 2 ? col-lg-6 : (${filter.groupingType} == 3 ? col-lg-4 : col-lg-12))">
+                                        <div class="chart-header">Стоимость показателей этапов воронки</div>
+                                        <div class="chart-wrapper custom-scroll" th:classappend="${filter.scrollType} == 2 ? chart-wrapper_scroll : '' ">
+                                            <div class="canvas-wrapper"   th:classappend="${filter.idSort} == 0 ? chart-wrapper_m : (${filter.idSort} == 1 ? chart-wrapper_w : (${filter.idSort} == 2 ? chart-wrapper_d : ''))">
+                                                <canvas id="chartPrice"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="chart-legend">
+                                            <div class="chart-legend__wrapper chart-legend__wrapper_negative">
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockPriceShows}">
+                                                    <div class="chart-legend__line chart-legend__line_green"></div>
+                                                    <div class="chart-legend__text">Стоимость 1000 показов</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockPriceClick}">
+                                                    <div class="chart-legend__line chart-legend__line_red"></div>
+                                                    <div class="chart-legend__text">Стоимость клика</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockPriceApplication}">
+                                                    <div class="chart-legend__line chart-legend__line_blue"></div>
+                                                    <div class="chart-legend__text">Стоимость заявки</div>
+                                                </div>
+
+                                                <div class="chart-legend__delim chart-legend__delim_small"></div>
+
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockPriceBill}">
+                                                    <div class="chart-legend__line chart-legend__line_yellow"></div>
+                                                    <div class="chart-legend__text">Стоимость заказа</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockClient}">
+                                                    <div class="chart-legend__line chart-legend__line_violet"></div>
+                                                    <div class="chart-legend__text">Стоимость клиента</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockClientDO}">
+                                                    <div class="chart-legend__line chart-legend__line_pink"></div>
+                                                    <div class="chart-legend__text">Стоимость клиента по ДО</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var datasets6 = [];
+                                            if ([[${filter.visableSetting.blockPriceShows}]]) {
+                                                datasets6[datasets6.length] = {
+                                                    label: 'showPrice',
+                                                    borderColor: window.chartColors.custom_green,
+                                                    backgroundColor: window.chartColors.custom_green,
+                                                    fill: false,
+                                                    data: [[${showPrice.sums}]],
+                                                    yAxisID: 'price-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockPriceClick}]]) {
+                                                datasets6[datasets6.length] = {
+                                                    label: 'clickPrice',
+                                                    borderColor: window.chartColors.custom_red,
+                                                    backgroundColor: window.chartColors.custom_red,
+                                                    fill: false,
+                                                    data: [[${clickPrice.sums}]],
+                                                    yAxisID: 'price-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockPriceApplication}]]) {
+                                                datasets6[datasets6.length] = {
+                                                    label: 'applicationPrice',
+                                                    borderColor: window.chartColors.custom_blue,
+                                                    backgroundColor: window.chartColors.custom_blue,
+                                                    fill: false,
+                                                    data: [[${applicationPrice.sums}]],
+                                                    yAxisID: 'price-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockPriceBill}]]) {
+                                                datasets6[datasets6.length] = {
+                                                    label: 'invoicePrice',
+                                                    borderColor: window.chartColors.custom_yellow,
+                                                    backgroundColor: window.chartColors.custom_yellow,
+                                                    fill: false,
+                                                    data: [[${invoicePrice.sums}]],
+                                                    yAxisID: 'price-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockClient}]]) {
+                                                datasets6[datasets6.length] = {
+                                                    label: 'clientPrice',
+                                                    borderColor: window.chartColors.custom_violet,
+                                                    backgroundColor: window.chartColors.custom_violet,
+                                                    fill: false,
+                                                    data: [[${clientPrice.sums}]],
+                                                    yAxisID: 'price-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockClientDO}]]) {
+                                                datasets6[datasets6.length] = {
+                                                    label: 'clientPriceDo',
+                                                    borderColor: window.chartColors.custom_pink,
+                                                    backgroundColor: window.chartColors.custom_pink,
+                                                    fill: false,
+                                                    data: [[${clientPriceDo.sums}]],
+                                                    yAxisID: 'price-axis-2'
+                                                };
+                                            }
+
+                                            var lineChartData6 = {
+                                                labels: [[${dates}]],
+                                                datasets: datasets6
+                                            };
+                                        </script>
+                                    </div>
+
+                                    <div class="chart" th:classappend="${filter.groupingType} == 1 ? col-lg-12 : (${filter.groupingType} == 2 ? col-lg-6 : (${filter.groupingType} == 3 ? col-lg-4 : col-lg-12))">
+                                        <div class="chart-header">Конверсии воронки</div>
+                                        <div class="chart-wrapper custom-scroll" th:classappend="${filter.scrollType} == 2 ? chart-wrapper_scroll : '' ">
+                                            <div class="canvas-wrapper" th:classappend="${filter.idSort} == 0 ? chart-wrapper_m : (${filter.idSort} == 1 ? chart-wrapper_w : (${filter.idSort} == 2 ? chart-wrapper_d : ''))">
+                                                <canvas id="chartConversion"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="chart-legend">
+                                            <div class="chart-legend__wrapper chart-legend__wrapper_negative">
+                                                <div class="chart-legend__description"  th:if="${filter.visableSetting.blockShowToClick}">
+                                                    <div class="chart-legend__line chart-legend__line_green"></div>
+                                                    <div class="chart-legend__text">CV из показа в клик</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockClickToApplication}">
+                                                    <div class="chart-legend__line chart-legend__line_red"></div>
+                                                    <div class="chart-legend__text">CV из клика в заявку</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockApplicationToBill}">
+                                                    <div class="chart-legend__line chart-legend__line_blue"></div>
+                                                    <div class="chart-legend__text">CV из заявки в заказ</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockApplicationToClient}">
+                                                    <div class="chart-legend__line chart-legend__line_pink"></div>
+                                                    <div class="chart-legend__text">CV из заявки в оплату</div>
+                                                </div>
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockApplicationToClientDO}">
+                                                    <div class="chart-legend__line chart-legend__line_violet"></div>
+                                                    <div class="chart-legend__text">CV из заявки в оплату по ДО</div>
+                                                </div>
+
+                                                <div class="chart-legend__delim chart-legend__delim_small"></div>
+
+                                                <div class="chart-legend__description" th:if="${filter.visableSetting.blockBillToClient}">
+                                                    <div class="chart-legend__line chart-legend__line_yellow"></div>
+                                                    <div class="chart-legend__text">CV из заказа в оплату</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var datasets7 = [];
+                                            if ([[${filter.visableSetting.blockShowToClick}]]) {
+                                                datasets7[datasets7.length] = {
+                                                    label: 'showToClick',
+                                                    borderColor: window.chartColors.custom_green,
+                                                    backgroundColor: window.chartColors.custom_green,
+                                                    fill: false,
+                                                    data: [[${showToClick.sums}]],
+                                                    yAxisID: 'conversion-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockClickToApplication}]]) {
+                                                datasets7[datasets7.length] = {
+                                                    label: 'clickToApplication',
+                                                    borderColor: window.chartColors.custom_red,
+                                                    backgroundColor: window.chartColors.custom_red,
+                                                    fill: false,
+                                                    data: [[${clickToApplication.sums}]],
+                                                    yAxisID: 'conversion-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockApplicationToBill}]]) {
+                                                datasets7[datasets7.length] = {
+                                                    label: 'applicationToInvoice',
+                                                    borderColor: window.chartColors.custom_blue,
+                                                    backgroundColor: window.chartColors.custom_blue,
+                                                    fill: false,
+                                                    data: [[${applicationToInvoice.sums}]],
+                                                    yAxisID: 'conversion-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockBillToClient}]]) {
+                                                datasets7[datasets7.length] = {
+                                                    label: 'invoiceToClient',
+                                                    borderColor: window.chartColors.custom_yellow,
+                                                    backgroundColor: window.chartColors.custom_yellow,
+                                                    fill: false,
+                                                    data: [[${invoiceToClient.sums}]],
+                                                    yAxisID: 'conversion-axis-2'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockApplicationToClient}]]) {
+                                                datasets7[datasets7.length] = {
+                                                    label: 'applicationToClient',
+                                                    borderColor: window.chartColors.custom_pink,
+                                                    backgroundColor: window.chartColors.custom_pink,
+                                                    fill: false,
+                                                    data: [[${applicationToClient.sums}]],
+                                                    yAxisID: 'conversion-axis-1'
+                                                };
+                                            }
+                                            if ([[${filter.visableSetting.blockApplicationToClientDO}]]) {
+                                                datasets7[datasets7.length] = {
+                                                    label: 'clickToApplicationDo',
+                                                    borderColor: window.chartColors.custom_violet,
+                                                    backgroundColor: window.chartColors.custom_violet,
+                                                    fill: false,
+                                                    data: [[${clickToApplicationDo.sums}]],
+                                                    yAxisID: 'conversion-axis-1'
+                                                };
+                                            }
+
+                                            var lineChartData7 = {
+                                                labels: [[${dates}]],
+                                                datasets: datasets7
+                                            };
+                                        </script>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="chart col-lg-6 chart-pie">
+                                        <div class="chart-header">Выручка по каналам</div>
+                                        <div class="chart-wrapper chart-wrapper_told">
+                                            <canvas id="pieProceedsChannels"></canvas>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var list1 = [[${channelProceedsChart}]];
+                                            var datasetPie1 = [];
+
+                                            var labels1 = [[${channelsChart}]];
+                                            labels1[labels1.length - 1] = "Неизвестно";
+
+                                            var pieLabel1 = [];
+                                            for (i = 0; i < list1.length; i++) {
+                                                if (list1[i].sum != 0) {
+                                                    datasetPie1[datasetPie1.length] = list1[i].sum;
+                                                    pieLabel1[pieLabel1.length] = labels1[i];
+                                                }
+                                            }
+
+                                            var pieChartData1 = {
+                                                datasets: [{
+                                                    label: 'proceeds',
+                                                    data: datasetPie1,
+                                                    backgroundColor: window.pieColors
+                                                }],
+                                                labels: pieLabel1
+                                            }
+                                        </script>
+                                    </div>
+                                    <div class="chart col-lg-6 chart-pie">
+                                        <div class="chart-header">Выручка по менеджерам</div>
+                                        <div class="chart-wrapper chart-wrapper_told">
+                                            <canvas id="pieProceedsManagers"></canvas>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var list2 = [[${proceedsChart}]];
+                                            var datasetPie2 = [];
+
+                                            var labels2 = [[${managersChart}]];
+
+                                            var pieLabel2 = [];
+                                            for (i = 0; i < list2.length; i++) {
+                                                if (list2[i].sum != 0) {
+                                                    datasetPie2[datasetPie2.length] = list2[i].sum;
+                                                    pieLabel2[pieLabel2.length] = labels2[i];
+                                                }
+                                            }
+
+                                            var pieChartData2 = {
+                                                datasets: [{
+                                                    label: 'proceeds',
+                                                    data: datasetPie2,
+                                                    backgroundColor: window.pieColors
+                                                }],
+                                                labels: pieLabel2
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="chart col-lg-12 chart-bar">
+                                        <div class="chart-header">КПД по каналам</div>
+                                        <div class="chart-wrapper">
+                                            <canvas id="barKPDChannels"></canvas>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var list4 = [[${channelKpdChart}]];
+                                            var datasetBar1 = [];
+                                            for (i = 0; i < list4.length; i++) {
+                                                datasetBar1[i] = list4[i].sum;
+                                            }
+                                            var labels2 = [[${channelsChart}]];
+                                            labels2[labels2.length - 1] = "Неизвестно";
+                                        </script>
+                                    </div>
+                                    <div class="chart col-lg-12 chart-bar">
+                                        <div class="chart-header">КПД по менеджерам</div>
+                                        <div class="chart-wrapper">
+                                            <canvas id="barKPDManagers"></canvas>
+                                        </div>
+                                        <script th:inline="javascript">
+                                            var list3 = [[${kpdChart}]];
+                                            var datasetBar2 = [];
+                                            for (i = 0; i < list3.length; i++) {
+                                                datasetBar2[i] = list3[i].sum;
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        let ds = [[${dataset}]];
+        let dsp = [[${datasetPostfix}]];
+
+        function separate(value) {
+            var parts = (value + '').split('.'),
+                main = parts[0],
+                len = main.length,
+                output = '',
+                i = len - 1;
+
+            while(i >= 0) {
+                output = main.charAt(i) + output;
+                if ((len - i) % 3 === 0 && i > 0) {
+                    output = ' ' + output;
+                }
+                --i;
+            }
+
+            if (parts.length > 1) {
+                output += '.' + parts[1];
+            }
+            return output;
+        }
+
+        function customTooltips(tooltip) {
+            var tooltipName = this._chart.canvas.id + '-tooltip';
+            var tooltipEl = document.getElementById(tooltipName);
+
+            if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = tooltipName;
+                tooltipEl.classList.add('custom-tooltip');
+                tooltipEl.innerHTML = '<table></table>';
+                document.body.appendChild(tooltipEl);
+            }
+
+            if (tooltip.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                return;
+            }
+
+            tooltipEl.classList.remove('above', 'below', 'no-transform');
+            if (tooltip.yAlign) {
+                tooltipEl.classList.add(tooltip.yAlign);
+            } else {
+                tooltipEl.classList.add('no-transform');
+            }
+
+            function getBody(bodyItem) {
+                return bodyItem.lines;
+            }
+
+            if (tooltip.body) {
+                var titleLines = tooltip.title || [];
+                var bodyLines = tooltip.body.map(getBody);
+
+                var innerHtml = '<thead>';
+
+                titleLines.forEach(function(title) {
+                    innerHtml += '<tr><th class="custom-tooltip__title">' + title + '</th></tr>';
+                });
+                innerHtml += '</thead><tbody>';
+
+                bodyLines.forEach(function(body, i) {
+                    var colors = tooltip.labelColors[i];
+                    var style = 'background:' + colors.backgroundColor;
+                    style += '; border-color:' + colors.borderColor;
+                    style += '; border-width: 2px';
+                    var span = '<span class="custom-tooltip__color" style="' + style + '"></span>';
+                    innerHtml += '<tr><td>' + span + body + '</td></tr>';
+                });
+                innerHtml += '</tbody>';
+
+                var tableRoot = tooltipEl.querySelector('table');
+                tableRoot.innerHTML = innerHtml;
+            }
+
+            var position = this._chart.canvas.getBoundingClientRect();
+
+            tooltipEl.style.opacity = 1;
+            tooltipEl.style.position = 'absolute';
+
+            tooltipEl.style.left = position.left + window.pageXOffset + tooltip.caretX + 'px';
+            tooltipEl.style.top = position.top + window.pageYOffset + tooltip.caretY + 'px';
+            tooltipEl.style.fontFamily = tooltip._bodyFontFamily;
+            tooltipEl.style.fontSize = tooltip.bodyFontSize + 'px';
+            tooltipEl.style.fontStyle = tooltip._bodyFontStyle;
+            tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
+            tooltipEl.style.pointerEvents = 'none';
+        }
+
+        function customTooltipsWithPosition(tooltip) {
+            var tooltipName = this._chart.canvas.id + '-tooltip';
+            var tooltipEl = document.getElementById(tooltipName);
+
+            if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = tooltipName;
+                tooltipEl.classList.add('custom-tooltip');
+                tooltipEl.classList.add('custom-tooltip_translate-none');
+                tooltipEl.innerHTML = '<table></table>';
+                document.body.appendChild(tooltipEl);
+            }
+
+            if (tooltip.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                return;
+            }
+
+            tooltipEl.classList.remove('above', 'below', 'no-transform');
+            if (tooltip.yAlign) {
+                tooltipEl.classList.add(tooltip.yAlign);
+            } else {
+                tooltipEl.classList.add('no-transform');
+            }
+
+            function getBody(bodyItem) {
+                return bodyItem.lines;
+            }
+
+            if (tooltip.body) {
+                var titleLines = tooltip.title || [];
+                var bodyLines = tooltip.body.map(getBody);
+
+                var innerHtml = '<thead>';
+
+                titleLines.forEach(function(title) {
+                    innerHtml += '<tr><th class="custom-tooltip__title">' + title + '</th></tr>';
+                });
+                innerHtml += '</thead><tbody>';
+
+                bodyLines.forEach(function(body, i) {
+                    var colors = tooltip.labelColors[i];
+                    var style = 'background:' + colors.backgroundColor;
+                    style += '; border-color:' + colors.borderColor;
+                    style += '; border-width: 2px';
+                    var span = '<span class="custom-tooltip__color" style="' + style + '"></span>';
+                    innerHtml += '<tr><td class="custom-tooltip__wrapper">' + span + body + '</td></tr>';
+                });
+                innerHtml += '</tbody>';
+
+                var tableRoot = tooltipEl.querySelector('table');
+                tableRoot.innerHTML = innerHtml;
+            }
+
+            var position = this._chart.canvas.getBoundingClientRect();
+
+            tooltipEl.style.opacity = 1;
+            tooltipEl.style.position = 'absolute';
+
+            var xPosition = position.left + window.pageXOffset + tooltip.caretX;
+            var xOffset = 0;
+            var tooltipWidth = tooltipEl.offsetWidth;
+//            if ((position.width - (position.width / 3)) > xPosition) {
+//                xOffset = tooltipWidth/2 + 60;
+//            } else {
+//                xOffset = -tooltipWidth/2 - 60;
+//            }
+            if (xPosition + tooltipWidth + 50 < window.innerWidth) {
+                xOffset = 20;
+            } else {
+                xOffset = -tooltipWidth - 20;
+            }
+            tooltipEl.style.left = xPosition + xOffset + 'px';
+
+            tooltipEl.style.top = position.top + window.pageYOffset + tooltip.caretY + 'px';
+            tooltipEl.style.fontFamily = tooltip._bodyFontFamily;
+            tooltipEl.style.fontSize = tooltip.bodyFontSize + 'px';
+            tooltipEl.style.fontStyle = tooltip._bodyFontStyle;
+            tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
+            tooltipEl.style.pointerEvents = 'none';
+        }
+
+        function customTooltip(tooltipItem, data) {
+            var dataset = data.datasets[tooltipItem.datasetIndex];
+            var v = "<span class=\"custom-tooltip__value\">" + separate(dataset.data[tooltipItem.index]) + " " + dsp[dataset.label] + "</span>";
+            var d = "<span class=\"custom-tooltip__description\">" + ds[dataset.label] + "</span>";
+            return v + d;
+        }
+
+        function customPieTooltip(tooltipItem, data) {
+            var dataset = data.datasets[tooltipItem.datasetIndex];
+            var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                return previousValue + currentValue;
+            });
+            var currentValue = dataset.data[tooltipItem.index];
+            var percentage = (currentValue * 100 / total).toFixed(2) + " %";
+
+            return "<span class=\"custom-tooltip__value custom-tooltip__value_large\">" + separate(currentValue) + " " + dsp[dataset.label]  + " ( " + percentage + " )</span>";
+        }
+
+        function customBarTooltip(tooltipItem, data) {
+            var dataset = data.datasets[tooltipItem.datasetIndex];
+            return "<span class=\"custom-tooltip__value custom-tooltip__value_large\">" + separate(dataset.data[tooltipItem.index]) + "</span>";
+        }
+        
+        function customYAxis(value, index, values) {
+            return separate(value);
+        }
+
+        function customBarColors(data) {
+            var colors = [];
+            for(i = 0; i < data.length; i++) {
+                if ([[${kpdColor.green}]] != null && data[i] >= [[${kpdColor.green}]]) {
+                    colors[colors.length] = window.chartColors.custom_green_half;
+                } else if ([[${kpdColor.yellow}]] != null && data[i] >= [[${kpdColor.yellow}]]) {
+                    colors[colors.length] = window.chartColors.custom_yellow_half;
+                } else if ([[${kpdColor.red}]] != null && data[i] >= [[${kpdColor.red}]]) {
+                    colors[colors.length] = window.chartColors.custom_red_half;
+                } else {
+                    colors[colors.length] = window.chartColors.grey_half;
+                }
+            }
+
+            return colors;
+        }
+
+        window.onload = function() {
+
+            var ctx = document.getElementById('chartCommon').getContext('2d');
+            window.myLine = Chart.Line(ctx, {
+                backgroundColor: "#fff",
+                data: lineChartData,
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    hoverMode: 'index',
+                    stacked: false,
+                    tooltips : {
+                        enabled: false,
+                        mode: 'index',
+                        position: 'nearest',
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return customTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltipsWithPosition
+                    },
+                    scales: {
+                        yAxes: [{
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            id: 'y-axis-1',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            }
+                        }, {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'y-axis-2',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                        }],
+                    }
+                }
+            });
+
+            var ctx2 = document.getElementById('chartProceeds').getContext('2d');
+            window.myLine = Chart.Line(ctx2, {
+                data: lineChartData2,
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    hoverMode: 'index',
+                    stacked: false,
+                    tooltips : {
+                        enabled: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return customTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltipsWithPosition
+                    },
+                    scales: {
+                        yAxes: [{
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            id: 'proceeds-axis-1',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+                        }, {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'proceeds-axis-2',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+
+                            gridLines: {
+                                drawOnChartArea: false,
+                            }
+                        }]
+                    }
+                }
+            });
+
+            var ctx3 = document.getElementById('chartIndicators').getContext('2d');
+            window.myLine = Chart.Line(ctx3, {
+                data: lineChartData3,
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    hoverMode: 'index',
+                    stacked: false,
+                    tooltips : {
+                        enabled: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return customTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltipsWithPosition
+                    },
+                    scales: {
+                        yAxes: [{
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            id: 'indicators-axis-1',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+                        }, {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'indicators-axis-2',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                        }],
+                    }
+                }
+            });
+
+            var ctx4 = document.getElementById('chartClients').getContext('2d');
+            window.myLine = Chart.Line(ctx4, {
+                data: lineChartData4,
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    hoverMode: 'index',
+                    stacked: false,
+                    tooltips : {
+                        enabled: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return customTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltipsWithPosition,
+                    },
+                    scales: {
+                        yAxes: [{
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            id: 'clients-axis-1',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+                        }, {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'clients-axis-2',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                        }],
+                    }
+                }
+            });
+
+            var ctx5 = document.getElementById('chartAverage').getContext('2d');
+            window.myLine = Chart.Line(ctx5, {
+                data: lineChartData5,
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    hoverMode: 'index',
+                    stacked: false,
+                    tooltips : {
+                        enabled: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return customTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltipsWithPosition
+                    },
+                    scales: {
+                        yAxes: [{
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            id: 'average-axis-1',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+                        }, {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'average-axis-2',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                        }],
+                    }
+                }
+            });
+
+            var ctx6 = document.getElementById('chartPrice').getContext('2d');
+            window.myLine = Chart.Line(ctx6, {
+                data: lineChartData6,
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    hoverMode: 'index',
+                    stacked: false,
+                    tooltips : {
+                        enabled: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return customTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltipsWithPosition
+                    },
+                    scales: {
+                        yAxes: [{
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            id: 'price-axis-1',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+                        }, {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'price-axis-2',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return customYAxis(value, index, values);
+                                }
+                            },
+
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                        }],
+                    }
+                }
+            });
+
+            var ctx7 = document.getElementById('chartConversion').getContext('2d');
+            window.myLine = Chart.Line(ctx7, {
+                data: lineChartData7,
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    hoverMode: 'index',
+                    stacked: false,
+                    tooltips : {
+                        enabled: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return customTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltipsWithPosition
+                    },
+                    scales: {
+                        yAxes: [{
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            id: 'conversion-axis-1',
+                        }, {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'conversion-axis-2',
+
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                        }],
+                    }
+                }
+            });
+
+            var ctx9 = document.getElementById('pieProceedsManagers').getContext('2d');
+            window.myPie = new Chart(ctx9, {
+                type: 'pie',
+                data: pieChartData2,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        position: 'bottom'
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    },
+                    tooltips: {
+                        enabled: false,
+                        callbacks: {
+                            title: function(tooltipItems, data) {
+                                var title = '';
+                                var labels = data.labels;
+                                var labelCount = labels ? labels.length : 0;
+
+                                if (tooltipItems.length > 0) {
+                                    var item = tooltipItems[0];
+                                    if (item.label) {
+                                        title = item.label;
+                                    } else if (item.xLabel) {
+                                        title = item.xLabel;
+                                    } else if (labelCount > 0 && item.index < labelCount) {
+                                        title = labels[item.index];
+                                    }
+                                }
+
+                                return title;
+                            },
+                            label: function(tooltipItem, data) {
+                                return customPieTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltips
+                    }
+                }
+            });
+
+            var ctx8 = document.getElementById('pieProceedsChannels').getContext('2d');
+            window.myPie = new Chart(ctx8, {
+                type: 'pie',
+                data: pieChartData1,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        position: 'bottom'
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    },
+                    tooltips: {
+                        enabled: false,
+                        callbacks: {
+                            title: function(tooltipItems, data) {
+                                var title = '';
+                                var labels = data.labels;
+                                var labelCount = labels ? labels.length : 0;
+
+                                if (tooltipItems.length > 0) {
+                                    var item = tooltipItems[0];
+                                    if (item.label) {
+                                        title = item.label;
+                                    } else if (item.xLabel) {
+                                        title = item.xLabel;
+                                    } else if (labelCount > 0 && item.index < labelCount) {
+                                        title = labels[item.index];
+                                    }
+                                }
+
+                                return title;
+                            },
+                            label: function(tooltipItem, data) {
+                                return customPieTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltips
+                    }
+                }
+            });
+
+            var ctx10 = document.getElementById('barKPDManagers').getContext('2d');
+            window.myBar10 = new Chart(ctx10, {
+                type: 'bar',
+                data: {
+                    labels: [[${managersChart}]],
+                    datasets: [{
+                        backgroundColor: customBarColors(datasetBar2),
+                        borderWidth: 1,
+                        data: datasetBar2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: false
+                    },
+                    tooltips: {
+                        enabled: false,
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                               return customBarTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltips
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                            }
+                        }]
+                    }
+                }
+            });
+
+            var ctx11 = document.getElementById('barKPDChannels').getContext('2d');
+            window.myBar11 = new Chart(ctx11, {
+                type: 'bar',
+                data: {
+                    labels: labels2,
+                    datasets: [{
+                        backgroundColor: customBarColors(datasetBar1),
+                        borderWidth: 1,
+                        data: datasetBar1
+                    }]
+
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: false
+                    },
+                    tooltips: {
+                        enabled: false,
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return customBarTooltip(tooltipItem, data);
+                            }
+                        },
+                        custom: customTooltips
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                            }
+                        }]
+                    }
+                }
+            });
+
+        };
+    </script>
+
+    <div tr-filter class="cfilter">
+        <div class="cfilter__wrapper">
+            <div tr-filter-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+            <div class="filter-content">
+                <div class="filter-head">
+                    <div class="filter-head__title">Фильтровать воронку</div>
+                </div>
+                <div class="filter-content__body custom-scroll">
+                    <form tr-filter-form funnel-filter-form action="#" th:action="@{/funnel/traffic/chart/}" th:object="${filter}" th:method="post" class="filter-body">
+                        <div class="filter-body__wrapper filter-body__wrapper_start">
+                            <div class="filter-column">
+                                <div class="filter-column__title">Параметры</div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_lsmall">
+                                        <div class="menu-input__title">Год</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{year}">
+                                                <option th:each="y : ${ys}" th:value="${y}" th:utext="${y}"></option>-->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_lsmall">
+                                        <div class="menu-input__title">Менеджер</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select js-manager class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{idManager}">
+                                                <option th:value="0" selected>Все менеджеры</option>
+                                                <option th:each="manager : ${managers}"
+                                                        th:value="${manager.id}"
+                                                        th:utext="${manager.name}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_lsmall">
+                                        <div class="menu-input__title">Проект</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select js-project class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{project}">
+                                                <option th:value="0" selected>Все проекты</option>
+                                                <option th:each="project : ${projects}"
+                                                        th:value="${project.id}"
+                                                        th:utext="${project.name}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_lsmall">
+                                        <div class="menu-input__title">Продукт</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select js-course  class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{course}">
+                                                <option th:value="'all'" selected>Все продукты</option>
+                                                <option th:each="course : ${courses}"
+                                                        th:value="${course}"
+                                                        th:utext="${course}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_lsmall">
+                                        <div class="menu-input__title">Цели</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{target}">
+                                                <option th:value="all" selected>Все цели</option>
+                                                <option th:value="Подписка">Подписка</option>
+                                                <option th:value="Заявка">Заявка</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column">
+                                <div class="filter-column__title"></div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_lsmall">
+                                        <div class="menu-input__title">Рекламный кабинет</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select js-advertiser  class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{idUser}">
+                                                <th:block th:if="${(role == 'ROLE_ADMIN') || (role == 'ROLE_ADVERTISER' && access)}">
+                                                    <option th:value="0">Все кабинеты</option>
+                                                    <option th:each="advertiser : ${advertisers}"
+                                                            th:value="${advertiser.id}"
+                                                            th:utext="${advertiser.name}"></option>
+                                                </th:block>
+                                                <th:block th:if="${role == 'ROLE_ADVERTISER' && !access}">
+                                                    <th:block th:each="advertiser : ${advertisers}">
+                                                        <option  th:if="${advertiser.id == filter.idUser}"
+                                                                 th:value="${advertiser.id}"
+                                                                 th:utext="${advertiser.name}"></option>
+                                                    </th:block>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_lsmall">
+                                        <div class="menu-input__title">Площадка</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select js-platform class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{platform}">
+                                                <option th:value="'all'">Все площадки</option>
+                                                <option th:value="'unknown'">Неизвестно</option>
+                                                <option th:each="platform : ${platforms}"
+                                                        th:value="${platform}"
+                                                        th:utext="${platform}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_lsmall">
+                                        <div class="menu-input__title">Источники трафика</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select js-channel class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{channel}">
+                                                <th:block th:if="${filter.channel == 'unknown'}">
+                                                    <option th:value="'unknown'">Неизвестно</option>
+                                                </th:block>
+                                                <th:block th:if="${filter.channel != 'unknown'}">
+                                                    <option th:value="'all'">Все источники</option>
+                                                    <option th:each="channel : ${channels}"
+                                                            th:value="${channel}"
+                                                            th:utext="${channel}"></option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-column__row">
+                                    <div class="menu-input menu-input_lsmall">
+                                        <input js-communites type="hidden" class="menu-input__input menu-input__input_small menu-input__input_community" th:field="*{communites}">
+                                        <div class="menu-input__title">Аудитория</div>
+                                        <div class="menu-input__wrapper">
+                                            <input js-community class="menu-input__input menu-input__input_small menu-input__input_community" th:field="*{community}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="filter-content__footer">
+                    <div tr-filter-form-btn class="button">Применить фильтры</div>
+                    <div th:if="${filter.isCanClear()}" class="clear-filter clear-filter_bordered">
+                        <form tr-clear-form action="#" th:action="@{/funnel/traffic/chart/clearFilter}" th:method="post" class="clear-filter__form">
+                            <button tr-clear-form-btn class="button button_clear">Сбросить фильтры</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div js-menu class="menu">
+        <div class="menu__wrapper">
+            <div class="menu__header-wrapper">
+                <div class="menu-header">
+                    <div class="menu-header__title">
+                        Список аудиторий
+                    </div>
+                    <div js-menu-close-btn class="menu-header__close-btn"></div>
+                </div>
+            </div>
+            <div class="menu-search">
+                <input js-menu-search id="search" type="text" class="menu-search__input" placeholder="Введите название"/>
+                <label for="search"></label>
+            </div>
+            <div js-menu-content class="menu-content">
+                <div class="menu-content__wrapper is-selected">
+                    <form filter-form-communities class="white-table_full" action="#" th:action="@{/funnel/traffic/communities/}" th:object="${filter}" th:method="post">
+                        <table class="white-table white-table_full white-table_half-top mb-4">
+                            <thead class="white-table__header">
+                            <tr class="header__row">
+                                <th class="header__text"></th>
+                                <th class="header__text">База/паблик</th>
+                                <th class="header__text">Ссылка</th>
+                            </tr>
+                            </thead>
+                            <tbody community-table class="white-table__body">
+
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div js-menu-funnel-setting class="menu">
+        <div class="menu__wrapper">
+            <div js-menu-funnel-setting-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+            <div class="menu__content menu__content_end">
+                <form js-funnel-setting-form th:action="@{/funnel/traffic/chart/}" th:object="${filter}" th:method="post" class="menu__content-side menu__content-side_large">
+                    <div class="menu__header-wrapper">
+                        <div class="menu-header">
+                            <div class="menu-header__title">
+                                Настройки воронки
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu__list menu__list_p0 custom-scroll">
+                        <div class="menu-input menu-input_xsmall menu-input_t30">
+                            <div class="menu-input__title">Количество *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                <select th:field="*{groupingType}" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                    <option th:value="1">1 в ряд</option>
+                                    <option th:value="2">2 в ряд</option>
+                                    <option th:value="3">3 в ряд</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Отображение *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                <select th:field="*{scrollType}" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                    <option th:value="1">Весь период</option>
+                                    <option th:value="2">Скролл</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall ">
+                            <div class="menu-input__title">Дата от *</div>
+                            <input th:field="*{startDateChart}" autocomplete="off" data-date-format="dd-mm-yyyy" class="datepicker-here menu-input__input menu-input__input_small" placeholder="Выберите дату" required/>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title">Дата до *</div>
+                            <input th:field="*{endDateChart}" autocomplete="off" data-date-format="dd-mm-yyyy" class="datepicker-here menu-input__input menu-input__input_small" placeholder="Выберите дату" required/>
+                        </div>
+
+                        <div class="menu-input menu-input_xsmall menu-input_b0 menu-input_t30">
+                            <div class="menu-input__title menu-input__title_black">Этапы воронки</div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title funnel-block__btn collapsed" data-toggle="collapse"
+                                 data-target="#proceeds" aria-expanded="false"
+                                 aria-controls="proceeds">Выручка и расходы на рекламу</div>
+                            <div class="menu-input__checkbox-wrapper collapse" id="proceeds">
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockProceed" class="checkbox" name="blockProceed" filter-param th:field="*{visableSetting.blockProceed}">
+                                    <label class="checkbox-label" for="blockProceed">Выручка</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockPrepaymentProceed" class="checkbox" name="blockPrepaymentProceed" filter-param th:field="*{visableSetting.blockPrepaymentProceed}">
+                                    <label class="checkbox-label" for="blockPrepaymentProceed">Выручка предорлаты</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockSurchargeProceed" class="checkbox" name="blockSurchargeProceed" filter-param th:field="*{visableSetting.blockSurchargeProceed}">
+                                    <label class="checkbox-label" for="blockSurchargeProceed">Выручка доплаты</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockAdvertisingExpenses" class="checkbox" name="blockAdvertisingExpenses" filter-param th:field="*{visableSetting.blockAdvertisingExpenses}">
+                                    <label class="checkbox-label" for="blockAdvertisingExpenses">Расходы на рекламу</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockProceedAdvertisingExpenses" class="checkbox" name="blockProceedAdvertisingExpenses" filter-param th:field="*{visableSetting.blockProceedAdvertisingExpenses}">
+                                    <label class="checkbox-label" for="blockProceedAdvertisingExpenses">Выручка - Расходы на рекламу</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockPercentNetProceed" class="checkbox" name="blockPercentNetProceed" filter-param th:field="*{visableSetting.blockPercentNetProceed}">
+                                    <label class="checkbox-label" for="blockPercentNetProceed">% чистой выручки</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockKPD" class="checkbox" name="blockKPD" filter-param th:field="*{visableSetting.blockKPD}">
+                                    <label class="checkbox-label" for="blockKPD">КПД</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title funnel-block__btn collapsed" data-toggle="collapse"
+                                 data-target="#indicators" aria-expanded="false"
+                                 aria-controls="indicators">Показатели этапов воронки</div>
+                            <div class="menu-input__checkbox-wrapper collapse" id="indicators">
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockShows" class="checkbox" name="blockShows" filter-param th:field="*{visableSetting.blockShows}">
+                                    <label class="checkbox-label" for="blockShows">Показов</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockClicks" class="checkbox" name="blockClicks" filter-param th:field="*{visableSetting.blockClicks}">
+                                    <label class="checkbox-label" for="blockClicks">Кликов</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockApplications" class="checkbox" name="blockApplications" filter-param th:field="*{visableSetting.blockApplications}">
+                                    <label class="checkbox-label" for="blockApplications">Заявок</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockBills" class="checkbox" name="blockBills" filter-param th:field="*{visableSetting.blockBills}">
+                                    <label class="checkbox-label" for="blockBills">Заказов</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockSales" class="checkbox" name="blockSales" filter-param th:field="*{visableSetting.blockSales}">
+                                    <label class="checkbox-label" for="blockSales">Оплат всего</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockSalesWithoutSales" class="checkbox" name="blockSalesWithoutSales" filter-param th:field="*{visableSetting.blockSalesWithoutSales}">
+                                    <label class="checkbox-label" for="blockSalesWithoutSales">Оплат без рассылки</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockSalesWithSales" class="checkbox" name="blockSalesWithSales" filter-param th:field="*{visableSetting.blockSalesWithSales}">
+                                    <label class="checkbox-label" for="blockSalesWithSales">Оплат с рассылки</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockSurcharges" class="checkbox" name="blockSurcharges" filter-param th:field="*{visableSetting.blockSurcharges}">
+                                    <label class="checkbox-label" for="blockSurcharges">Доплаты</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title funnel-block__btn collapsed" data-toggle="collapse"
+                                 data-target="#clients" aria-expanded="false"
+                                 aria-controls="clients">Клиенты по дате обращения</div>
+                            <div class="menu-input__checkbox-wrapper collapse" id="clients">
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockClientsDO" class="checkbox" name="blockClientsDO" filter-param th:field="*{visableSetting.blockClientsDO}">
+                                    <label class="checkbox-label" for="blockClientsDO">Новых клиентов по ДО</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockClientsTraffic" class="checkbox" name="blockClientsTraffic" filter-param th:field="*{visableSetting.blockClientsTraffic}">
+                                    <label class="checkbox-label" for="blockClientsTraffic">Новых клиентов с трафика за период</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockSalesDo" class="checkbox" name="blockSalesDo" filter-param th:field="*{visableSetting.blockSalesDo}">
+                                    <label class="checkbox-label" for="blockSalesDo">Дотекло клиентов по ДО</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockSalesDoWithoutMailing" class="checkbox" name="blockSalesDoWithoutMailing" filter-param th:field="*{visableSetting.blockSalesDoWithoutMailing}">
+                                    <label class="checkbox-label" for="blockSalesDoWithoutMailing">Дотекло клиентов по ДО (без рассылки)</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockSalesDoWithMailing" class="checkbox" name="blockSalesDoWithMailing" filter-param th:field="*{visableSetting.blockSalesDoWithMailing}">
+                                    <label class="checkbox-label" for="blockSalesDoWithMailing">Дотекло клиентов по ДО (по рассылке)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title funnel-block__btn collapsed" data-toggle="collapse"
+                                 data-target="#check" aria-expanded="false"
+                                 aria-controls="check">Средний чек</div>
+                            <div class="menu-input__checkbox-wrapper collapse" id="check">
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockAverage" class="checkbox" name="blockAverage" filter-param th:field="*{visableSetting.blockAverage}">
+                                    <label class="checkbox-label" for="blockAverage">Средний чек</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockAveragePrepayment" class="checkbox" name="blockAveragePrepayment" filter-param th:field="*{visableSetting.blockAveragePrepayment}">
+                                    <label class="checkbox-label" for="blockAveragePrepayment">Средний чек предоплаты</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockAverageSurcharge" class="checkbox" name="blockAverageSurcharge" filter-param th:field="*{visableSetting.blockAverageSurcharge}">
+                                    <label class="checkbox-label" for="blockAverageSurcharge">Средний чек доплаты</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title funnel-block__btn collapsed" data-toggle="collapse"
+                                 data-target="#price" aria-expanded="false"
+                                 aria-controls="price">Стоимость этапов воронки</div>
+                            <div class="menu-input__checkbox-wrapper collapse" id="price">
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockPriceShows" class="checkbox" name="blockPriceShows" filter-param th:field="*{visableSetting.blockPriceShows}">
+                                    <label class="checkbox-label" for="blockPriceShows">Стоимость 1000 показов</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockPriceClick" class="checkbox" name="blockPriceClick" filter-param th:field="*{visableSetting.blockPriceClick}">
+                                    <label class="checkbox-label" for="blockPriceClick">Стоимость клика</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockPriceApplication" class="checkbox" name="blockPriceApplication" filter-param th:field="*{visableSetting.blockPriceApplication}">
+                                    <label class="checkbox-label" for="blockPriceApplication">Стоимость заявки</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockPriceBill" class="checkbox" name="blockPriceBill" filter-param th:field="*{visableSetting.blockPriceBill}">
+                                    <label class="checkbox-label" for="blockPriceBill">Стоимость заказа</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockClient" class="checkbox" name="blockClient" filter-param th:field="*{visableSetting.blockClient}">
+                                    <label class="checkbox-label" for="blockClient">Стоимость клиента</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockClientDO" class="checkbox" name="blockClientDO" filter-param th:field="*{visableSetting.blockClientDO}">
+                                    <label class="checkbox-label" for="blockClientDO">Стоимость клиента по ДО</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_xsmall">
+                            <div class="menu-input__title funnel-block__btn collapsed" data-toggle="collapse"
+                                 data-target="#conversion" aria-expanded="false"
+                                 aria-controls="conversion">Конверсии воронки</div>
+                            <div class="menu-input__checkbox-wrapper collapse" id="conversion">
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockShowToClick" class="checkbox" name="blockShowToClick" filter-param th:field="*{visableSetting.blockShowToClick}">
+                                    <label class="checkbox-label" for="blockShowToClick">CV из показа в клик</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockClickToApplication" class="checkbox" name="blockClickToApplication" filter-param th:field="*{visableSetting.blockClickToApplication}">
+                                    <label class="checkbox-label" for="blockClickToApplication">CV из клика в заявку</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockApplicationToBill" class="checkbox" name="blockApplicationToBill" filter-param th:field="*{visableSetting.blockApplicationToBill}">
+                                    <label class="checkbox-label" for="blockApplicationToBill">CV из заявки в заказ</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockBillToClient" class="checkbox" name="blockBillToClient" filter-param th:field="*{visableSetting.blockBillToClient}">
+                                    <label class="checkbox-label" for="blockBillToClient">CV из заказа в оплату</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockApplicationToClient" class="checkbox" name="blockApplicationToClient" filter-param th:field="*{visableSetting.blockApplicationToClient}">
+                                    <label class="checkbox-label" for="blockApplicationToClient">CV из заявки в оплату</label>
+                                </div>
+                                <div class="input-element__checkbox">
+                                    <input type="checkbox" id="blockApplicationToClientDO" class="checkbox" name="blockApplicationToClientDO" filter-param th:field="*{visableSetting.blockApplicationToClientDO}">
+                                    <label class="checkbox-label" for="blockApplicationToClientDO">CV из заявки в оплату по ДО</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu__footer">
+                        <button js-save-setting class="button button_white">Применить изменения</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<th:block th:insert="base :: scripts" />
+<!--<script th:src="@{/js/js-menu-traffic2.js}"></script>-->
+<script th:src="@{/js/js-common-chart.js}"></script>
+    <script th:src="@{/js/funnel-filter.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        setFunnelFilter(/*[[${filter}]]*/);
+        /*]]>*/
+    </script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Корпоративный центр">
+
+    <title th:utext="${title}"></title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: a-corporate-center-nav"></div>-->
+    <div class="content-top content-top_btn">
+        <div type="all" js-type class="content-top__header" th:utext="${title}"></div>
+        <div js-create-theme class="add-button add-button_right add-button_violet">+ Добавить раздел</div>
+    </div>
+    <div class="content-main theme-container">
+        <th:block th:each="theme, counter : ${articles}">
+
+            <th:block th:unless="${theme.key.editable}">
+                <div class="theme">
+                    <div class="theme-wrapper">
+                        <div class="theme__title-wrapper">
+                            <div theme-name class="theme-title" th:utext="${theme.key.name}"></div>
+                        </div>
+                        <div class="theme__articles">
+                            <div class="article" th:each="article : ${theme.value}" th:attr="data-article=${article.id}">
+                                <div class="article-wrapper">
+                                    <div class="article__title" th:utext="${article.name}"></div>
+                                    <div class="article-preview">
+                                        <div class="article__preview">
+                                            <div class="article__preview-hover"></div>
+                                            <img th:src="@{'/' + ${article.previewImg}}" alt="" class="article__img">
+                                            <div class="article__link-wrapper">
+                                                <a th:href="${article.link}" target="_blank" class="article__link">Открыть</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+
+            <th:block th:if="${theme.key.editable}">
+                <div class="theme" th:attr="data-theme=${theme.key.id}">
+                    <div class="theme-wrapper">
+                        <div class="theme__title-wrapper">
+                            <div theme-name class="theme-title theme-title_delim" th:utext="${theme.key.name}"></div>
+                            <div js-update-theme class="theme-setting"></div>
+                            <div js-create-article class="add-button add-button_right">+ Добавить файл</div>
+                        </div>
+                        <div class="theme__articles">
+                            <div class="article" th:each="article : ${theme.value}" th:attr="data-article=${article.id}">
+                                <div class="article-wrapper">
+                                    <div class="article__title" th:utext="${article.name}"></div>
+                                    <div class="article-preview">
+                                        <div class="article__preview">
+                                            <div class="article__preview-hover"></div>
+                                            <img th:src="@{'/' + ${article.previewImg}}" alt="" class="article__img">
+                                            <div class="article__link-wrapper">
+                                                <a th:href="${article.link}" target="_blank" class="article__link">Открыть</a>
+                                                <div js-update-article  class="article__btn-link">Редактировать</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+
+        </th:block>
+    </div>
+</div>
+
+<div js-menu-create-theme class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-theme-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-theme-form action="#" class="menu__content-side menu__content-side_large" >
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Создать раздел
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название раздела *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-theme-form-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__footer">
+                    <button type="button" js-save-theme class="button button_white">Создать раздел</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-theme class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-theme-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-theme-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать раздел
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input js-update-theme-form-id type="hidden" name="id" required>
+                    <input js-update-theme-form-type type="hidden" name="type" required>
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название раздела *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-update-theme-form-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__wrapper">
+                            <div js-delete-theme class="menu-input__input menu-input__delete">
+                                <span>Удалить раздел</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__footer">
+                    <button type="button" js-save-update-theme class="button button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-create-article class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-article-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-article-form action="#" class="menu__content-side menu__content-side_large" enctype="multipart/form-data">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить файл
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input js-article-form-id-theme type="hidden" name="idTheme" required>
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название файла *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-article-form-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Ссылка на ресурс *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-article-form-link name="link" placeholder="Введите ссылку" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="input-element__input input-element__input_transparent input-element__img">
+                            <input type="file" name="img" accept="image/*,image/jpeg" id="file" required class="input-file">
+                            <label for="file" class="js-labelFile js-upload-banner">
+                                <span class="menu-input__title js-fileName">Загрузите обложку 280x180</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__footer">
+                    <button type="button" js-save-article class="button button_white">Добавить файл</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-article class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-article-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form id="update-article-form" js-update-article-form action="#" class="menu__content-side menu__content-side_large" enctype="multipart/form-data">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать файл
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input js-update-article-form-id type="hidden" name="id" required>
+                    <input js-update-article-form-img type="hidden" name="previewImg" required>
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название файла *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-update-article-form-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Ссылка на ресурс *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-update-article-form-link name="link" placeholder="Введите ссылку" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="input-element__input input-element__input_transparent input-element__img">
+                            <input type="file" name="img" accept="image/*,image/jpeg" id="file2" class="input-file">
+                            <label for="file2" class="js-labelFile js-upload-banner">
+                                <span class="menu-input__title js-fileName">Загрузите обложку 280x180</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__wrapper">
+                            <div js-delete-article class="menu-input__input menu-input__delete">
+                                <span>Удалить файл</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__footer">
+                    <button type="button" js-update-save-article class="button button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/upload-img.js}"></script>
+<script th:src="@{/js/themes-menu.js}"></script>
+
+</body>
+</html>

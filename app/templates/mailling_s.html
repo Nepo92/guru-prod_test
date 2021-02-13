@@ -1,0 +1,62 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Рассылки">
+
+    <title>Рассылки</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: settings-said-nav"></div>-->
+    <div class="content-top">
+        <div class="content-top__header">Рассылки</div>
+    </div>
+    <div class="content-main">
+        <div class="container-table">
+            <h4>Ссылки на таблицы рассылок</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Ссылка</th>
+                        <th class="cell-120"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="mailingSheet : ${mailingSheets}">
+                        <td th:text="${mailingSheet.id}"></td>
+                        <td th:text="${mailingSheet.link}"></td>
+                        <td class="cell-120">
+                            <form class="table-form" action="#" th:action="@{'deleteMailingSheetLink/{id}'(id=${mailingSheet.id})}" th:method="delete">
+                                <button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form class="table-form" action="#" th:action="@{addMailingSheetLink}" th:object="${mailingSheet}" th:method="post">
+                        <tr>
+                            <td></td>
+                            <td><input class="input-sm input-large" th:field="*{link}" placeholder="Ссылка" required></td>
+                            <td class="cell-120">
+                                <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

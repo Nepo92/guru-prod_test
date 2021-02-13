@@ -1,0 +1,483 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="панель администратора">
+
+    <title>воронка (общая) | панель администратора</title>
+
+    <th:block th:insert="base :: links" /></head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div th:replace="base :: header"></div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="filter custom-lg-2" th:classappend="${filter.active} ? '' : custom-lg-2_active">
+                <form action="#" th:action="@{/activeFilter}" th:object="${filter}" th:method="post">
+                    <input type="hidden" th:field="*{active}" />
+                    <input type="hidden" th:field="*{year}" />
+                    <input type="hidden" th:field="*{idSort}" />
+                    <input type="hidden" th:field="*{idManager}" />
+                    <input type="hidden" th:field="*{direction}" />
+                    <input type="hidden" th:field="*{course}" />
+                    <input type="hidden" th:field="*{startDate}" />
+                    <input type="hidden" th:field="*{endDate}" />
+                    <button filter-btn class="filter__btn" th:classappend="${filter.active} ? filter__btn_active :''"></button>
+                </form>
+                <form class="filter__wrapper d-flex flex-lg-column" th:classappend="${filter.active} ? '' : filter__wrapper_none" filter-form action="#" th:action="@{/}" th:object="${filter}" th:method="post">
+                    <select class="filter__element mb-2 input-sm" filter-param th:field="*{year}">
+                        <option th:value="2019" selected>2019</option>
+                        <option th:value="2018">2018</option>
+                    </select>
+                    <select class="filter__element mb-2 input-sm" filter-param th:field="*{idSort}">
+                        <option th:value="0" selected>По месяцам</option>
+                        <option th:value="1">По неделям</option>
+                        <option th:value="2">По дням</option>
+                    </select>
+                    <select class="filter__element mb-2 input-sm " filter-param th:field="*{idManager}">
+                        <option th:value="0" selected>Все менеджеры</option>
+                        <option th:each="manager : ${managers}"
+                                th:value="${manager.id}"
+                                th:utext="${manager.name}"></option>
+                    </select>
+                    <select class="filter__element mb-2 input-sm" filter-param th:field="*{direction}">
+                        <option th:value="'all'" selected>Все направления</option>
+                        <option th:each="direction : ${directions}"
+                                th:value="${direction.id}"
+                                th:utext="${direction.name}"></option>
+                    </select>
+                    <select class="filter__element mb-2 input-sm" filter-param th:field="*{course}">
+                        <option th:value="'all'" selected th:utext="(*{direction} == 'all') ? 'Все курсы' : 'Курсы направления'"></option>
+                        <option th:each="course : ${courses}"
+                                th:value="${course}"
+                                th:utext="${course}"></option>
+                    </select>
+                    <div class="filter__element mb-2">
+                        <input class="input-sm" filter-param type="date" th:value="${startDate}" th:field="*{startDate}">
+                    </div>
+                    <div class="filter__element mb-2">
+                       <input class="input-sm" filter-param type="date" th:value="${endDate}" th:field="*{endDate}">
+                    </div>
+                    <input type="hidden" th:field="*{active}" />
+                </form>
+            </div>
+            <div class="custom-lg-10" th:classappend="${filter.active} ? '' : custom-lg-10_active">
+                <div class="table-response d-flex">
+                    <div class="table table_fixed d-flex flex-column">
+                        <div class="table-header">
+                            <div class="table-header__row">
+                                <div class="table-header__cell mr-2" th:utext="${filter.startDate} + '<br>' + ${filter.endDate}"></div>
+                                <div class="table-header__cell table-header__cell_caption mr-2"></div>
+                            </div>
+                        </div>
+                        <div class="table-body">
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mProceeds" aria-expanded="false" aria-controls="mProceeds">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(proceeds.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Выручка общая</div>
+                            </div>
+                            <div id="mProceeds" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mProceeds}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mTrafficMailingProceeds" aria-expanded="false" aria-controls="mTrafficMailingProceeds">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(trafficMailingProceeds.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Выручка трафик/рассылка</div>
+                            </div>
+                            <div id="mTrafficMailingProceeds" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mTrafficMailingProceeds}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mAdditionalProceeds" aria-expanded="false" aria-controls="mAdditionalProceeds">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(additionalProceeds.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Выручка от допродаж</div>
+                            </div>
+                            <div id="mAdditionalProceeds" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAdditionalProceeds}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mProductProceeds" aria-expanded="false" aria-controls="mProductProceeds">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(productProceeds.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Выручка товарка</div>
+                            </div>
+                            <div id="mProductProceeds" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mProductProceeds}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_pink">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mAdvPrice" aria-expanded="false" aria-controls="mAdvPrice">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(advPrice.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Расходы на рекламу</div>
+                            </div>
+                            <div id="mAdvPrice" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAdvPrice}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mSales" aria-expanded="false" aria-controls="mSales">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(sales.sum,0,'WHITESPACE')}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Продажи всего</div>
+                            </div>
+                            <div id="mSales" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSales}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE')}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mSalesTraffic" aria-expanded="false" aria-controls="mSalesTraffic">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(salesTraffic.sum,0,'WHITESPACE')}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Продажи трафик</div>
+                            </div>
+                            <div id="mSalesTraffic" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSalesTraffic}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE')}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mSalesMailing" aria-expanded="false" aria-controls="mSalesMailing">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(salesMailing.sum,0,'WHITESPACE')}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Продажи рассылка</div>
+                            </div>
+                            <div id="mSalesMailing" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSalesMailing}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE')}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mSalesAdditional" aria-expanded="false" aria-controls="mSalesAdditional">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(salesAdditional.sum,0,'WHITESPACE')}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Продажи допродажи</div>
+                            </div>
+                            <div id="mSalesAdditional" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSalesAdditional}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE')}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mSalesProduct" aria-expanded="false" aria-controls="mSalesProduct">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(salesProduct.sum,0,'WHITESPACE')}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Продаж товарка</div>
+                            </div>
+                            <div id="mSalesProduct" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSalesProduct}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE')}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mAverage" aria-expanded="false" aria-controls="mAverage">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(average.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Средний чек</div>
+                            </div>
+                            <div id="mAverage" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAverage}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mAverageTrafficMailing" aria-expanded="false" aria-controls="mAverageTrafficMailing">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(averageTrafficMailing.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Средний чек трафик/рассылка</div>
+                            </div>
+                            <div id="mAverageTrafficMailing" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAverageTrafficMailing}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mAverageAdditional" aria-expanded="false" aria-controls="mAverageAdditional">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(averageAdditional.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Средний чек допродажи</div>
+                            </div>
+                            <div id="mAverageAdditional" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAverageAdditional}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mAverageProduct" aria-expanded="false" aria-controls="mAverageProduct">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(averageProduct.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Средний чек товарка</div>
+                            </div>
+                            <div id="mAverageProduct" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAverageProduct}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_gray">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mKPD" aria-expanded="false" aria-controls="mKPD">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2"
+                                     th:classappend="${(kpdColor.getIntGreen() != null && kpd.sum >= kpdColor.getIntGreen())} ? green : (${(kpdColor.getIntYellow() != null && kpd.sum >= kpdColor.getIntYellow())} ? yellow : (${(kpdColor.getIntRed() != null && kpd.sum >= kpdColor.getIntRed())} ? red : ''))"
+                                     th:utext="${kpd.sum}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">КПД</div>
+                            </div>
+                            <div id="mKPD" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mKPD}">
+                                    <div class="table-body__cell mr-2"
+                                         th:classappend="${(kpdColor.getIntGreen() != null && manager.value.sum >= kpdColor.getIntGreen())} ? green : (${(kpdColor.getIntYellow() != null && manager.value.sum >= kpdColor.getIntYellow())} ? yellow : (${(kpdColor.getIntRed() != null && manager.value.sum >= kpdColor.getIntRed())} ? red : ''))"
+                                         th:utext="${manager.value.sum}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mProfit" aria-expanded="false" aria-controls="mProfit">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2" th:utext="${#numbers.formatInteger(profit.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">Выручка общая - Расходы на рекламу</div>
+                            </div>
+                            <div id="mProfit" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mProfit}">
+                                    <div class="table-body__cell mr-2" th:utext="${#numbers.formatInteger(manager.value.sum,0,'WHITESPACE') + ' р.'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+
+                            <div class="table-body__row mb-2 mt-2 row_gray">
+                                <button class="table-body__accordion" data-toggle="collapse" data-target="#mProfitPercent" aria-expanded="false" aria-controls="mProfitPercent">+</button>
+                                <div class="table-body__cell font-weight-bold mr-2"
+                                     th:classappend="${(proceedsColor.getIntGreen() != null && profitPercent.sum >= proceedsColor.getIntGreen())} ? green : (${(proceedsColor.getIntYellow() != null && profitPercent.sum >= proceedsColor.getIntYellow())} ? yellow : (${(proceedsColor.getIntRed() != null && profitPercent.sum >= proceedsColor.getIntRed())} ? red : ''))"
+                                     th:utext="${profitPercent.sum + '%'}"></div>
+                                <div class="table-body__cell table-body__cell_caption mr-2">% чистой выручки (общий)</div>
+                            </div>
+                            <div id="mProfitPercent" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mProfitPercent}">
+                                    <div class="table-body__cell mr-2"
+                                         th:classappend="${(proceedsColor.getIntGreen() != null && manager.value.sum >= proceedsColor.getIntGreen())} ? green : (${(proceedsColor.getIntYellow() != null && manager.value.sum >= proceedsColor.getIntYellow())} ? yellow : (${(proceedsColor.getIntRed() != null && manager.value.sum >= proceedsColor.getIntRed())} ? red : ''))"
+                                         th:utext="${manager.value.sum + '%'}"></div>
+                                    <div class="table-body__cell table-body__cell_caption2 mr-2" th:utext="${manager.key}"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="table">
+                        <div class="table-header">
+                            <div class="table-header__row">
+                                <div class="table-header__cell" th:each="date : ${dates}" th:utext="${date.start_date} + '<br>' + ${date.end_date}"></div>
+                            </div>
+                        </div>
+                        <div class="table-body">
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <div class="table-body__cell" th:each="a : ${proceeds.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mProceeds" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mProceeds}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <div class="table-body__cell" th:each="a : ${trafficMailingProceeds.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mTrafficMailingProceeds" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mTrafficMailingProceeds}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <div class="table-body__cell" th:each="a : ${additionalProceeds.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mAdditionalProceeds" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAdditionalProceeds}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <div class="table-body__cell" th:each="a : ${productProceeds.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mProductProceeds" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mProductProceeds}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_pink">
+                                <div class="table-body__cell" th:each="a : ${advPrice.sums}" th:utext="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mAdvPrice" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAdvPrice}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <div class="table-body__cell" th:each="a : ${sales.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                            </div>
+                            <div id="mSales" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSales}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <div class="table-body__cell" th:each="a : ${salesTraffic.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                            </div>
+                            <div id="mSalesTraffic" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSalesTraffic}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <div class="table-body__cell" th:each="a : ${salesMailing.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                            </div>
+                            <div id="mSalesMailing" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSalesMailing}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <div class="table-body__cell" th:each="a : ${salesAdditional.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                            </div>
+                            <div id="mSalesAdditional" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSalesAdditional}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <div class="table-body__cell" th:each="a : ${salesProduct.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                            </div>
+                            <div id="mSalesProduct" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mSalesProduct}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE')}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <div class="table-body__cell" th:each="a : ${average.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mAverage" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAverage}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <div class="table-body__cell" th:each="a : ${averageTrafficMailing.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mAverageTrafficMailing" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAverageTrafficMailing}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <div class="table-body__cell" th:each="a : ${averageAdditional.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mAverageAdditional" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAverageAdditional}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_green">
+                                <div class="table-body__cell" th:each="a : ${averageProduct.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mAverageProduct" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mAverageProduct}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_gray">
+                                <div class="table-body__cell" th:each="a : ${kpd.sums}"
+                                     th:classappend="${(kpdColor.getIntGreen() != null && a >= kpdColor.getIntGreen())} ? green : (${(kpdColor.getIntYellow() != null && a >= kpdColor.getIntYellow())} ? yellow : (${(kpdColor.getIntRed() != null && a >= kpdColor.getIntRed())} ? red : ''))"
+                                     th:utext="${a}"></div>
+                            </div>
+                            <div id="mKPD" class="collapse">
+                                <div class="table-body__row row_light-gray " th:each="manager : ${mKPD}">
+                                    <th:block th:each="a : ${manager.value.sums}">
+                                        <div class="table-body__cell"
+                                             th:if="${a != 0}"
+                                             th:classappend="${(kpdColor.getIntGreen() != null && a >= kpdColor.getIntGreen())} ? green : (${(kpdColor.getIntYellow() != null && a >= kpdColor.getIntYellow())} ? yellow : (${(kpdColor.getIntRed() != null && a >= kpdColor.getIntRed())} ? red : ''))"
+                                             th:text="${a}"></div>
+                                        <div class="table-body__cell"
+                                             th:unless="${a != 0}"></div>
+                                    </th:block>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_blue">
+                                <div class="table-body__cell" th:each="a : ${profit.sums}" th:utext="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                            </div>
+                            <div id="mProfit" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mProfit}">
+                                    <div class="table-body__cell" th:each="a : ${manager.value.sums}" th:text="${#numbers.formatInteger(a,0,'WHITESPACE') + ' р.'}"></div>
+                                </div>
+                            </div>
+
+                            <div class="table-body__row mb-2 mt-2 row_gray">
+                                <div class="table-body__cell"
+                                     th:classappend="${(proceedsColor.getIntGreen() != null && a >= proceedsColor.getIntGreen())} ? green : (${(proceedsColor.getIntYellow() != null && a >= proceedsColor.getIntYellow())} ? yellow : (${(proceedsColor.getIntRed() != null && a >= proceedsColor.getIntRed())} ? red : ''))"
+                                     th:each="a : ${profitPercent.sums}" th:utext="${a + '%'}"></div>
+                            </div>
+                            <div id="mProfitPercent" class="collapse">
+                                <div class="table-body__row row_light-gray" th:each="manager : ${mProfitPercent}">
+                                    <th:block  th:each="a : ${manager.value.sums}">
+                                        <div class="table-body__cell"
+                                            th:if="${a != 0}"
+                                            th:classappend="${(proceedsColor.getIntGreen() != null && a >= proceedsColor.getIntGreen())} ? green : (${(proceedsColor.getIntYellow() != null && a >= proceedsColor.getIntYellow())} ? yellow : (${(proceedsColor.getIntRed() != null && a >= proceedsColor.getIntRed())} ? red : ''))"
+                                            th:text="${a + '%'}"></div>
+                                        <div class="table-body__cell"
+                                             th:unless="${a != 0}"></div>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:insert="base :: scripts" />
+
+</body>
+</html>

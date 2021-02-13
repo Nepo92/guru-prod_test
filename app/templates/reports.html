@@ -1,0 +1,107 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Панель администратора">
+
+    <title>Отчеты</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content">
+    <div class="content-top">
+        <div class="content-top__header">Прописанные</div>
+    </div>
+    <div class="content-main">
+        <div class="content-main__panel content-main__panel_large">
+            <div js-create-row class="button button_add">+ Добавить</div>
+        </div>
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                    <tr class="custom-table__header-row">
+                        <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Дата</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Кол-во</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Курс</td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                    </tr>
+                    </thead>
+                    <tbody class="custom-table__body custom-table__body_white" table-body>
+                    <tr class="custom-table__body-row" th:each="row, stat : ${rows}">
+                        <td class="custom-table__body-col" th:utext="${stat.count}"></td>
+                        <td class="custom-table__body-col" th:utext="${row.date}"></td>
+                        <td class="custom-table__body-col" th:utext="${row.count}"></td>
+                        <td class="custom-table__body-col" th:utext="${row.course}"></td>
+
+                        <td class="custom-table__body-col custom-table__body-col_last">
+                            <div edit-menu class="column-links display-flex-none is-open">
+                                <form delete-row-form class="column-form" action="#">
+                                    <input type="hidden" th:value="${row.id}" name="id" required>
+                                    <button delete-row type="button" class="column_mwidth column_mwidth-delete"></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-create-row class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-row-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-row-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Создать запись
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_grow menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Дата *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                            <input js-row-form-date name="date" autocomplete="off" class="datepicker-here-cs menu-input__input menu-input__input_small" placeholder="Укажите дату" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Кол-во прописанных людей *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-row-form-count name="count" class="menu-input__input menu-input__input_small" placeholder="Укажите кол-во прописанных людей" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Продукт *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-row-form-course name="course" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="" disabled selected>Выберите продукт</option>
+                                <th:block th:each="product : ${products}">
+                                    <option th:value="${product.name}" th:utext="${product.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-row class="button button_white">Сохранить запись</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/reports-menu.js}"></script>
+</body>
+</html>

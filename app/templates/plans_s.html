@@ -1,0 +1,213 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Планы">
+
+    <title>Планы</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+<div class="main-content main-content_white-top-medium">
+    <div class="content-top content-top_btn">
+        <div class="content-top__header">Excel</div>
+    </div>
+
+    <div class="content-top content-top_small">
+        <div th:replace="base :: excel-tab"></div>
+    </div>
+    <div class="content-main">
+        <div class="container-table">
+            <h4>Ссылки на таблицы планов и мотиваций</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th>Год</th>
+                        <th>Ссылка</th>
+                        <th class="cell-120"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="planSheet : ${planSheets}">
+                        <td th:text="${planSheet.id}"></td>
+                        <td th:text="${planSheet.name}"></td>
+                        <td th:text="${planSheet.year}"></td>
+                        <td th:text="${planSheet.link}"></td>
+                        <td class="cell-120">
+                            <form class="table-form" action="#" th:action="@{'deletePlanSheetLink/{id}'(id=${planSheet.id})}" th:method="delete">
+                                <button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form class="table-form" action="#" th:action="@{addPlanSheetLink}" th:object="${planSheet}" th:method="post">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <select class="filter__element mb-2 input-sm" filter-param th:field="*{year}">
+                                    <option th:each="y : ${years}" th:value="${y}" th:utext="${y}"></option>
+                                </select>
+                            </td>
+                            <td><input class="input-sm input-large" th:field="*{link}" placeholder="Ссылка" required></td>
+                            <td class="cell-120">
+                                <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container-table">
+            <h4>Процент выставленных счетов</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <tbody>
+                    <th:block >
+                        <form class="table-form" action="#" th:action="@{'updatePercentBill'}" th:object="${percentFrom}" th:method="post">
+                            <tr>
+                                <td>
+                                    <input class="input-sm input-medium" th:type="text" th:name="|billPercent.percent|" th:value="${billPercent.percent}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="cell-120">
+                                    <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Сохранить</button>
+                                </td>
+                            </tr>
+                        </form>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="content-main__wrapper ">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                        <tr class="custom-table__header-row">
+                            <td class="custom-table__header-col custom-table__header-col_number custom-table__body-col_first">Пн</td>
+                            <td class="custom-table__header-col  custom-table__header-col_number">Вт</td>
+                            <td class="custom-table__header-col  custom-table__header-col_number">Ср</td>
+                            <td class="custom-table__header-col  custom-table__header-col_number">Чт</td>
+                            <td class="custom-table__header-col  custom-table__header-col_number">Пт</td>
+                            <td class="custom-table__header-col  custom-table__header-col_number">Сб</td>
+                            <td class="custom-table__header-col  custom-table__header-col_number">Вс</td>
+                            <td class="custom-table__header-col "></td>
+                        </tr>
+                    </thead>
+                    <tbody class="custom-table__body custom-table__body_white">
+                        <tr class="custom-table__body-row">
+                            <th:block th:each="planPercent,stat : ${planPercents}">
+                                <td class="custom-table__body-col custom-table__header-col_number" th:classappend="${stat.index == 0 ? 'custom-table__body-col_first' : ''}">
+                                    <div th:attr="data-day=${planPercent.dayOfWeek}" class="cell-number" th:utext="${planPercent.percent}"></div>
+                                </td>
+                            </th:block>
+                            <td class="custom-table__body-col custom-table__body-col_last">
+                                <div class="column-links display-flex-none is-open">
+                                    <div update-percent class="column_mwidth div-table__body-col_center column_mwidth-edit column_mwidth-edit-b"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-percent class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-percent-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-percent-form action="#" class="menu__content-side menu__content-side_medium">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Понедельник</div>
+                        <div class="menu-input__wrapper">
+                            <input hidden name="planPercents[0].dayOfWeek" value="1" required>
+                            <input day-of-week="1" name="planPercents[0].percent" placeholder="Введите процент" class="menu-input__input menu-input__input_small" required>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Вторник</div>
+                        <div class="menu-input__wrapper">
+                            <input hidden name="planPercents[1].dayOfWeek" value="2" required>
+                            <input day-of-week="2" name="planPercents[1].percent" placeholder="Введите процент" class="menu-input__input menu-input__input_small" required>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Среда</div>
+                        <div class="menu-input__wrapper">
+                            <input hidden name="planPercents[2].dayOfWeek" value="3" required>
+                            <input day-of-week="3" name="planPercents[2].percent" placeholder="Введите процент" class="menu-input__input menu-input__input_small" required>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Четверг</div>
+                        <div class="menu-input__wrapper">
+                            <input hidden name="planPercents[3].dayOfWeek" value="4" required>
+                            <input day-of-week="4" name="planPercents[3].percent" placeholder="Введите процент" class="menu-input__input menu-input__input_small" required>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Пятница</div>
+                        <div class="menu-input__wrapper">
+                            <input hidden name="planPercents[4].dayOfWeek" value="5" required>
+                            <input day-of-week="5" name="planPercents[4].percent" placeholder="Введите процент" class="menu-input__input menu-input__input_small" required>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Суббота</div>
+                        <div class="menu-input__wrapper">
+                            <input hidden name="planPercents[5].dayOfWeek" value="6" required>
+                            <input day-of-week="6" name="planPercents[5].percent" placeholder="Введите процент" class="menu-input__input menu-input__input_small" required>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Воскресенье</div>
+                        <div class="menu-input__wrapper">
+                            <input hidden name="planPercents[6].dayOfWeek" value="7" required>
+                            <input day-of-week="7" name="planPercents[6].percent" placeholder="Введите процент" class="menu-input__input menu-input__input_small" required>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="grade grade_right">
+                            <div class="grade__title grade__title_small">Итого</div>
+                            <div class="grade__values">
+                                <span percents-sum class="grade-value grade-value_red grade-value_small">0</span>
+                                <span class="grade-delim grade-delim_small">/</span>
+                                <span class="grade-value grade-value_small">100</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" disabled js-update-percent class="button button_not-allowed button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/plan-percent-menu.js}"></script>
+</body>
+</html>

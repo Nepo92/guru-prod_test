@@ -1,0 +1,84 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Корпоративный центр">
+
+    <title th:utext="${title}"></title>
+
+    <link th:href="@{/css/jquery.fancybox.min.css}" rel="stylesheet">
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<!--<div class="main-content main-content_pl40 main-content_white-top">-->
+<div class="main-content main-content_white-top">
+    <!--<div th:replace="base :: corporate-center-nav"></div>-->
+    <div class="content-top content-top_btn">
+        <div th:attr="type=${subtype}" js-type class="content-top__header" th:utext="${title}"></div>
+    </div>
+    <div class="content-top">
+        <div class="top-nav">
+            <div class="top-nav__list-items">
+                <div th:if="${role == 'ROLE_ADVERTISER'}" th:classappend="${subtype == 'advertiser' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/corporate-center/training-center/advertiser/}" class="top-nav__link">Маркетинг</a></div>
+                <div th:if="${role == 'ROLE_MANAGER'}" th:classappend="${subtype == 'manager' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
+                    <a th:href="@{/corporate-center/training-center/manager/}" class="top-nav__link">Продажи</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="content-main theme-container">
+        <th:block th:each="lesson, counter : ${lessons}">
+            <div class="theme " th:attr="data-tutorial=${lesson.key.id}">
+                <div class="theme-wrapper">
+                    <div class="theme__title-wrapper theme__title-wrapper_b20">
+                        <div tutorial-name class="theme-title theme-title_delim" th:utext="${lesson.key.name}"></div>
+                        <div class="theme-setting"></div>
+                    </div>
+                    <div class="theme__img">
+                        <img tutorial-preview class="article__img" th:src="'/' + ${lesson.key.previewImg}">
+                    </div>
+                    <div class="theme__lessons">
+                        <div class="lesson" th:each="ls, counter : ${lesson.value}" th:attr="data-lesson=${ls.id}">
+                             <div class="lesson__header">
+                                 <div class="lesson-header__number">
+                                     <span lesson-counter th:utext="${counter.count}">#</span>
+                                     <span>урок</span>
+                                 </div>
+                                <div class="lesson-header__title"  th:utext="${ls.name}"></div>
+                            </div>
+                            <div class="lesson__content">
+                                <div class="lesson__content-wrapper">
+                                    <div class="lesson-content__side">
+                                        <a th:href="${ls.videoLink}" class="lesson-video js-fancybox">
+                                            <img th:src="'//img.youtube.com/vi/' + ${#strings.substring(ls.videoLink, #strings.indexOf(ls.videoLink, '.be/') + 4, #strings.length(ls.videoLink))} + '/hqdefault.jpg'" class="lesson-video__preview" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="lesson-content__main">
+                                        <div class="lesson-description" th:utext="${ls.description}"></div>
+                                        <div class="lesson__documents">
+                                            <th:block th:each="document : ${lessonDocuments.get(ls.id)}">
+                                                <a th:href="${document.path}" class="lesson-document">
+                                                    <div class="lesson-document__type" th:classappend="' lesson-document__type_' + ${document.type}" th:utext="${document.type}"></div>
+                                                    <div class="lesson-document__name" th:utext="${document.name}"></div>
+                                                </a>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/open-lesson-content.js}"></script>
+<script th:src="@{/js/jquery.fancybox.min.js}"></script>
+</body>
+</html>

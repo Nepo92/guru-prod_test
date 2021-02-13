@@ -1,0 +1,155 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Мои курсы">
+
+    <title>Мои курсы</title>
+
+    <link th:href="@{/css/u_main.css}" rel="stylesheet">
+    <link th:href="@{/css/gap.css}" rel="stylesheet">
+    <link th:href="@{/css/custom-tabs.css}" rel="stylesheet">
+    <link th:href="@{/css/available-course.css}" rel="stylesheet">
+    <link th:href="@{/css/info-blocks.css}" rel="stylesheet">
+    <link th:href="@{/css/progress-bar.css}" rel="stylesheet">
+    <link th:href="@{/css/btn.css}" rel="stylesheet">
+    <link th:href="@{/css/main-nav.css}" rel="stylesheet">
+</head>
+
+<body class="body" onload="getCountdownOnUserCoursesPage()">
+<div th:replace="base :: user-nav"></div>
+<div th:replace="base :: user-mobile-nav"></div>
+    <div class="body__wrapper">
+        <div class="body__header">
+            <header class="header">
+                <div class="header__box block">
+                    <div class="header__wrapper block-wrapper">
+                        <div class="header__main">
+                            <div class="header__items">
+                                <div class="header__items-wrapper">
+                                    <div class="header__item header__item_title">
+                                        <h3>Мои курсы</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="body__content">
+            <div class="available-courses block -gap-inner-bottom_5 -gap-inner-top_5">
+                <div class="available-courses__wrapper block-wrapper">
+                    <div class="available-courses__main">
+                        <div class="-gap_3">
+                            <div class="tabs tabs_underline">
+                                <div class="tabs__wrapper">
+                                    <div class="tabs__list">
+                                        <th:block th:each="project, stat : ${projectCourses}">
+                                            <div class="tabs__item">
+                                                <a js-tabby-tab  href="#" class="tabs-item"
+                                                    th:attr="data-tabby='c:' + ${stat.index}"
+                                                    th:classappend="${stat.index == 0 ? 'is-open' : ''}" >
+                                                    <div class="tabs-item__title" th:utext="${project.name}"></div>
+                                                </a>
+                                            </div>
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tabs-animated">
+                            <th:block th:each="project, stat : ${projectCourses}">
+                                <div js-tabby-panel  class="tabs-panel "
+                                     th:attr="data-tabby='c:' + ${stat.index}"
+                                     th:classappend="${stat.index == 0 ? 'is-open' : ''}" >
+                                    <div class="tabs-panel-transform">
+                                        <div class="available-courses__list">
+                                            <th:block th:each="course, st : ${project.courses}">
+                                                <a th:href="${course.idDeal} + '/'" class="available-course">
+                                                    <div class="available-course__wrapper "
+                                                         th:classappend="${course.theme}"
+                                                         th:style="'background-color:' + ${course.background} + ';'">
+                                                        <div class="available-course__main">
+                                                            <div class="available-course__start -gap_4">
+                                                                <div class="info-blocks">
+                                                                    <div class="info-blocks__wrapper info-date clientTimeInfo">
+                                                                        <div class="info-block info-date__item info-block_icon info-block_icon_play">
+                                                                            <span class="info-block__text info-date__text info-block__text_big startDate" th:utext="${course.startDate}"></span>
+                                                                        </div>
+                                                                        <div class="info-block start-time info-date__item">
+                                                                            <span class="info-block__text info-date__text info-block__text_big startTime" th:utext="${course.startTime}"></span>
+                                                                        </div>
+                                                                        <div class="info-block info-date__item">
+                                                                            <span class="info-block__text info-block__text_big countdown info-date__text"
+                                                                                  th:id="${course.idDeal}"
+                                                                                  th:data-startDate="${course.fullStartTime}">
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="available-course__title -gap_2" th:utext="${course.name}"></div>
+                                                            <div class="available-course__type -gap_3">
+                                                                <div class="outline-text">
+                                                                    <div class="outline-text__content outline-text__content_dark">
+                                                                        <div class="outline-text__text" th:utext="${course.type}"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+<!--                                                            <div class="available-course__desc">-->
+<!--                                                                Какой-то подзаголовок-->
+<!--                                                            </div>-->
+                                                            <div class="available-course__progress -gap_4">
+                                                                <div class="progress-bar">
+                                                                    <div class="progress-bar__wrapper">
+                                                                        <div class="progress-bar__progress"
+                                                                             th:style="'width:' + ${course.completedModulesPercent} + '%;'" th:classappend="${course.completedModulesClass}"></div>
+                                                                        <span class="progress-bar__text" th:utext="${course.completedModulesPercent} + ' %'"></span>
+                                                                        <span class="progress-bar__text" th:utext="${course.completedModulesCount} + ' модуля пройдено'"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="available-course__info">
+                                                                <div class="info-blocks">
+                                                                    <div class="info-blocks__wrapper info-blocks__info">
+                                                                        <div class="info-block info-block_icon info-block_icon_module">
+                                                                            <span class="info-block__text" th:utext="${course.modulesCount} + ' модулей'"></span>
+                                                                        </div>
+                                                                        <div class="info-block info-block_icon info-block_icon_video">
+                                                                            <span class="info-block__text" th:utext="${course.lessonsCount} + ' урок'"></span>
+                                                                        </div>
+                                                                        <div class="info-block info-block_icon info-block_icon_work">
+                                                                            <span class="info-block__text" th:utext="${course.homeworkCount} + ' домашнее задание'"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="available-course__side">
+                                                            <div class="available-course__image">
+                                                                <img src="/img/test-preview.png" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<th:block th:insert="base :: jquery" />
+<script th:src="@{/js/_tabby.js}"></script>
+<script th:src="@{/js/tabs.js}"></script>
+<script th:src="@{/js/progress-bar.js}"></script>
+<script th:src="@{/js/countdown.js}"></script>
+<script th:src="@{/js/available-course.js}"></script>
+</html>

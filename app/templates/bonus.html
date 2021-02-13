@@ -1,0 +1,56 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Награды">
+
+    <title>Награды</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: employee-salary-said-nav"></div>-->
+    <div class="content-top">
+        <div class="content-top__header">Награды</div>
+    </div>
+    <div class="content-main content-main_xl">
+        <div class="action">
+            <table class="white-table white-table_half">
+                <thead class="white-table__header">
+                <tr class="header__row">
+                    <th class="header__text">#</th>
+                    <th class="header__text">Дата</th>
+                    <th class="header__text">Название акции</th>
+                    <th class="header__text">Дата от</th>
+                    <th class="header__text">Дата до</th>
+                    <th class="header__text">Значение</th>
+                    <th class="header__text">Тип награды</th>
+                    <th class="header__text">Награда</th>
+                </tr>
+                </thead>
+                <tbody class="white-table__body">
+                <tr class="body__row" th:each="row : ${rows}">
+                    <td class="body__cell" th:utext="${row.id}"></td>
+                    <td class="body__cell" th:utext="${row.factEndDate}"></td>
+                    <td class="body__cell" th:utext="${row.name}"></td>
+                    <td class="body__cell" th:utext="${row.startDate}"></td>
+                    <td class="body__cell" th:utext="${row.endDate}"></td>
+                    <td class="body__cell" th:utext="${row.value + ' / ' + row.target}"></td>
+                    <td class="body__cell" th:utext="${row.bonusType}"></td>
+                    <td class="body__cell" th:utext="${row.bonus}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

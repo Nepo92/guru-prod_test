@@ -1,0 +1,407 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Оценка работы">
+
+    <title>Оценка работы</title>
+
+    <th:block th:insert="base :: links" />
+    <link th:href="@{/css/block.css}" rel="stylesheet">
+    <link th:href="@{/css/side-content.css}" rel="stylesheet">
+    <link th:href="@{/css/jquery.fancybox.min.css}" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="base :: dialog"></div>
+<div th:replace="base :: main-nav"></div>
+<div th:replace="base :: transition-loader"></div>
+
+<div class="main-content main-content_white-top-medium">
+    <div class="content-top content-top_btn">
+        <div class="content-top__header">Оценка работы</div>
+    </div>
+
+    <div class="content-top content-top_small">
+        <div th:replace="base :: m-performance-assessment-tab"></div>
+    </div>
+
+    <div class="content-main">
+        <div class="content-main__panel content-main__panel_large">
+            <div class="button-filter button-filter_bordered" th:classappend="${filter.isCanClear() ? 'filtered' : ''}">
+                <button tr-filter-btn class="content-top__filter"></button>
+                <span class="button-filter__label">Фильтр</span>
+            </div>
+
+            <form search-deal-form action="#" th:action="@{/performance-assessment/search/}" th:object="${filter}" th:method="post" class="search-form menu-search__wrapper">
+                <input search-deal id="searchRow" th:field="*{searchRow}" class="menu-search__input menu-search__input_search" placeholder="Введите № сделки">
+                <label search-deal-btn for="searchRow" class="menu-input_close" th:classappend="${#strings.isEmpty(filter.searchRow)} ? 'is-open' : ''"></label>
+                <label search-deal-clear class="clear menu-input_close"  th:classappend="${#strings.isEmpty(filter.searchRow)} ? '' : 'is-open'"></label>
+            </form>
+            <div class="counter counter_right" th:utext="${ratesCount.count + ' оценки с общим рейтингом: ' + ratesCount.score}"></div>
+        </div>
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_large content-main__panel_p">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                        <tr class="custom-table__header-row">
+                            <td class="custom-table__header-col custom-table__header-col_big">Дата</td>
+                            <td class="custom-table__header-col custom-table__header-col_big">Клиент</td>
+                            <td class="custom-table__header-col custom-table__header-col_big">Что оценили</td>
+                            <td class="custom-table__header-col custom-table__header-col_big">Список</td>
+                            <td class="custom-table__header-col custom-table__header-col_big">Общая</td>
+                            <td class="custom-table__header-col custom-table__header-col_big">Оценки по пунктам</td>
+                            <td class="custom-table__header-col custom-table__header-col_big"></td>
+                        </tr>
+                    </thead>
+                    <tbody class="custom-table__body custom-table__body_white">
+                        <tr th:attr="data-rate=${rate.id}" class="custom-table__body-row" th:each="rate : ${rates.pageItems}">
+                            <td class="custom-table__body-col custom-table__body-col_10per">
+                                <div class="column-text" th:utext="${rate.createDate}"></div>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_15per">
+                                <div class="column-text">
+                                    <span th:utext="${rate.clientName}"></span>
+                                </div>
+                                <div class="phone-column">
+                                    <th:block th:unless="${#strings.isEmpty(rate.clientPhone)}">
+                                        <div js-copy-link th:attr="data-link=${rate.clientPhone}" class="client-phone" th:utext="${rate.clientPhone}"></div>
+                                    </th:block>
+                                </div>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_15per">
+                                <div class="column-text" th:utext="${'Сделка № ' + rate.idDeal}"></div>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_15per">
+                                <div class="column-text" th:utext="${rate.performanceAssessmentTemplateName}"></div>
+                            </td>
+
+                            <td class="custom-table__body-col custom-table__body-col_5per">
+                                <div class="score item-score"
+                                     th:classappend="${rate.totalScore > 0} ? 'score_green' : (${rate.totalScore == 0} ? 'score_gray' : 'score_red')"
+                                     th:utext="${rate.totalScore > 0} ? ('+' + ${rate.totalScore}) : ${rate.totalScore}"></div>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_20per">
+                                <div class="cell-wrapper">
+                                    <th:block th:each="item : ${rate.items}">
+                                        <div class="cell-number c-tooltip"
+                                             th:classappend="${item.score > 0} ? 'cell-number_green' : (${item.score < 0} ? 'cell-number_red' : '')">
+                                            <div class="c-tooltip__wrapper">
+                                                <div class="c-tooltip__text" th:utext="${item.itemName}"></div>
+                                            </div>
+                                            <span th:utext="${item.score}"></span>
+                                        </div>
+                                    </th:block>
+                                </div>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_20per custom-table__body-col_r16">
+                                <div open-rate class="button button_white">Подробнее</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="content-main__panel content-main__panel_large">
+            <div class="pagination" th:if="${rates.pagesAvailable > 1}" th:with="left=4,right=5">
+                <div class="pagination__wrapper">
+                    <a th:attrappend="href=${rates.pageNumber - 1 > 0} ? 'page?id=' + ${rates.pageNumber - 1} : ''"
+                       th:classappend="${rates.pageNumber - 1} == 0 ? 'active' : ''"
+                       class="pagination__elem pagination__elem_prev"></a>
+
+                    <th:block th:if="${rates.pagesAvailable <= 10}"
+                              th:with="start=1,end=${rates.pagesAvailable}">
+                        <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                            <a th:attrappend="href='page?id=' + ${i}"
+                               th:classappend="${rates.pageNumber == i} ? 'active' : ''"
+                               th:utext="${i}" class="pagination__elem"></a>
+                        </th:block>
+                    </th:block>
+                    <th:block th:unless="${rates.pagesAvailable <= 10}">
+                        <th:block th:if="${rates.pageNumber > left && rates.pageNumber < (rates.pagesAvailable - right)}"
+                                  th:with="start=${rates.pageNumber - left},end=${rates.pageNumber + right}">
+                            <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                                <a th:attrappend="href='page?id=' + ${i}"
+                                   th:classappend="${rates.pageNumber == i} ? 'active' : ''"
+                                   th:utext="${i}" class="pagination__elem"></a>
+                            </th:block>
+                        </th:block>
+                        <th:block th:if="${rates.pageNumber <= left}"  th:with="start=1,end=${rates.pageNumber + (right + 1 + left - rates.pageNumber)}">
+                            <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                                <a th:attrappend="href='page?id=' + ${i}"
+                                   th:classappend="${rates.pageNumber == i} ? 'active' : ''"
+                                   th:utext="${i}" class="pagination__elem"></a>
+                            </th:block>
+                        </th:block>
+                        <th:block th:unless="${(rates.pageNumber > left && rates.pageNumber < (rates.pagesAvailable - right)) || (rates.pageNumber <= left)}"
+                                  th:with="start=${rates.pageNumber - (left + right - (rates.pagesAvailable - rates.pageNumber))},end=${rates.pagesAvailable}">
+                            <th:block th:each="i : ${#numbers.sequence(start,end)}">
+                                <a th:attrappend="href='page?id=' + ${i}"
+                                   th:classappend="${rates.pageNumber == i} ? 'active' : ''"
+                                   th:utext="${i}" class="pagination__elem"></a>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+
+                    <a th:attrappend="href=${rates.pageNumber + 1 <= rates.pagesAvailable } ? 'page?id=' + ${rates.pageNumber + 1} : ''"
+                       th:classappend="${rates.pageNumber + 1 > rates.pagesAvailable} ? 'active' : ''"
+                       class="pagination__elem pagination__elem_next"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div tr-filter class="cfilter">
+    <div class="cfilter__wrapper">
+        <div tr-filter-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="filter-content">
+            <div class="filter-head">
+                <div class="filter-head__title">Фильтровать оценки</div>
+            </div>
+            <div class="filter-content__body custom-scroll">
+                <form tr-filter-form action="#" th:action="@{/performance-assessment/}" th:object="${filter}" th:method="post" class="filter-body">
+                    <div class="filter-body__wrapper">
+                        <div class="filter-column">
+                            <div class="filter-column__title">Параметры</div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_reverse">
+                                    <div class="menu-input__title">Дата создания (от и до)</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                        <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" autocomplete="off" placeholder="Выберите дату от" th:field="*{createDateFrom}">
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_xxxsmall">
+                                    <div class="menu-input__title"></div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                        <input class="datepicker-here-f menu-input__input menu-input__input_small menu-input__input_white" autocomplete="off" placeholder="Выберите дату до" th:field="*{createDateTo}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="filter-content__footer">
+                <div tr-filter-form-btn class="button">Применить фильтры</div>
+                <div th:if="${filter.isCanClear()}" class="clear-filter clear-filter_bordered">
+                    <form tr-clear-form action="#" th:action="@{/performance-assessment/clearFilter}" th:method="post" class="clear-filter__form">
+                        <button tr-clear-form-btn class="button button_clear">Сбросить фильтры</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-rate class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-rate-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content">
+            <form js-rate-form action="#" class="menu__content-side menu__content-side_full menu__content-side_gray">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div rate-header class="menu-header__title">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-block">
+                        <div class="menu-block__wrapper menu-block__wrapper_xlarge">
+                            <div class="menu-block__side">
+                                <div class="menu-block__content">
+                                    <div class="menu-input__wrapper menu-input__wrapper_row ">
+                                        <div class="desc-block__wrapper desc-block__wrapper_end desc-block__wrapper_mr30">
+                                            <div rate-date class="desc-block__desc"></div>
+                                        </div>
+                                        <div class="desc-block__wrapper desc-block__wrapper_end desc-block__wrapper_mr30">
+                                            <div rate-deal class="desc-block__desc"></div>
+                                        </div>
+                                        <div class="desc-block__wrapper desc-block__wrapper_end desc-block__wrapper_mr10">
+                                            <div class="desc-block__desc">Общая оценка</div>
+                                        </div>
+                                        <div class="desc-block__wrapper desc-block__wrapper_end">
+                                            <div rate-score class="score"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-block__wrapper menu-block__wrapper_xlarge">
+                            <div class="menu-block__side">
+                                <div class="menu-block__content">
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <table class="custom-table custom-table_content">
+                                            <thead class="custom-table__header">
+                                            <tr class="custom-table__header-row">
+                                                <td class="custom-table__header-col ">Пункт оценки</td>
+                                                <td class="custom-table__header-col ">Оценка</td>
+                                                <td class="custom-table__header-col ">Комментарий</td>
+                                            </tr>
+                                            </thead>
+                                            <tbody rate-items class="custom-table__body custom-table__body_white">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer menu__footer_start">
+                    <button type="button" js-menu-rate-close-btn class="button_right button button_white">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-open-comment class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-open-comment-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-open-comment-form action="#" class="menu__content-side menu__content-side_large" enctype="multipart/form-data">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Подробнее об оценке
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input c-rate-id type="hidden" name="id" required>
+                    <input c-rate-id-item type="hidden" name="idItem" required>
+
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__wrapper menu-input__wrapper_row ">
+                            <div class="desc-block__wrapper desc-block__wrapper_end ">
+                                <div c-rate-item-name class="desc-block__desc"></div>
+                            </div>
+
+                            <div class="desc-block__wrapper desc-block__wrapper_right desc-block__wrapper_end desc-block__wrapper_mr10">
+                                <div class="desc-block__desc">Оценка</div>
+                            </div>
+                            <div class="desc-block__wrapper desc-block__wrapper_end">
+                                <div c-rate-score class="score"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div examiner-comment comments class="menu-input__delim menu-input_close">
+                        <span></span>
+                    </div>
+
+<!--                    <div examiner-comment class="comment menu-input_close">-->
+<!--                        <div ex-comment class="comment__wrapper ">-->
+<!--                            <div c-rate-comment class="comment__text"></div>-->
+<!--                            <div c-rate-documents class="comment__document-wrapper">-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div manager-comment class="comment menu-input_close">-->
+<!--                        <div man-comment class="comment__wrapper comment__wrapper_400 comment__wrapper_right">-->
+<!--                            <div class="comment__score"><span>Желаемая оценка </span><div c-rate-mscore class="score"></div></div>-->
+<!--                            <div c-rate-mcomment class="comment__text"></div>-->
+<!--                            <div c-rate-mdocuments class="comment__document-wrapper">-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+                    <div debate-btn-block class="menu-input__delim menu-input_close">
+                        <span></span>
+                    </div>
+                    <div debate-btn-block class="menu-input menu-input_xsmall menu-input_close">
+                        <div class="menu-input__wrapper">
+                            <div debate-btn class="button button_white">
+                                <span>Оспорить</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div debate-block class="menu-input menu-input_xsmall menu-input_close">
+                        <div class="menu-input__title">Желаемая оценка *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_row">
+                            <div class="rate-block">
+                                <div class="rate-block__wrapper">
+                                    <div class="rate-block__btn rate-block__btn_small">
+                                        <input c-rate-mgood type="radio" id="good" class="radio radio_icon radio_like rate-value wish-value" name="wishScore" value="" required>
+                                        <label for="good" class="label">Отлично</label>
+                                    </div>
+                                    <div class="rate-block__btn rate-block__btn_small">
+                                        <input type="radio" id="neutral" class="radio radio_neutral rate-value wish-value" name="wishScore" value="0.0" required>
+                                        <label for="neutral" class="label">Нейтрально</label>
+                                    </div>
+                                    <div class="rate-block__btn rate-block__btn_small">
+                                        <input c-rate-mbad type="radio" id="bad" class="radio radio_icon radio_dislike rate-value wish-value" name="wishScore" value="" required>
+                                        <label for="bad" class="label">Плохо</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="desc-block__wrapper desc-block__wrapper_right desc-block__wrapper_end desc-block__wrapper_mr10">
+                                <div class="desc-block__desc">Оценка</div>
+                            </div>
+                            <div class="desc-block__wrapper desc-block__wrapper_end">
+                                <div class="score wish-score">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div debate-block class="menu-input menu-input_xsmall menu-input_close">
+                        <div class="menu-input__title">Ваш ответ</div>
+                        <div class="menu-input__wrapper">
+                            <textarea comment-desc name="managerComment" placeholder="Введите комментарий" class="menu-input__input menu-input__input_small menu-input__input-textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <div debate-block class="menu-input__delim menu-input_close">
+                        <span></span>
+                    </div>
+
+                    <div debate-block class="menu-input menu-input_xsmall menu-input_close">
+                        <div class="menu-input__title">Дополнительные материалы</div>
+                        <div class="input-element__input input-element__input_transparent input-element__img input-element__img_border">
+                            <input comment-files type="file" id="files" accept=".png,.jpeg,.jpg,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" class="input-upload-file" multiple>
+                            <label for="files" class="input-upload-label input-upload-label_auto js-upload-banner">
+                                <span class="menu-input__title">Загрузите файл (PNG, JPEG, PDF, DOC, PPT, XLS)</span>
+                            </label>
+                        </div>
+                        <div class="input-element__documents">
+                            <div class="input-element__documents-new"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="menu__footer">
+                    <button debate-block type="button" accept-debate class="button button_white menu-input_close">Оспорить</button>
+                    <button type="button" js-menu-open-comment-close-btn class="button_right button button_white">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/performance-assessment.js}"></script>
+<script th:src="@{/js/transition-loader.js}"></script>
+<script th:src="@{/js/upload-files.js}"></script>
+<script th:src="@{/js/performance-assessment-rate-filter.js}"></script>
+<script th:src="@{/js/jquery.fancybox.min.js}"></script>
+<script th:src="@{/js/copy.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    setDashboardFilter(/*[[${filter}]]*/);
+    /*]]>*/
+</script>
+
+</body>
+</html>

@@ -1,0 +1,617 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Оценка работы">
+
+    <title>Продукты</title>
+
+    <th:block th:insert="base :: links" />
+    <link th:href="@{/css/jquery.fancybox.min.css}" rel="stylesheet">
+    <link th:href="@{/css/products.css}" rel="stylesheet">
+    <link th:href="@{/css/block.css}" rel="stylesheet">
+    <link th:href="@{/css/tabs.css}" rel="stylesheet">
+    <link th:href="@{/css/modules.css}" rel="stylesheet">
+    <link th:href="@{/css/lesson-constructor.css}" rel="stylesheet">
+    <link th:href="@{/css/jquery.fancybox.min.css}" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="base :: transition-loader"></div>
+<div th:replace="base :: dialog"></div>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-medium">
+    <div class="content-top content-top_btn">
+        <div class="content-top__header">Продукты</div>
+    </div>
+
+    <div class="content-top content-top_small">
+        <th:block>
+            <div th:replace="base :: products-tab"></div>
+        </th:block>
+    </div>
+
+    <div class="content-main">
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+                <th:block th:each="project : ${projects}">
+                    <div class="products" th:attr="data-project=${project.id}">
+                        <div class="products__wrapper">
+                            <div class="products__title">
+                                <div class="block-title" th:utext="${project.name}"></div>
+                                <div class="block-subtitle" th:utext="${project.tag}"></div>
+                            </div>
+                            <div class="products__content">
+                                <div class="tabs">
+                                    <div class="tabs__wrapper">
+                                        <div class="tabs__list">
+                                            <div class="tabs__list-wrapper">
+                                                <div js-tab class="tab active" data-tab="all" >Все</div>
+                                                <th:block th:each="courseType, stat : ${courseTypes}">
+                                                    <div js-tab class="tab" th:attr="data-tab=${project.id + 'type' + courseType.id}" th:utext="${courseType.name}"></div>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                        <div class="tabs__blocks">
+                                            <div js-tab-panel data-type="all" data-tab="all" class="tab-content is-open" >
+                                                <div class="tab-content__wrapper tab-content__wrapper_overflow-unset">
+                                                    <div class="products__list">
+                                                        <th:block th:each="courseType, stat : ${courseTypes}">
+                                                            <th:block th:each="course : ${coursesMap.get(project.id).get(courseType.id)}">
+                                                                <div js-update-course th:attr="data-course=${course.id}, data-project=${project.id}, data-type=${courseType.id}" class="product-block" th:style="${'background: ' + course.backgroundColor + ';'}">
+                                                                    <div class="product-block__wrapper" th:classappend="${course.theme}">
+                                                                        <div class="product-block__background" th:if="${course.backgroundImage != null}">
+                                                                            <img th:src="@{'/' + ${course.backgroundImage}}" alt="">
+                                                                        </div>
+                                                                        <div class="product-block__title" th:utext="${course.name}"></div>
+                                                                        <div class="product-block__type" th:utext="${course.courseType}"></div>
+                                                                        <div class="product-block__price" th:utext="${#numbers.formatInteger(course.price,0,'WHITESPACE') + ' ₽'}"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </th:block>
+                                                        </th:block>
+                                                        <div js-create-course th:attr="data-project=${project.id}" class="product-block product-block_create">
+                                                            <div class="product-block__message">Добавить курс</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <th:block th:each="courseType, stat : ${courseTypes}">
+                                                <div js-tab-panel th:attr="data-type=${courseType.id}, data-tab=${project.id + 'type' + courseType.id}" class="tab-content " >
+                                                    <div class="tab-content__wrapper tab-content__wrapper_overflow-unset">
+                                                        <div class="products__list">
+                                                            <th:block th:each="course : ${coursesMap.get(project.id).get(courseType.id)}">
+                                                                <div js-update-course th:attr="data-course=${course.id}, data-project=${project.id}, data-type=${courseType.id}" class="product-block" th:style="${'background: ' + course.backgroundColor + ';'}">
+                                                                    <div class="product-block__wrapper" th:classappend="${course.theme}">
+                                                                        <div class="product-block__background" th:if="${course.backgroundImage != null}">
+                                                                            <img th:src="@{'/' + ${course.backgroundImage}}" alt="">
+                                                                        </div>
+                                                                        <div class="product-block__title" th:utext="${course.name}"></div>
+                                                                        <div class="product-block__type" th:utext="${course.courseType}"></div>
+                                                                        <div class="product-block__price" th:utext="${#numbers.formatInteger(course.price,0,'WHITESPACE') + ' ₽'}"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </th:block>
+                                                            <div js-create-course th:attr="data-type=${courseType.id}, data-project=${project.id}" class="product-block product-block_create">
+                                                                <div class="product-block__message">Добавить курс</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-course class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-course-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content">
+            <form js-course-form action="#" class="menu__content-side menu__content-side_full menu__content-side_gray">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить курс
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-block">
+                        <div class="menu-block__wrapper menu-block__wrapper_large menu-block__wrapper_pb10">
+                            <div class="menu-block__side">
+                                <div class="menu-block__title">Настройки</div>
+                                <div class="menu-block__content">
+                                <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                    <div class="menu-input menu-input_block-menu">
+                                        <div class="menu-input__title">Проект *</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select course-project name="idProject" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                                <th:block th:each="project : ${projects}">
+                                                    <option th:value="${project.id}" th:utext="${project.name}"></option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_block-menu">
+                                        <div class="menu-input__title">Вид продукта *</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                            <select course-type name="idCourseType" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                                <th:block th:each="courseType : ${courseTypes}">
+                                                    <option th:value="${courseType.id}" th:utext="${courseType.name}"></option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                    <div class="menu-input menu-input_block-menu">
+                                        <div class="menu-input__title">Название курса *</div>
+                                        <div class="menu-input__wrapper">
+                                            <input name="name" class="menu-input__input menu-input__input_small" placeholder="Введите название" required="">
+                                        </div>
+                                    </div>
+                                    <div class="menu-input menu-input_block-menu">
+                                        <div class="menu-input__title">Стоимость *</div>
+                                        <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                            <input name="price" class="menu-input__input menu-input__input_small" placeholder="Введите стоимость" required="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="menu-block__wrapper menu-block__wrapper_large menu-block__wrapper_pb10">
+                            <div class="menu-block__side flex-basic_30">
+                                <div class="menu-block__title">Оформление карточки</div>
+                                <div class="menu-block__content">
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="menu-input menu-input_block-menu menu-input_f-auto">
+                                            <div class="menu-input__title">Шрифт *</div>
+                                            <div class="menu-input__wrapper  menu-input__wrapper_row">
+                                                <div class="input-element__radio-wrapper input-element__radio-wrapper_dark">
+                                                    <div class="input-element__radio input-element__radio_big">
+                                                        <input type="radio" id="dark" class="radio radio_circle-colored" name="theme" value="dark" checked>
+                                                        <label for="dark" class="colored-circle colored-circle_dark"></label>
+                                                    </div>
+                                                    <div class="input-element__radio input-element__radio_big">
+                                                        <input type="radio" id="light" class="radio radio_circle-colored" name="theme" value="light">
+                                                        <label for="light" class="colored-circle colored-circle_light"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="menu-input menu-input_block-menu">
+                                            <div class="menu-input__title">Цвет фона *</div>
+                                            <div class="menu-input__wrapper">
+                                                <input type="color" name="backgroundColor" value="#ffffff" class="menu-input__input menu-input__input_small menu-input__input_color" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                        <div class="upload-image">
+                                            <div class="upload-image__wrapper">
+                                                <input type="file" name="img" accept="image/*,image/jpeg" id="backgroundImage" class="input-file">
+                                                <label for="backgroundImage" class="js-labelFile upload-image__block">
+                                                    <span class="upload-image__title js-fileName">Загрузите изображение (290x240px)</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-course class="button button_not-allowed button_white">Добавить курс</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content">
+            <form js-update-form action="#" class="menu__content-side menu__content-side_full menu__content-side_gray tabs__wrapper">
+                <input up-course-id name="id" type="hidden" required>
+                <div class="menu__header-wrapper menu__header-wrapper_130">
+                    <div class="menu-header">
+                        <div class="menu-header__title menu-header__title_big menu-header__title_margin">
+                            Редактировать курс
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall menu-input_s">
+                        <div class="menu-input__tabs menu-input__tabs_p0">
+                            <div js-tab data-tab="t1" class="menu-tab active">Настройка и оформление</div>
+                            <div lesson-tab current-course data-tab="t2" class="menu-tab">Уроки</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-tabs menu-tabs_overflow-hidden">
+                        <div js-tab-panel data-tab="t1" class="tab-content is-open">
+                            <div class="tab-content__wrapper">
+                                <div class="menu-block">
+                                    <div class="menu-block__wrapper menu-block__wrapper_large menu-block__wrapper_pb10">
+                                        <div class="menu-block__side">
+                                            <div class="menu-block__title">Настройки</div>
+                                            <div class="menu-block__content">
+                                                <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                                    <div class="menu-input menu-input_block-menu">
+                                                        <div class="menu-input__title">Проект *</div>
+                                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                                            <select course-project name="idProject" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                                                <th:block th:each="project : ${projects}">
+                                                                    <option th:value="${project.id}" th:utext="${project.name}"></option>
+                                                                </th:block>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="menu-input menu-input_block-menu">
+                                                        <div class="menu-input__title">Вид продукта *</div>
+                                                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                                                            <select course-type name="idCourseType" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                                                <th:block th:each="courseType : ${courseTypes}">
+                                                                    <option th:value="${courseType.id}" th:utext="${courseType.name}"></option>
+                                                                </th:block>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                                    <div class="menu-input menu-input_block-menu">
+                                                        <div class="menu-input__title">Название курса *</div>
+                                                        <div class="menu-input__wrapper">
+                                                            <input up-course-name name="name" class="menu-input__input menu-input__input_small" placeholder="Введите название" required="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="menu-input menu-input_block-menu menu-input_f50">
+                                                        <div class="menu-input__title">Стоимость *</div>
+                                                        <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                                            <input up-course-price name="price" class="menu-input__input menu-input__input_small" placeholder="Введите стоимость" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="menu-block__wrapper menu-block__wrapper_large menu-block__wrapper_pb10">
+                                        <div class="menu-block__side flex-basic_30">
+                                            <div class="menu-block__title">Оформление карточки</div>
+                                            <div class="menu-block__content">
+                                                <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                                    <div class="menu-input menu-input_block-menu menu-input_f-auto">
+                                                        <div class="menu-input__title">Шрифт *</div>
+                                                        <div class="menu-input__wrapper  menu-input__wrapper_row">
+                                                            <div class="input-element__radio-wrapper input-element__radio-wrapper_dark">
+                                                                <div class="input-element__radio input-element__radio_big">
+                                                                    <input up-course-theme type="radio" id="darkUp" class="radio radio_circle-colored" name="theme" value="dark">
+                                                                    <label for="darkUp" class="colored-circle colored-circle_dark"></label>
+                                                                </div>
+                                                                <div class="input-element__radio input-element__radio_big">
+                                                                    <input up-course-theme type="radio" id="lightUp" class="radio radio_circle-colored" name="theme" value="light">
+                                                                    <label for="lightUp" class="colored-circle colored-circle_light"></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="menu-input menu-input_block-menu">
+                                                        <div class="menu-input__title">Цвет фона *</div>
+                                                        <div class="menu-input__wrapper">
+                                                            <input up-course-bg id="up-product-b" type="color" name="backgroundColor" value="#ffffff" class="menu-input__input menu-input__input_small menu-input__input_color" required/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="menu-input__wrapper menu-input__wrapper_row menu-input__wrapper_wrap">
+                                                    <div class="upload-image">
+                                                        <div class="upload-image__wrapper">
+                                                            <input type="file" name="img" accept="image/*,image/jpeg" id="backgroundImageUp" class="input-file">
+                                                            <label for="backgroundImageUp" class="js-labelFile upload-image__block">
+                                                                <span class="upload-image__title js-fileName">Загрузите изображение (290x240px)</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div js-tab-panel data-tab="t2" class="tab-content">
+                            <div class="tab-content__wrapper">
+                                <div class="modules">
+                                    <div class="modules__wrapper">
+                                        <div modules-list class="modules__content">
+                                        </div>
+                                        <div class="modules__content">
+                                            <div class="modules__btn-wrapper">
+                                                <div add-module current-course class="module-btn module-btn_low">+ Добавить модуль</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div update-footer class="menu__footer">
+                    <button type="button" js-update class="button button_not-allowed button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-add-module class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-add-module-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-add-module-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить модуль
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название *</div>
+                        <div class="menu-input__wrapper">
+                            <input name="name" class=" menu-input__input menu-input__input_small" placeholder="Введите название модуля" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Описание *</div>
+                        <div class="menu-input__wrapper">
+                            <textarea name="description" placeholder="Введите описание модуля"  class="menu-input__input menu-input__input_textarea menu-input__input_small" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Обложка *</div>
+                        <div class="input-element__input input-element__input_transparent input-element__img input-element__img_border">
+                            <input type="file" name="file" id="file" accept=".png,.jpeg,.jpg" class="input-upload-file input-file" required>
+                            <label for="file" class="js-labelFile input-upload-label input-upload-label_auto js-upload-banner">
+                                <span img-title class="menu-input__title js-fileName">Загрузите изображение (410 х 280px)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_msmall">
+                        <div class="input-element__input_row input-element__input_row_xscroll">
+                            <div class="input-element__checkbox">
+                                <input name="accessLimitation" type="checkbox" id="mailingUp" class="checkbox" value="true">
+                                <label class="checkbox-label checkbox-label_gray" for="mailingUp">Ограничить доступ к следующему модулю если не сдано ДЗ</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <input m-course-id type="hidden"  value="" name="idCourse" required>
+
+                    <button type="button" js-add-module class="button button_white">+ Добавить модуль</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-module class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-module-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-module-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать модуль
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название *</div>
+                        <div class="menu-input__wrapper">
+                            <input u-module-name name="name" class=" menu-input__input menu-input__input_small" placeholder="Введите название модуля" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Описание *</div>
+                        <div class="menu-input__wrapper">
+                            <textarea u-module-description name="description" placeholder="Введите описание модуля"  class="menu-input__input menu-input__input_textarea menu-input__input_small" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Обложка *</div>
+                        <div class="input-element__input input-element__input_transparent input-element__img input-element__img_border">
+                            <input u-module-poster type="file" name="file" id="moduleFileUpdate" accept=".png,.jpeg,.jpg" class="input-upload-file input-file">
+                            <label for="moduleFileUpdate" class="js-labelFile input-upload-label input-upload-label_auto js-upload-banner">
+                                <span img-title class="menu-input__title js-fileName">Загрузите изображение (410 х 280px)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_msmall">
+                        <div class="input-element__input_row input-element__input_row_xscroll">
+                            <div class="input-element__checkbox">
+                                <input u-module-access name="accessLimitation" type="checkbox" id="accessLimitationUpdate" class="checkbox" value="true">
+                                <label class="checkbox-label checkbox-label_gray" for="accessLimitationUpdate">Ограничить доступ к следующему модулю если не сдано ДЗ</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <input u-module-id type="hidden"  value="" name="id" required>
+
+                    <button type="button" js-update-module class="button button_white">+ Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-add-lesson class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-add-lesson-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content">
+            <div class="menu__content-side menu__content-side_full menu__content-side_gray tabs__wrapper">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить урок
+                        </div>
+                    </div>
+                </div>
+                <div class="constructor">
+                    <div class="constructor__wrapper">
+                        <div class="constructor__side">
+                            <div class="constructor-blocks add-lesson">
+                                <div th:replace="base :: constructor-common-blocks"></div>
+                                <div th:replace="base :: constructor-not-common-blocks"></div>
+                            </div>
+                        </div>
+                        
+                        <form js-add-lesson-form action="#" class="constructor__content">
+                            <input a-lesson-module name="idModule" type="hidden" required>
+                            <input a-lesson-type name="type" type="hidden" required>
+                            <div class="lesson-content">
+                                <div class="lesson-content__wrapper">
+                                    <div class="lesson-content__title">
+
+                                        <div class="lesson-elements">
+                                            <div class="lesson-elements__wrapper">
+                                                <div class="lesson-element lesson-element_f70">
+                                                    <div class="lesson-element__title">Название *</div>
+                                                    <div class="lesson-element__wrapper">
+                                                        <input type="text" name="title" required placeholder="Введите название" class="lesson-element__input">
+                                                    </div>
+                                                </div>
+                                                <div class="lesson-element lesson-element_f30">
+                                                    <div class="lesson-element__title">Продолжительность *</div>
+                                                    <div class="lesson-element__wrapper lesson-element__wrapper_time">
+                                                        <input type="text" name="duration" required placeholder="Введите продолжительность" class="lesson-element__input">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="lesson-content__blocks sortableList">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-add-lesson class="button button_not-allowed button_white">Сохранить изменения</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-lesson class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-lesson-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content">
+            <div class="menu__content-side menu__content-side_full menu__content-side_gray tabs__wrapper">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать урок
+                        </div>
+                    </div>
+                </div>
+                <div class="constructor">
+                    <div class="constructor__wrapper">
+                        <div class="constructor__side">
+                            <div class="constructor-blocks update-lesson">
+                                <div th:replace="base :: constructor-common-blocks"></div>
+                                <div th:replace="base :: constructor-not-common-blocks"></div>
+                            </div>
+                        </div>
+
+                        <form js-update-lesson-form action="#" class="constructor__content">
+                            <input u-lesson-id name="id" type="hidden" required>
+                            <div class="lesson-content">
+                                <div class="lesson-content__wrapper">
+                                    <div class="lesson-content__title">
+
+                                        <div class="lesson-elements">
+                                            <div class="lesson-elements__wrapper">
+                                                <div class="lesson-element lesson-element_f70">
+                                                    <div class="lesson-element__title">Название *</div>
+                                                    <div class="lesson-element__wrapper">
+                                                        <input u-lesson-title type="text" name="title" required placeholder="Введите название" class="lesson-element__input">
+                                                    </div>
+                                                </div>
+                                                <div class="lesson-element lesson-element_f30">
+                                                    <div class="lesson-element__title">Продолжительность *</div>
+                                                    <div class="lesson-element__wrapper lesson-element__wrapper_time">
+                                                        <input u-lesson-duration type="text" name="duration" required placeholder="Введите продолжительность" class="lesson-element__input">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div u-lesson-blocks class="lesson-content__blocks sortableList">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-update-lesson class="button button_not-allowed button_white">Сохранить изменения</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/jquery-ui.min.js}"></script>
+<script th:src="@{/js/jquery.fancybox.min.js}"></script>
+<script th:src="@{/js/courses.js}"></script>
+<script th:src="@{/js/transition-loader.js}"></script>
+<script th:src="@{/js/tabs.js}"></script>
+<script th:src="@{/js/upload-img.js}"></script>
+<script th:src="@{/js/lesson-constructor.js}"></script>
+</body>
+</html>

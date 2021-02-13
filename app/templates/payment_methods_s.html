@@ -1,0 +1,144 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Способы оплаты">
+
+    <title>Способы оплаты</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: settings-said-nav"></div>-->
+    <div class="content-top">
+        <div class="content-top__header">Способы оплаты</div>
+    </div>
+    <div class="content-main">
+        <div class="content-main__panel content-main__panel_large">
+            <div js-create-row class="button button_add">+ Добавить</div>
+        </div>
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                    <tr class="custom-table__header-row">
+                        <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Название</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Статус</td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                    </tr>
+                    </thead>
+                    <tbody class="custom-table__body custom-table__body_white" table-body>
+                    <tr class="custom-table__body-row" th:each="paymentMethod, stat : ${paymentMethods}">
+                        <input type="hidden" pm-id th:value="${paymentMethod.id}" name="id" required>
+                        <td class="custom-table__body-col" th:utext="${stat.count}"></td>
+                        <td class="custom-table__body-col">
+                            <div class="column_pmethod" th:classappend="'column_pmethod_' + ${paymentMethod.code}"></div>
+                        </td>
+                        <td class="custom-table__body-col" th:utext="${paymentMethod.title}"></td>
+                        <td class="custom-table__body-col custom-table__body-col_medium">
+                            <div pm-enable-wrapper class="indicated-select menu-input__wrapper menu-input__wrapper_select disabled" th:classappend="'indicated-select_' + ${paymentMethod.isActive}">
+                                <select pm-enable-selector disabled class="editable menu-input__input menu-input__input_medium menu-input__input_select menu-input__input_white">
+                                    <option value="true" th:selected="${true == paymentMethod.isActive}">Активен</option>
+                                    <option value="false" th:selected="${false == paymentMethod.isActive}">Не активен</option>
+                                </select>
+                            </div>
+                        </td>
+
+                        <td class="custom-table__body-col custom-table__body-col_last">
+                            <div edit-btns class="column-links display-flex-none">
+                                <div edit-row-accept class="column_mwidth column_mwidth-accept"></div>
+                                <div edit-row-cancel class="column_mwidth column_mwidth-cancel"></div>
+                            </div>
+                            <div edit-menu class="column-links display-flex-none is-open">
+                                <div edit-row class="column_mwidth div-table__body-col_center column_mwidth-edit column_mwidth-edit-b"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-create-row class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-row-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-row-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Создать способ оплаты
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_grow menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Название *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-row-form-title name="title" class="menu-input__input menu-input__input_small" placeholder="Введите название" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Иконка *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_row">
+                            <div class="input-element__radio ">
+                                <input type="radio" id="yandex" class="radio radio_circle" name="code" value="yandex" required>
+                                <label for="yandex" class="column_pmethod column_pmethod_yandex">
+                                </label>
+                            </div>
+                            <div class="input-element__radio ">
+                                <input type="radio" id="sber" class="radio radio_circle" name="code" value="sber" required>
+                                <label for="sber" class="column_pmethod column_pmethod_sber">
+                                </label>
+                            </div>
+                            <div class="input-element__radio ">
+                                <input type="radio" id="qiwi" class="radio radio_circle" name="code" value="qiwi" required>
+                                <label for="qiwi" class="column_pmethod column_pmethod_qiwi">
+                                </label>
+                            </div>
+                            <div class="input-element__radio ">
+                                <input type="radio" id="bill" class="radio radio_circle" name="code" value="bill" required>
+                                <label for="bill" class="column_pmethod column_pmethod_bill">
+                                </label>
+                            </div>
+                            <div class="input-element__radio ">
+                                <input type="radio" id="other" class="radio radio_circle" name="code" value="other" required>
+                                <label for="other" class="column_pmethod column_pmethod_other">
+                                </label>
+                            </div>
+                            <div class="input-element__radio ">
+                                <input type="radio" id="westernunion" class="radio radio_circle" name="code" value="westernunion" required>
+                                <label for="westernunion" class="column_pmethod column_pmethod_westernunion">
+                                </label>
+                            </div>
+                            <div class="input-element__radio ">
+                                <input type="radio" id="paypal" class="radio radio_circle" name="code" value="paypal" required>
+                                <label for="paypal" class="column_pmethod column_pmethod_paypal">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-row class="button button_white">Сохранить способ оплаты</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/payment-methods-menu.js}"></script>
+</body>
+</html>

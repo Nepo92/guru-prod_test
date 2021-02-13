@@ -1,0 +1,1101 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Пользователи">
+
+    <title>Сотрудники</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+<div class="main-content main-content_s-white-top">
+    <div class="content-top content-top_btn">
+        <div class="content-top__header">Сотрудники</div>
+    </div>
+    <div class="content-main">
+        <th:block th:each="department : ${departments}">
+            <th:block th:if="${department.id == 9}">
+                <div class="content-main__wrapper content-main__wrapper_b50">
+                    <div class="content-main__panel content-main__panel_col content-main__panel_align content-main__panel_large content-main__panel_p">
+
+                        <div class="table-title">
+                            <div class="table-title_wrapper">
+                                <div th:attr="department=${department.department}, id-department=${department.id}" class="table-title__title" th:utext="${department.title}"></div>
+                                <div js-create-examiner class="add-button add-button_right button_add">+ Добавить сотрудника</div>
+                            </div>
+                        </div>
+
+                        <table class="custom-table">
+                            <thead class="custom-table__header">
+                            <tr class="custom-table__header-row">
+                                <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                                <td class="custom-table__header-col custom-table__header-col_big"></td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Имя</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Логин</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Пароль</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Телефон</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Ссылка ВК</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Номер карты</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">День рождения</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Ключ</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Должность</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Статус</td>
+                                <td class="custom-table__header-col custom-table__header-col_big"></td>
+                            </tr>
+                            </thead>
+                            <tbody table-body class="custom-table__body custom-table__body_white">
+                            <tr th:attr="data-employee=${employee.idEmployee}" class="custom-table__body-row" th:each="employee, stat : ${staffDepartment.get(department.department)}">
+                                <input type="hidden" u-id th:value="${employee.idEmployee}" name="id" required>
+                                <td class="custom-table__body-col" th:utext="${employee.idEmployee}"></td>
+                                <td class="custom-table__body-col">
+                                    <div class="avatar-upload">
+                                        <form u-upload-avatar-form action="#" enctype="multipart/form-data">
+                                            <input type="hidden" th:value="${employee.idEmployee}" name="id" required>
+                                            <input u-upload-avatar accept="image/*,image/jpeg" class="input-file" name="file" type="file" th:id="'avatar' + ${employee.idEmployee}">
+                                            <label th:for="'avatar' + ${employee.idEmployee}">
+                                            <span class="avatar-upload__upload" th:classappend="${#strings.isEmpty(employee.avatar) ? 'avatar-upload__upload_default-user' : ''}">
+                                                <img th:if="${!#strings.isEmpty(employee.avatar)}" th:src="'/' + ${employee.avatar}" alt="">
+                                            </span>
+                                            </label>
+                                        </form>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_xlarge" >
+                                    <input u-name name="name"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.name}"
+                                           th:value="${employee.name}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_xlarge">
+                                    <input u-username name="user.username"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.user.username}"
+                                           th:value="${employee.user.username}"
+                                           disabled
+                                           placeholder="—"
+                                           required>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-password name="user.password"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:value="${''}"
+                                           disabled
+                                           placeholder="✱✱✱✱✱✱"
+                                           required>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-phone name="phone"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.phone}"
+                                           th:value="${employee.phone}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-link name="link"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.link}"
+                                           th:value="${employee.link}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-doorscardnumber name="doorsCardNumber"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.doorsCardNumber}"
+                                           th:value="${employee.doorsCardNumber}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_small">
+                                    <input u-birthday
+                                           data-position="top left"
+                                           name="birthday"
+                                           class="datepicker-here-e menu-input__input menu-input__input_small editable"
+                                           autocomplete="off"
+                                           th:value="${employee.birthday}"
+                                           disabled
+                                           data-autoclose="true"
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col">
+                                    <div class="input-element__checkbox input-element__checkbox_mid">
+                                        <input u-ishaskey
+                                               name="isHasKey"
+                                               type="checkbox"
+                                               class="checkbox"
+                                               value="true"
+                                               disabled
+                                               th:id="'key' + ${employee.idEmployee}"
+                                               th:checked="${employee.isHasKey}">
+                                        <label class="checkbox-label checkbox-label_gray" th:for="'key' + ${employee.idEmployee}"></label>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <div u-type-wrapper class="menu-input__wrapper menu-input__wrapper_select disabled">
+                                        <select u-type-selector disabled class="editable menu-input__input menu-input__input_medium menu-input__input_select menu-input__input_white">
+                                            <option th:value="0" disabled>Выберите тип</option>
+                                            <option th:each="type : ${typesDepartment.get(department.department)}"
+                                                    th:value="${type.id}"
+                                                    th:utext="${type.title}"
+                                                    th:selected="${type.id == employee.type}"
+                                            ></option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <div u-dismiss-wrapper class="indicated-select menu-input__wrapper menu-input__wrapper_select disabled" th:classappend="'indicated-select_' + ${employee.isNotDisMiss}">
+                                        <select u-dismiss-selector disabled class="editable menu-input__input menu-input__input_xsmall menu-input__input_select menu-input__input_white">
+                                            <option value="true" th:selected="${true == employee.isNotDisMiss}">Работает</option>
+                                            <option value="false" th:selected="${false == employee.isNotDisMiss}">Уволен</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_last">
+                                    <div edit-btns class="column-links display-flex-none">
+                                        <div edit-employee-accept class="column_mwidth column_mwidth-accept"></div>
+                                        <div edit-employee-cancel class="column_mwidth column_mwidth-cancel"></div>
+                                    </div>
+                                    <div edit-menu class="column-links display-flex-none is-open">
+                                        <div edit-employee class="column_mwidth div-table__body-col_center column_mwidth-edit column_mwidth-edit-b"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </th:block>
+
+            <th:block th:if="${department.id == 1000}">
+                <div class="content-main__wrapper content-main__wrapper_b50">
+                    <div class="content-main__panel content-main__panel_col content-main__panel_align content-main__panel_p">
+
+                        <div class="table-title">
+                            <div class="table-title_wrapper">
+                                <div class="table-title__title" th:utext="${department.title}"></div>
+                                <div js-create-manager class="add-button add-button_right button_add">+ Добавить менеджера</div>
+                            </div>
+                        </div>
+
+                        <table class="custom-table">
+                            <thead class="custom-table__header">
+                            <tr class="custom-table__header-row">
+                                <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                                <td class="custom-table__header-col custom-table__header-col_big"></td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Имя</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Логин</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Пароль</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Телефон</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Ссылка ВК</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Номер карты</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">День рождения</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Ключ</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Монитор</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Должность</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Статус</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Проекты</td>
+                                <td class="custom-table__header-col custom-table__header-col_big"></td>
+                            </tr>
+                            </thead>
+                            <tbody class="custom-table__body custom-table__body_white">
+                            <tr th:attr="data-manager=${manager.id}" department="manager" class="custom-table__body-row" th:each="manager, stat : ${managers}">
+                                <input type="hidden" u-id th:value="${manager.id}" name="id" required>
+                                <input type="hidden" u-id-manager th:value="${manager.idManager}" required>
+                                <td class="custom-table__body-col" th:utext="${manager.idManager}"></td>
+                                <td class="custom-table__body-col">
+                                    <div class="avatar-upload">
+                                        <form u-upload-avatar-form action="#" enctype="multipart/form-data">
+                                            <input type="hidden" th:value="${manager.idManager}" name="id" required>
+                                            <input u-upload-manager-avatar accept="image/*,image/jpeg" class="input-file" name="file" type="file" th:id="'avatarM' + ${manager.id}">
+                                            <label th:for="'avatarM' + ${manager.id}">
+                                            <span class="avatar-upload__upload" th:classappend="${#strings.isEmpty(manager.avatar) ? 'avatar-upload__upload_default-user' : ''}">
+                                                <img th:if="${!#strings.isEmpty(manager.avatar)}" th:src="'/' + ${manager.avatar}" alt="">
+                                            </span>
+                                            </label>
+                                        </form>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_xlarge" >
+                                    <input u-name name="name"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${manager.name}"
+                                           th:value="${manager.name}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_xlarge">
+                                    <input u-username name="username"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${manager.username}"
+                                           th:value="${manager.username}"
+                                           disabled
+                                           placeholder="—"
+                                           required>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-password name="password"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:value="${''}"
+                                           disabled
+                                           placeholder="✱✱✱✱✱✱"
+                                           required>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-phone name="phone"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${manager.phone}"
+                                           th:value="${manager.phone}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-link name="link"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${manager.link}"
+                                           th:value="${manager.link}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-doorscardnumber name="doorsCardNumber"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${manager.doorsCardNumber}"
+                                           th:value="${manager.doorsCardNumber}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_small">
+                                    <input u-birthday
+                                           data-position="top left"
+                                           name="birthday"
+                                           class="datepicker-here-u menu-input__input menu-input__input_small editable"
+                                           autocomplete="off"
+                                           th:value="${manager.birthday}"
+                                           disabled
+                                           data-autoclose="true"
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col">
+                                    <div class="input-element__checkbox input-element__checkbox_mid">
+                                        <input u-ishaskey
+                                               name="isHasKey"
+                                               type="checkbox"
+                                               class="checkbox"
+                                               value="true"
+                                               disabled
+                                               th:id="'keyM' + ${manager.id}"
+                                               th:checked="${manager.isHasKey}">
+                                        <label class="checkbox-label checkbox-label_gray" th:for="'keyM' + ${manager.id}"></label>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col">
+                                    <div class="input-element__checkbox input-element__checkbox_mid">
+                                        <input u-isneedshow
+                                               name="isNeedShow"
+                                               type="checkbox"
+                                               class="checkbox"
+                                               value="true"
+                                               disabled
+                                               th:id="'showM' + ${manager.id}"
+                                               th:checked="${manager.isNeedShow}">
+                                        <label class="checkbox-label checkbox-label_gray" th:for="'showM' + ${manager.id}"></label>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <div u-type-wrapper class="menu-input__wrapper menu-input__wrapper_select disabled">
+                                        <select u-type-selector disabled class="editable menu-input__input menu-input__input_medium menu-input__input_select menu-input__input_white">
+                                            <option th:value="0" disabled>Выберите тип</option>
+                                            <option th:each="type : ${managerTypes}"
+                                                    th:attr="data-code=${type.code}"
+                                                    th:value="${type.id}"
+                                                    th:utext="${type.title}"
+                                                    th:selected="${type.id == manager.type}"
+                                            ></option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <div u-dismiss-wrapper class="indicated-select menu-input__wrapper menu-input__wrapper_select disabled" th:classappend="'indicated-select_' + ${manager.isNotDisMiss}">
+                                        <input type="hidden" th:value="${manager.idManager}" name="idManagerAccess" required>
+                                        <select u-dismiss-selector manager-access disabled class="editable menu-input__input menu-input__input_xsmall menu-input__input_select menu-input__input_white">
+                                            <option value="true" th:selected="${true == manager.isNotDisMiss}">Работает</option>
+                                            <option th:attr="data-access=${manager.isDeleted}" value="false" th:selected="${false == manager.isNotDisMiss}">Уволен</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_small">
+                                    <div js-set-projects class="setting-wrapper">
+                                        <div class="theme-setting theme-setting_big theme-setting_m"></div>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_last">
+                                    <div edit-btns class="column-links display-flex-none">
+                                        <div edit-user-accept class="column_mwidth column_mwidth-accept"></div>
+                                        <div edit-user-cancel class="column_mwidth column_mwidth-cancel"></div>
+                                    </div>
+                                    <div edit-menu class="column-links display-flex-none is-open">
+                                        <div edit-user class="column_mwidth div-table__body-col_center column_mwidth-edit column_mwidth-edit-b"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </th:block>
+
+            <th:block th:if="${department.id == 1001}">
+                <div class="content-main__wrapper content-main__wrapper_b50">
+                    <div class="content-main__panel content-main__panel_col content-main__panel_align content-main__panel_p">
+
+                        <div class="table-title">
+                            <div class="table-title_wrapper">
+                                <div class="table-title__title" th:utext="${department.title}"></div>
+                                <div js-create-advertiser class="add-button add-button_right button_add">+ Добавить рекламщика</div>
+                            </div>
+                        </div>
+                        <table class="custom-table">
+                            <thead class="custom-table__header">
+                            <tr class="custom-table__header-row">
+                                <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                                <td class="custom-table__header-col custom-table__header-col_big"></td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Имя</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Логин</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Пароль</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Телефон</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Ссылка ВК</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Номер карты</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">День рождения</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Ключ</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Должность</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Статус</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Доступ</td>
+                                <td class="custom-table__header-col custom-table__header-col_big"></td>
+                            </tr>
+                            </thead>
+                            <tbody class="custom-table__body custom-table__body_white">
+                            <tr th:attr="data-advertiser=${advertiser.id}" department="advertiser" class="custom-table__body-row" th:each="advertiser, stat : ${advertisers}">
+                                <input type="hidden" u-id th:value="${advertiser.id}" name="id" required>
+                                <td class="custom-table__body-col" th:utext="${advertiser.idManager}"></td>
+                                <td class="custom-table__body-col">
+                                    <div class="avatar-upload">
+                                        <form u-upload-avatar-form action="#" enctype="multipart/form-data">
+                                            <input type="hidden" th:value="${advertiser.idManager}" name="id" required>
+                                            <input u-upload-avatar accept="image/*,image/jpeg" class="input-file" name="file" type="file" th:id="'avatarA' + ${advertiser.id}">
+                                            <label th:for="'avatarA' + ${advertiser.id}">
+                                            <span class="avatar-upload__upload" th:classappend="${#strings.isEmpty(advertiser.avatar) ? 'avatar-upload__upload_default-user' : ''}">
+                                                <img th:if="${!#strings.isEmpty(advertiser.avatar)}" th:src="'/' + ${advertiser.avatar}" alt="">
+                                            </span>
+                                            </label>
+                                        </form>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_xlarge" >
+                                    <input u-name name="name"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${advertiser.name}"
+                                           th:value="${advertiser.name}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_xlarge">
+                                    <input u-username name="username"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${advertiser.username}"
+                                           th:value="${advertiser.username}"
+                                           disabled
+                                           placeholder="—"
+                                           required>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-password name="password"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:value="${''}"
+                                           disabled
+                                           placeholder="✱✱✱✱✱✱"
+                                           required>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-phone name="phone"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${advertiser.phone}"
+                                           th:value="${advertiser.phone}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-link name="link"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${advertiser.link}"
+                                           th:value="${advertiser.link}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-doorscardnumber name="doorsCardNumber"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${advertiser.doorsCardNumber}"
+                                           th:value="${advertiser.doorsCardNumber}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_small">
+                                    <input u-birthday
+                                           data-position="top left"
+                                           name="birthday"
+                                           class="datepicker-here-u menu-input__input menu-input__input_small editable"
+                                           autocomplete="off"
+                                           th:value="${advertiser.birthday}"
+                                           disabled
+                                           data-autoclose="true"
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col">
+                                    <div class="input-element__checkbox input-element__checkbox_mid">
+                                        <input u-ishaskey
+                                               name="isHasKey"
+                                               type="checkbox"
+                                               class="checkbox"
+                                               value="true"
+                                               disabled
+                                               th:id="'keyA' + ${advertiser.id}"
+                                               th:checked="${advertiser.isHasKey}">
+                                        <label class="checkbox-label checkbox-label_gray" th:for="'keyA' + ${advertiser.id}"></label>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <div u-type-wrapper class="menu-input__wrapper menu-input__wrapper_select disabled">
+                                        <select u-type-selector disabled class="editable menu-input__input menu-input__input_medium menu-input__input_select menu-input__input_white">
+                                            <option th:value="0" disabled>Выберите тип</option>
+                                            <option th:each="type : ${advertiserTypes}"
+                                                    th:attr="data-code=${type.code}"
+                                                    th:value="${type.id}"
+                                                    th:utext="${type.title}"
+                                                    th:selected="${type.id == advertiser.type}"
+                                            ></option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <div u-dismiss-wrapper class="indicated-select menu-input__wrapper menu-input__wrapper_select disabled" th:classappend="'indicated-select_' + ${advertiser.isNotDisMiss}">
+                                        <select u-dismiss-selector disabled class="editable menu-input__input menu-input__input_xsmall menu-input__input_select menu-input__input_white">
+                                            <option value="true" th:selected="${true == advertiser.isNotDisMiss}">Работает</option>
+                                            <option value="false" th:selected="${false == advertiser.isNotDisMiss}">Уволен</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_small">
+                                    <div class="input-element__checkbox input-element__checkbox_mid">
+                                        <input u-access
+                                               name="access"
+                                               type="checkbox"
+                                               class="checkbox"
+                                               value="true"
+                                               disabled
+                                               th:id="'keyAccess' + ${advertiser.id}"
+                                               th:checked="${advertiser.access}">
+                                        <label class="label-pk" th:for="'keyAccess' + ${advertiser.id}"></label>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_last">
+                                    <div edit-btns class="column-links display-flex-none">
+                                        <div edit-user-accept class="column_mwidth column_mwidth-accept"></div>
+                                        <div edit-user-cancel class="column_mwidth column_mwidth-cancel"></div>
+                                    </div>
+                                    <div edit-menu class="column-links display-flex-none is-open">
+                                        <div edit-user class="column_mwidth div-table__body-col_center column_mwidth-edit column_mwidth-edit-b"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </th:block>
+
+            <th:block th:if="${department.id != 1000 && department.id != 1001 && department.id != 9}">
+                <div class="content-main__wrapper content-main__wrapper_b50">
+                    <div class="content-main__panel content-main__panel_col content-main__panel_align content-main__panel_large content-main__panel_p">
+
+                        <div class="table-title">
+                            <div class="table-title_wrapper">
+                                <div th:attr="department=${department.department}, id-department=${department.id}" class="table-title__title" th:utext="${department.title}"></div>
+                                <div js-create-employee class="add-button add-button_right button_add">+ Добавить сотрудника</div>
+                            </div>
+                        </div>
+
+                        <table class="custom-table">
+                            <thead class="custom-table__header">
+                            <tr class="custom-table__header-row">
+                                <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                                <td class="custom-table__header-col custom-table__header-col_big"></td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Имя</td>
+                                <td class="custom-table__header-col custom-table__header-col_big" th:if="${department.id == 7}">Логин</td>
+                                <td class="custom-table__header-col custom-table__header-col_big" th:if="${department.id == 7}">Пароль</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Телефон</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Ссылка ВК</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Номер карты</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">День рождения</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Ключ</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Должность</td>
+                                <td class="custom-table__header-col custom-table__header-col_big">Статус</td>
+                                <td class="custom-table__header-col custom-table__header-col_big"></td>
+                            </tr>
+                            </thead>
+                            <tbody table-body class="custom-table__body custom-table__body_white">
+                            <tr th:attr="data-employee=${employee.idEmployee}" class="custom-table__body-row" th:each="employee, stat : ${staffDepartment.get(department.department)}">
+                                <input type="hidden" u-id th:value="${employee.idEmployee}" name="id" required>
+                                <td class="custom-table__body-col" th:utext="${employee.idEmployee}"></td>
+                                <td class="custom-table__body-col">
+                                    <div class="avatar-upload">
+                                        <form u-upload-avatar-form action="#" enctype="multipart/form-data">
+                                            <input type="hidden" th:value="${employee.idEmployee}" name="id" required>
+                                            <input u-upload-avatar accept="image/*,image/jpeg" class="input-file" name="file" type="file" th:id="'avatar' + ${employee.idEmployee}">
+                                            <label th:for="'avatar' + ${employee.idEmployee}">
+                                            <span class="avatar-upload__upload" th:classappend="${#strings.isEmpty(employee.avatar) ? 'avatar-upload__upload_default-user' : ''}">
+                                                <img th:if="${!#strings.isEmpty(employee.avatar)}" th:src="'/' + ${employee.avatar}" alt="">
+                                            </span>
+                                            </label>
+                                        </form>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_xlarge" >
+                                    <input u-name name="name"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.name}"
+                                           th:value="${employee.name}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_xlarge" th:if="${department.id == 7}">
+                                    <input u-username name="username"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.user.username}"
+                                           th:value="${employee.user.username}"
+                                           disabled
+                                           placeholder="—"
+                                           required>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium" th:if="${department.id == 7}">
+                                    <input u-password name="password"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:value="${''}"
+                                           disabled
+                                           placeholder="✱✱✱✱✱✱"
+                                           required>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-phone name="phone"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.phone}"
+                                           th:value="${employee.phone}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-link name="link"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.link}"
+                                           th:value="${employee.link}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <input u-doorscardnumber name="doorsCardNumber"
+                                           class="menu-input__input menu-input__input_small editable"
+                                           th:attr="title=${employee.doorsCardNumber}"
+                                           th:value="${employee.doorsCardNumber}"
+                                           disabled
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_small">
+                                    <input u-birthday
+                                           data-position="top left"
+                                           name="birthday"
+                                           class="datepicker-here-e menu-input__input menu-input__input_small editable"
+                                           autocomplete="off"
+                                           th:value="${employee.birthday}"
+                                           disabled
+                                           data-autoclose="true"
+                                           placeholder="—">
+                                </td>
+                                <td class="custom-table__body-col">
+                                    <div class="input-element__checkbox input-element__checkbox_mid">
+                                        <input u-ishaskey
+                                               name="isHasKey"
+                                               type="checkbox"
+                                               class="checkbox"
+                                               value="true"
+                                               disabled
+                                               th:id="'key' + ${employee.idEmployee}"
+                                               th:checked="${employee.isHasKey}">
+                                        <label class="checkbox-label checkbox-label_gray" th:for="'key' + ${employee.idEmployee}"></label>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <div u-type-wrapper class="menu-input__wrapper menu-input__wrapper_select disabled">
+                                        <select u-type-selector disabled class="editable menu-input__input menu-input__input_medium menu-input__input_select menu-input__input_white">
+                                            <option th:value="0" disabled>Выберите тип</option>
+                                            <option th:each="type : ${typesDepartment.get(department.department)}"
+                                                    th:value="${type.id}"
+                                                    th:utext="${type.title}"
+                                                    th:selected="${type.id == employee.type}"
+                                            ></option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_medium">
+                                    <div u-dismiss-wrapper class="indicated-select menu-input__wrapper menu-input__wrapper_select disabled" th:classappend="'indicated-select_' + ${employee.isNotDisMiss}">
+                                        <select u-dismiss-selector disabled class="editable menu-input__input menu-input__input_xsmall menu-input__input_select menu-input__input_white">
+                                            <option value="true" th:selected="${true == employee.isNotDisMiss}">Работает</option>
+                                            <option value="false" th:selected="${false == employee.isNotDisMiss}">Уволен</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_last">
+                                    <div edit-btns class="column-links display-flex-none">
+                                        <div edit-employee-accept class="column_mwidth column_mwidth-accept"></div>
+                                        <div edit-employee-cancel class="column_mwidth column_mwidth-cancel"></div>
+                                    </div>
+                                    <div edit-menu class="column-links display-flex-none is-open">
+                                        <div edit-employee class="column_mwidth div-table__body-col_center column_mwidth-edit column_mwidth-edit-b"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </th:block>
+        </th:block>
+    </div>
+</div>
+
+<div js-menu-create-examiner class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-examiner-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-examiner-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить сотрудника
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Имя *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-name name="name" placeholder="Введите имя" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Логин *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-username name="user.username" placeholder="Введите логин" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Пароль *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-password name="user.password" placeholder="Введите пароль" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Телефон</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-phone name="phone" placeholder="Введите номер телефона" class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Ссылка ВК</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-link name="link" placeholder="Введите ссылку ВК"  class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Номер карты</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-doors-card-number placeholder="Введите номер карты"  name="doorsCardNumber" class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Дата рождения</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                            <input js-employee-form-birthday data-position="top left" name="birthday" autocomplete="off" class="datepicker-here-e menu-input__input menu-input__input_small" placeholder="Укажите дату рождения"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_msmall">
+                        <div class="input-element__input_row input-element__input_row_xscroll">
+                            <div class="input-element__checkbox">
+                                <input js-employee-form-key name="isHasKey" type="checkbox" id="ishaskey" class="checkbox" value="true">
+                                <label class="checkbox-label checkbox-label_gray" for="ishaskey">Имеет ли ключ?</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <input js-employee-dep type="hidden" name="idDepartment" required>
+                        <div class="menu-input__title">Должность</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-employee-form-type name="type" class="menu-input__input menu-input__input_small menu-input__input_select">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-examiner class="button button_white">Сохранить сотрудника</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div js-menu-create-employee class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-employee-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-employee-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить сотрудника
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Имя *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-name name="name" placeholder="Введите имя" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall" js-supervisor-login-item>
+                        <div class="menu-input__title">Логин *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-username name="user.username" placeholder="Введите логин" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall" js-supervisor-password-item>
+                        <div class="menu-input__title">Пароль *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-password name="user.password" placeholder="Введите пароль" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Телефон</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-phone name="phone" placeholder="Введите номер телефона" class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Ссылка ВК</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-link name="link" placeholder="Введите ссылку ВК"  class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Номер карты</div>
+                        <div class="menu-input__wrapper">
+                            <input js-employee-form-doors-card-number placeholder="Введите номер карты"  name="doorsCardNumber" class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Дата рождения</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                            <input js-employee-form-birthday data-position="top left" name="birthday" autocomplete="off" class="datepicker-here-e menu-input__input menu-input__input_small" placeholder="Укажите дату рождения"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_msmall">
+                        <div class="input-element__input_row input-element__input_row_xscroll">
+                            <div class="input-element__checkbox">
+                                <input js-employee-form-key name="isHasKey" type="checkbox" id="ishaskey4" class="checkbox" value="true">
+                                <label class="checkbox-label checkbox-label_gray" for="ishaskey4">Имеет ли ключ?</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <input js-employee-dep type="hidden" name="idDepartment" required>
+                        <div class="menu-input__title">Должность</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-employee-form-type name="type" class="menu-input__input menu-input__input_small menu-input__input_select">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-employee class="button button_white">Сохранить сотрудника</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div js-menu-create-manager class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-manager-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-manager-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Создать менеджера
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Имя *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-name name="name" placeholder="Введите имя" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Логин *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-username name="username" placeholder="Введите логин" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Пароль *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-password name="password" placeholder="Введите пароль"  class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Телефон</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-phone name="phone" placeholder="Введите номер телефона" class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Ссылка ВК</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-link name="link" placeholder="Введите ссылку ВК"  class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Номер карты</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-doors-card-number placeholder="Введите номер карты"  name="doorsCardNumber" class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Дата рождения</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                            <input js-user-form-birthday data-position="top left" name="birthday" autocomplete="off" class="datepicker-here-u menu-input__input menu-input__input_small" placeholder="Укажите дату рождения"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_msmall">
+                        <div class="input-element__input_row input-element__input_row_xscroll">
+                            <div class="input-element__checkbox">
+                                <input js-user-form-key name="isHasKey" type="checkbox" id="ishaskey3" class="checkbox" value="true">
+                                <label class="checkbox-label checkbox-label_gray" for="ishaskey3">Имеет ли ключ?</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Должность</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-user-form-type name="type" class="menu-input__input menu-input__input_small menu-input__input_select">
+                                <option value="" disabled selected>Выберите статус</option>
+                                <th:block th:each="type : ${managerTypes}">
+                                    <option th:value="${type.id}" th:utext="${type.title}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-manager class="button button_white">Создать менеджера</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div js-menu-create-advertiser class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-advertiser-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-advertiser-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Создать рекламщика
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Имя *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-name name="name" placeholder="Введите имя" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Логин *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-username name="username" placeholder="Введите логин" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Пароль *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-password name="password" placeholder="Введите пароль" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Телефон</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-phone name="phone" placeholder="Введите номер телефона" class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Ссылка ВК</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-link name="link" placeholder="Введите ссылку ВК" class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Номер карты</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-doors-card-number name="doorsCardNumber" placeholder="Введите номер карты" class="menu-input__input menu-input__input_small"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Дата рождения</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_cal">
+                            <input js-user-form-birthday data-position="top left" name="birthday" autocomplete="off" class="datepicker-here-u menu-input__input menu-input__input_small" placeholder="Укажите дату рождения"/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_msmall">
+                        <div class="input-element__input_row input-element__input_row_xscroll">
+                            <div class="input-element__checkbox">
+                                <input js-user-form-key name="isHasKey" type="checkbox" id="ishaskey2" class="checkbox" value="true">
+                                <label class="checkbox-label checkbox-label_gray" for="ishaskey2">Имеет ли ключ?</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_msmall">
+                        <div class="input-element__input_row input-element__input_row_xscroll">
+                            <div class="input-element__checkbox">
+                                <input js-user-form-access name="access" type="checkbox" id="access2" class="checkbox" value="true">
+                                <label class="checkbox-label checkbox-label_gray" for="access2">Есть доступ?</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Должность</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select js-user-form-type name="type" class="menu-input__input menu-input__input_small menu-input__input_select">
+                                <option value="" disabled selected>Выберите статус</option>
+                                <th:block th:each="type : ${advertiserTypes}">
+                                    <option th:value="${type.id}" th:utext="${type.title}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-advertiser class="button button_white">Создать рекламщика</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-managers-list class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-managers-list-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-managers-list-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Выберите менеджера для передачи сделок
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll " >
+                    <div class="div-table menu-input_t30">
+                        <div class="div-table__header">
+                            <div class="div-table__wrapper">
+                                <div class="div-table__header-row">
+                                    <div class="div-table__header-col div-table__header-col_exsmall"></div>
+                                    <div class="div-table__header-col div-table__header-col_full">Менеджер</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="div-table__body">
+                            <div manager-list class="div-table__wrapper">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <div js-select-manager-btn class="button">Выбрать</div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-set-projects class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-set-projects-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-projects-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Проекты
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input type="hidden" js-projects-form-id-manager name="idManager" required>
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Проекты</div>
+                        <div class="menu-input__checkbox-wrapper">
+
+                            <div class="input-element__checkbox" th:each="project : ${projects}">
+                                <input type="checkbox" th:id="'project' + ${project.id}" class="checkbox" name="projects" th:value="${project.id}"/>
+                                <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="'project' + ${project.id}" th:utext="${project.name}"></label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-projects class="button button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/employee-menu2.js}"></script>
+<script th:src="@{/js/users-menu2.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    setTypes(/*[[${typesDepartment}]]*/);
+    setManagerTypes(/*[[${managerTypes}]]*/);
+    setAdvertiserTypes(/*[[${advertiserTypes}]]*/);
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Корпоративный центр">
+
+    <title th:utext="${title}"></title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content" th:classappend="${role == 'ROLE_ADMIN' || type == 'bookmarks' ? 'main-content_white-top' : 'main-content_s-white-top'}">
+    <div class="content-top content-top_btn">
+        <div class="content-top__header" th:utext="${title}"></div>
+    </div>
+    <div class="content-top">
+        <th:block th:if="${type == 'bookmarks'}">
+            <div th:replace="base :: bookmarks-nav"></div>
+        </th:block>
+        <th:block th:if="${type == 'faq' && role == 'ROLE_ADMIN'}">
+            <div th:replace="base :: faq-nav"></div>
+        </th:block>
+    </div>
+    <div class="content-main theme-container">
+        <th:block th:each="theme, counter : ${articles}">
+            <div class="theme" th:attr="data-theme=${theme.key.id}">
+                <div class="theme-wrapper">
+                    <div class="theme__title-wrapper">
+                        <div class="theme-title theme-title_delim" th:utext="${theme.key.name}"></div>
+                    </div>
+                    <div class="theme__articles">
+                        <div class="article" th:each="article : ${theme.value}" th:attr="data-article=${article.id}">
+                            <div class="article-wrapper">
+                                <div class="article__title" th:utext="${article.name}"></div>
+                                <div class="article-preview">
+                                    <div class="article__preview">
+                                        <div class="article__preview-hover"></div>
+                                        <img th:src="@{'/' + ${article.previewImg}}" alt="" class="article__img">
+                                        <div class="article__link-wrapper">
+                                            <a th:href="${article.link}" target="_blank" class="article__link">Открыть</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

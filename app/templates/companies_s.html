@@ -1,0 +1,310 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Панель администратора">
+
+    <title>Настройки (компании) | Панель администратора</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+<div class="main-content">
+    <div class="content-top">
+        <div class="content-top__header">Компании</div>
+    </div>
+    <div class="content-main">
+        <div class="content-main__panel content-main__panel_large">
+            <div js-create-user class="button button_add">+ Добавить компании</div>
+        </div>
+        <div class="content-main__wrapper">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                    <tr class="custom-table__header-row">
+                        <td class="custom-table__header-col custom-table__header-col_big">#</td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Название</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Юр. название</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Логин</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Пароль</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Таймзона</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Код</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Фон</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Ссылка</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Онлайн-офис GURU</td>
+                        <td class="custom-table__header-col custom-table__header-col_big">Тип</td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                    </tr>
+                    </thead>
+                    <tbody class="custom-table__body custom-table__body_white">
+                        <tr class="custom-table__body-row" th:each="company, stat : ${companies}">
+                            <input type="hidden" u-id th:value="${company.id}" name="id" required>
+                            <input type="hidden" u-id-company th:value="${company.idCompany}" name="idCompany" required>
+                            <td class="custom-table__body-col" th:utext="${company.idCompany}"></td>
+                            <td class="custom-table__body-col">
+                                <div class="avatar-upload">
+                                    <form u-upload-avatar-form action="#" enctype="multipart/form-data">
+                                        <input type="hidden" th:value="${company.idCompany}" name="id" required>
+                                        <input u-upload-avatar accept="image/*,image/jpeg" class="input-file" name="file" type="file" th:id="'avatar' + ${stat.index}">
+                                        <label th:for="'avatar' + ${stat.index}">
+                                                <span class="avatar-upload__upload " th:classappend="${#strings.isEmpty(company.logo) ? 'avatar-upload__upload_default-company' : ''}">
+                                                    <img th:if="${!#strings.isEmpty(company.logo)}" th:src="'/' + ${company.logo}" alt="">
+                                                </span>
+                                        </label>
+                                    </form>
+                                </div>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_xlarge" >
+                                <input u-company-name name="name"
+                                       class="menu-input__input menu-input__input_small editable"
+                                       th:attr="title=${company.name}"
+                                       th:value="${company.name}"
+                                       disabled
+                                       placeholder="—">
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_xlarge" >
+                                <input u-legal-name name="legalName"
+                                       class="menu-input__input menu-input__input_small editable"
+                                       th:attr="title=${company.legalName}"
+                                       th:value="${company.legalName}"
+                                       disabled
+                                       placeholder="—">
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_xlarge">
+                                <input u-username name="username"
+                                       class="menu-input__input menu-input__input_small editable"
+                                       th:attr="title=${company.username}"
+                                       th:value="${company.username}"
+                                       disabled
+                                       placeholder="—"
+                                       required>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_medium">
+                                <input u-password name="password"
+                                       class="menu-input__input menu-input__input_small editable"
+                                       th:value="${''}"
+                                       disabled
+                                       placeholder="✱✱✱✱✱✱"
+                                       required>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_medium">
+                                <input u-timezone name="timezoneHour"
+                                       class="menu-input__input menu-input__input_small editable"
+                                       th:value="${company.timezoneHour}"
+                                       disabled
+                                       placeholder="0"
+                                       required>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_medium">
+                                <input u-company-code name="companyCode"
+                                       class="menu-input__input menu-input__input_small editable"
+                                       th:value="${company.companyCode}"
+                                       disabled
+                                       placeholder="-"
+                                       required>
+                            </td>
+                            <td class="custom-table__body-col">
+                                <div class="avatar-upload">
+                                    <form u-upload-background-form action="#" enctype="multipart/form-data">
+                                        <input type="hidden" th:value="${company.idCompany}" name="id" required>
+                                        <input u-upload-background accept="image/*,image/jpeg" class="input-file" name="file" type="file" th:id="'background' + ${company.idCompany}">
+                                        <label th:for="'background' + ${company.idCompany}">
+                                                <span class="avatar-upload__upload avatar-upload__upload_height" th:classappend="${#strings.isEmpty(company.companyBackground) ? 'avatar-upload__upload_default-company' : ''}">
+                                                    <img th:if="${!#strings.isEmpty(company.companyBackground)}" th:src="'/' + ${company.companyBackground}" alt="">
+                                                </span>
+                                        </label>
+                                    </form>
+                                </div>
+                            </td>
+                            <td class="custom-table__body-col ">
+                                <div class="column-links" u-company-link>
+                                    <div js-copy-company-link th:attr="data-link=${serverProperties.scheme + '://' + serverProperties.host + '/company='}" class="column_mwidth column_mwidth-copy"></div>
+                                    <div js-open-company-link th:attr="data-link=${serverProperties.scheme + '://' + serverProperties.host + '/company='}" class="column_mwidth column_mwidth-open"></div>
+                                </div>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_medium custom-table__body-col_center">
+                                <th:block th:unless="${company.id == 1}">
+                                    <div js-set-access class="setting-wrapper">
+                                        <div class="theme-setting theme-setting_big"></div>
+                                        <div class="setting-title">Настроить</div>
+                                    </div>
+                                </th:block>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_medium custom-table__body-col_center">
+                                <div js-set-sale-type class="setting-wrapper">
+                                    <div class="theme-setting theme-setting_big"></div>
+                                    <div class="setting-title">Настроить</div>
+                                </div>
+                            </td>
+                            <td class="custom-table__body-col custom-table__body-col_last">
+                                <div edit-btns class="column-links display-flex-none">
+                                    <div edit-user-accept class="column_mwidth column_mwidth-accept"></div>
+                                    <div edit-user-cancel class="column_mwidth column_mwidth-cancel"></div>
+                                </div>
+                                <div edit-menu class="column-links display-flex-none is-open">
+                                    <div edit-user class="column_mwidth div-table__body-col_center column_mwidth-edit column_mwidth-edit-b"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-create-user class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-create-user-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-admin-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Создать компанию
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-name name="name" placeholder="Введите название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Юридическое название *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-legal-name name="legalName" placeholder="Введите юр.название" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Логин *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-username name="username" placeholder="Введите логин" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Пароль *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-password name="password" placeholder="Введите пароль" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Код *</div>
+                        <div class="menu-input__wrapper">
+                            <input js-user-form-company-code name="companyCode" placeholder="Введите код" class="menu-input__input menu-input__input_small" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-admin class="button button_white">Создать компанию</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-set-access class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-set-access-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-access-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Онлайн-офис GURU
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input type="hidden" js-access-fotm-id-company name="idCompany" required>
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Доступ к разделам</div>
+                        <div class="menu-input__checkbox-wrapper">
+                            <div class="input-element__checkbox">
+                                <input type="checkbox" id="about" class="checkbox" name="about" value="true"/>
+                                <label class="checkbox-label checkbox-label_gray checkbox-label_told" for="about">О компании</label>
+                            </div>
+                            <div class="input-element__checkbox">
+                                <input type="checkbox" id="regulations" class="checkbox" name="regulations" value="true"/>
+                                <label class="checkbox-label checkbox-label_gray checkbox-label_told" for="regulations">Регламенты</label>
+                            </div>
+                            <div class="input-element__checkbox">
+                                <input type="checkbox" id="bookmarks" class="checkbox" name="bookmarks" value="true"/>
+                                <label class="checkbox-label checkbox-label_gray checkbox-label_told" for="bookmarks">Закладки</label>
+                            </div>
+                            <div class="input-element__checkbox">
+                                <input type="checkbox" id="training" class="checkbox" name="training" value="true"/>
+                                <label class="checkbox-label checkbox-label_gray checkbox-label_told" for="training">Обучающий центр</label>
+                            </div>
+                            <div class="input-element__checkbox">
+                                <input type="checkbox" id="events" class="checkbox" name="events" value="true"/>
+                                <label class="checkbox-label checkbox-label_gray checkbox-label_told" for="events">Мероприятия</label>
+                            </div>
+                            <div class="input-element__checkbox">
+                                <input type="checkbox" id="production" class="checkbox" name="production" value="true"/>
+                                <label class="checkbox-label checkbox-label_gray checkbox-label_told" for="production">Продакшн</label>
+                            </div>
+                            <div class="input-element__checkbox">
+                                <input type="checkbox" id="faq" class="checkbox" name="faq" value="true"/>
+                                <label class="checkbox-label checkbox-label_gray checkbox-label_told" for="faq">FAQ</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-access class="button button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-sale-type class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-sale-type-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-sale-type-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Тип продаж
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <input type="hidden" js-sale-type-id-company name="idCompany" required>
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Типы продаж</div>
+                        <div class="menu-input__checkbox-wrapper">
+                            <th:block th:each="saleType : ${companySaleTypes}">
+                                <div class="input-element__checkbox">
+                                    <input sale-type type="radio" th:id="${saleType.code}" class="checkbox" name="id" th:value="${saleType.id}"/>
+                                    <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="${saleType.code}" th:utext="${saleType.name}">О компании</label>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-sale-type class="button button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/users-menu.js}"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Продукты">
+
+    <title>Продукты</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: settings-said-nav"></div>-->
+    <div class="content-top">
+        <div th:replace="base :: course-nav"></div>
+    </div>
+    <div class="content-main">
+        <div class="container-table">
+            <h4>Продукты</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th class="cell-120"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product : ${products}">
+                        <td th:text="${product.id}"></td>
+                        <td th:text="${product.name}"></td>
+                        <td class="cell-120">
+                            <form class="table-form" action="#" th:action="@{'deleteProduct/{id}'(id=${product.id})}" th:method="delete">
+                                <button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form class="table-form" action="#" th:action="@{addProduct}" th:object="${product}" th:method="post">
+                        <tr>
+                            <td></td>
+                            <td><input class="input-sm input-large" th:field="*{name}" placeholder="Название" required></td>
+                            <td class="cell-120">
+                                <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container-table">
+            <h4>Связка Курс - Продукт</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Курс</th>
+                        <th>Продукт</th>
+                        <th class="cell-120"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="bunch : ${bunchesProduct}">
+                        <td th:text="${bunch.id}"></td>
+                        <td th:text="${bunch.courseName}"></td>
+                        <td th:text="${bunch.productName}"></td>
+                        <td class="cell-120">
+                            <form class="table-form" action="#" th:action="@{'deleteBunchProduct/{id}'(id=${bunch.id})}" th:method="delete">
+                                <button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form class="table-form" action="#" th:action="@{addBunchProduct}" th:object="${bunchProduct}" th:method="post">
+                        <tr>
+                            <td></td>
+                            <td>
+                                <select class="input-sm input-large" filter-param th:field="*{courseId}">
+                                    <option th:each="course : ${courses}"
+                                            th:value="${course.id}"
+                                            th:utext="${course.name}"></option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="input-sm input-large" filter-param th:field="*{productId}">
+                                    <option th:each="product : ${products}"
+                                            th:value="${product.id}"
+                                            th:utext="${product.name}"></option>
+                                </select>
+                            </td>
+                            <td class="cell-120">
+                                <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

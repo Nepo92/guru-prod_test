@@ -1,0 +1,533 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Рабочий стол">
+
+    <title>Рабочий стол</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content">
+    <div class="content-top">
+<!--        <div th:replace="base :: monitor-filter"></div>-->
+        <div class="button-filter" th:classappend="${filter.isCanClear() ? 'filtered' : ''}">
+            <button tr-filter-btn class="content-top__filter"></button>
+        </div>
+        <div class="content-top__delimiter"></div>
+        <div class="content-top__header">Рабочий стол</div>
+    </div>
+    <div class="content-main content-main_xl content-main_min">
+        <div class="action-main" th:if="${(role == 'ROLE_MANAGER' || role == 'ROLE_HEAD_MANAGER') && actionBanners.size() != 0}">
+            <div class="action-collapse">
+                <button class="action-collapse__btn"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#collapseBlock"
+                        aria-expanded="true"
+                        aria-controls="collapseBlock">
+                    Показать акцию
+                </button>
+            </div>
+            <div id="collapseBlock" class="collapse show" >
+                <div class="action-wrapper carousel slide" id="actionSlider" data-ride="carousel">
+                    <div class="action-carousel-controls">
+                        <a class="action-carousel-control-prev" href="#actionSlider" role="button" data-slide="prev">
+                            <span class="action-carousel-control-prev-icon" aria-hidden="true"></span>
+                        </a>
+                        <a class="action-carousel-control-next" href="#actionSlider" role="button" data-slide="next">
+                            <span class="action-carousel-control-next-icon" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <ol class="carousel-indicators action-carousel-indicators action-carousel-indicators_action">
+                        <th:block th:each="actionBanner, stat : ${actionBanners}" >
+                            <li data-target="#actionSlider" th:attr="data-slide-to=${stat.index}" th:classappend="${stat.index == 0} ? active : ''"></li>
+                        </th:block>
+                    </ol>
+                    <div class="carousel-inner">
+                        <th:block th:each="actionBanner, stat : ${actionBanners}" >
+                            <div class="carousel-item" th:classappend="${stat.index == 0} ? active : ''">
+                                <div class="action-carousel-item">
+                                    <div class="action-info">
+                                        <div class="info-timer">
+                                            <div class="action-carousel__element action-carousel__element_r60">
+                                                <div class="action-element__header">До конца акции осталось</div>
+                                                <div class="action-element__wrapper"
+                                                     th:id="${actionBanner.id}">
+                                                    <div class="action-element__el">
+                                                        <div class="action-element__value days">00</div>
+                                                        <div class="action-element__desc">Дней</div>
+                                                    </div>
+                                                    <div class="action-element__delim action-element__delim_dots"></div>
+                                                    <div class="action-element__el">
+                                                        <div class="action-element__value hours">00</div>
+                                                        <div class="action-element__desc">Часов</div>
+                                                    </div>
+                                                    <div class="action-element__delim action-element__delim_dots"></div>
+                                                    <div class="action-element__el">
+                                                        <div class="action-element__value minutes">00</div>
+                                                        <div class="action-element__desc">Минут</div>
+                                                    </div>
+                                                    <div class="action-element__delim action-element__delim_dots"></div>
+                                                    <div class="action-element__el">
+                                                        <div class="action-element__value seconds">00</div>
+                                                        <div class="action-element__desc">Секунд</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="info-desc">
+                                            <div class="rank-elements" th:if="${actionBanner.actionType == 2}">
+                                                <th:block th:with="colCount=${2}">
+                                                    <div th:each="r : ${#numbers.sequence(0, actionBanner.ranksName.size(), colCount)}"  class="rank-element__wrapper">
+                                                        <div th:each="c : ${#numbers.sequence(0, colCount - 1)}"
+                                                             th:if="${r + c < actionBanner.ranksName.size()}"
+                                                             th:text="${actionBanner.ranksName.get(r + c)}"
+                                                             th:classappend="(${r + c == 0} ? 'rank-element_first' : '') + ' ' + (${r + c == 1} ? 'rank-element_second' : '') + ' ' + (${r + c == 2} ? 'rank-element_third' : '')"
+                                                             class="rank-element"></div>
+                                                    </div>
+                                                </th:block>
+                                            </div>
+
+                                            <div class="action-carousel__element action-carousel__element_l42" th:if="${actionBanner.actionType != 2}">
+                                                <div class="action-element__header" th:utext="${actionBanner.type}"></div>
+                                                <div class="action-element__wrapper">
+                                                    <div class="action-element__el">
+                                                        <div class="action-element__value" th:utext="${actionBanner.fact}"></div>
+                                                        <div class="action-element__desc">Факт</div>
+                                                    </div>
+                                                    <div class="action-element__delim action-element__delim_slash"></div>
+                                                    <div class="action-element__el">
+                                                        <div class="action-element__value" th:utext="${actionBanner.target}"></div>
+                                                        <div class="action-element__desc">Цель</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="action-ban">
+                                        <img th:src="@{${actionBanner.img}}" alt="" class="ban-img">
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="common-monitor">
+            <div class="common-monitor__today">
+                <span class="today__text">
+                    Сегодня <span class="today__text_black" th:utext="${date.today}"></span><br>
+                    Дней осталось <span class="today__text_black" th:utext="${date.dayLeft}"></span><br>
+                    Прошло времени <span class="today__text_black" th:utext="${date.passed + '%'}"></span>
+                </span>
+            </div>
+            <div class="common-monitor__element block_400">
+                <div class="monitor-element">
+                    <div class="monitor-element__header">Выставленные счета</div>
+                    <div class="fact-block">
+                        <div class="fact-element">
+                            <div class="fact-element__header">
+                                Факт
+                            </div>
+                            <div class="fact-element__value fact-element__value_delim"
+                                 th:classappend="'fact-element__value_' + ${monitorBill.dayBillType}"
+                                 th:utext="${monitorBill.dayBillFact}"></div>
+                            <div class="fact-element__header">
+                                План
+                            </div>
+                            <div class="fact-element__plan-value" th:utext="${plans.dayBillPlan}"></div>
+                        </div>
+                        <div class="fact-element">
+                            <div class="fact-element__header"></div>
+                            <div class="fact-element__value fact-element__value_delim"
+                                 th:classappend="'fact-element__value_' + ${monitorBill.weekBillType}"
+                                 th:utext="${monitorBill.weekBillFact}"></div>
+                            <div class="fact-element__header"></div>
+                            <div class="fact-element__plan-value" th:utext="${plans.weekBillPlan}"></div>
+                        </div>
+                        <div class="fact-element">
+                            <div class="fact-element__header"></div>
+                            <div class="fact-element__value fact-element__value_delim"
+                                 th:classappend="'fact-element__value_' + ${monitorBill.monthBillType}"
+                                 th:utext="${monitorBill.monthBillFact}"></div>
+                            <div class="fact-element__header"></div>
+                            <div class="fact-element__plan-value" th:utext="${plans.monthBillPlan}"></div>
+                        </div>
+                        <div class="fact-element">
+                            <div class="fact-element__header">План</div>
+                            <div class="fact-element__value"
+                                 th:classappend="'fact-element__value_' + ${monitorBill.percentBillType}"
+                                 th:utext="${monitorBill.percentBill + '%'}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="common-monitor__element block_500">
+                <div class="monitor-element">
+                    <div class="monitor-element__header">Продажи</div>
+                    <div class="fact-block">
+                        <div class="fact-element">
+                            <div class="fact-element__header">
+                                Факт
+                            </div>
+                            <div class="fact-element__value fact-element__value_delim"
+                                 th:classappend="'fact-element__value_' + ${monitorSales.daySalesType}"
+                                 th:utext="${monitorSales.daySalesFact}"></div>
+                            <div class="fact-element__header">
+                                План
+                            </div>
+                            <div class="fact-element__plan-value" th:utext="${plans.daySalesPlan}"></div>
+                        </div>
+                        <div class="fact-element">
+                            <div class="fact-element__header"></div>
+                            <div class="fact-element__value fact-element__value_delim"
+                                 th:classappend="'fact-element__value_' + ${monitorSales.weekSalesType}"
+                                 th:utext="${monitorSales.weekSalesFact}"></div>
+                            <div class="fact-element__header"></div>
+                            <div class="fact-element__plan-value" th:utext="${plans.weekSalesPlan}"></div>
+                        </div>
+                        <div class="fact-element">
+                            <div class="fact-element__header"></div>
+                            <div class="fact-element__value fact-element__value_delim"
+                                 th:classappend="'fact-element__value_' + ${monitorSales.monthSalesType}"
+                                 th:utext="${monitorSales.monthSalesFact}"></div>
+                            <div class="fact-element__header"></div>
+                            <div class="fact-element__plan-value" th:utext="${plans.salesPlan}"></div>
+                        </div>
+                        <div class="fact-element">
+                            <div class="fact-element__header">План</div>
+                            <div class="fact-element__value fact-element__value_delim"
+                                 th:classappend="'fact-element__value_' + ${monitorSales.percentSalesType}"
+                                 th:utext="${monitorSales.percentSales + '%'}"></div>
+                        </div>
+                        <div class="fact-element">
+                            <div class="fact-element__header fact-element__header_center">Рассылки</div>
+                            <div class="fact-element__value "
+                                 th:classappend="'fact-element__value_' + ${monitorSales.percentMailingType}"
+                                 th:utext="${monitorSales.percentMailing + '%'}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="common-monitor__element block_full">
+                <div class="monitor-element">
+                    <div class="monitor-element__header">Выручка</div>
+                    <div class="block-row">
+                        <div class="fact-block">
+                            <div class="fact-element">
+                                <div class="fact-element__header">
+                                    Факт
+                                </div>
+                                <div class="fact-element__value fact-element__value_p20 fact-element__value_delim"
+                                     th:classappend="'fact-element__value_' + ${proceedsFact.factWeekType}"
+                                     th:utext="${#numbers.formatInteger(proceedsFact.weekFact,0,'WHITESPACE') + ' ₽'}"></div>
+                                <div class="fact-element__header">
+                                    План
+                                </div>
+                                <div class="fact-element__plan-value" th:utext="${#numbers.formatInteger(proceedsFact.weekPlan,0,'WHITESPACE') + ' ₽'}"></div>
+                            </div>
+
+                            <div class="fact-element">
+                                <div class="fact-element__header">
+
+                                </div>
+                                <div class="fact-element__value fact-element__value_p20 fact-element__value_pl20 fact-element__value_delim"
+                                     th:classappend="'fact-element__value_' + ${proceedsFact.factType}"
+                                     th:utext="${#numbers.formatInteger(proceedsFact.fact,0,'WHITESPACE') + ' ₽'}"></div>
+                                <div class="fact-element__header">
+
+                                </div>
+                                <div class="fact-element__plan-value fact-element__value_p20" th:utext="${#numbers.formatInteger(plans.proceedsPlan,0,'WHITESPACE') + ' ₽'}"></div>
+
+                            </div>
+                            <div class="fact-element">
+                                <div class="fact-element__header fact-element__value_p20">
+                                    План
+                                </div>
+                                <div class="fact-element__value fact-element__value_p20 "
+                                     th:classappend="'fact-element__value_' + ${proceedsFact.factPercentType}"
+                                     th:utext="${proceedsFact.factPercent + '%'}"></div>
+                                <div class="fact-element__header fact-element__value_p20">
+                                    Прогноз
+                                </div>
+                                <div  th:if="${proceedsFact.prediction == '—'}" class="fact-element__plan-value fact-element__value_p20" th:utext="${proceedsFact.prediction + ' ₽'}"></div>
+                                <div  th:if="${proceedsFact.prediction != '—'}" class="fact-element__plan-value fact-element__value_p20" th:utext="${#numbers.formatInteger(proceedsFact.prediction,0,'WHITESPACE') + ' ₽'}"></div>
+                            </div>
+                            <div class="fact-element">
+                                <div class="fact-element__header fact-element__value_p20">
+
+                                </div>
+                                <div class="fact-element__value fact-element__value_p20 ">
+                                    <br>
+                                </div>
+                                <div class="fact-element__header fact-element__value_p20">
+                                    Отклонения по выручке
+                                </div>
+                                <div class="fact-element__plan-value fact-element__value_p20">
+                                    <span th:classappend="'fact-element__value_' + ${proceedsFact.deviationType}"
+                                          th:if="${proceedsFact.deviation != '—'}"
+                                          th:utext="${#numbers.formatInteger(proceedsFact.deviation,0,'WHITESPACE') + ' ₽'}"></span>
+                                    <span th:classappend="'fact-element__value_' + ${proceedsFact.deviationType}"
+                                          th:if="${proceedsFact.deviation == '—'}"
+                                          th:utext="${proceedsFact.deviation + ' ₽'}"></span>
+                                    <span class="plan-element__delim">|</span>
+                                    <span th:classappend="'fact-element__value_' + ${proceedsFact.deviationPercentType}"
+                                          th:utext="${proceedsFact.deviationPercent + ' %'}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="managers-monitor" th:if="${monitorRows.size() != 0}">
+            <div class="managers-monitor__element block_270">
+                <div class="manager-element__title"></div>
+                <div manager-name>
+                    <div class="manager-element__header manager-element__header_bg">
+                        <div class="header-element">Менеджер</div>
+                    </div>
+
+                    <th:block th:each="row, stat : ${monitorRows}">
+                        <div class="manager manager_name">
+                            <div class="manager-id" th:utext="${stat.index + 1}"></div>
+                            <div class="avatar">
+                                <div class="avatar__wrapper avatar__wrapper_bordered" th:style="'border-color: ' + ${row.managerType} + ';'">
+                                   <span class="avatar-image" th:classappend="${(row.avatar == null || #strings.isEmpty(row.avatar)) ? 'avatar-image_default' : ''}">
+                                        <img th:if="${row.avatar}" th:src="'/' + ${row.avatar}" alt="">
+                                   </span>
+                                </div>
+                            </div>
+                            <div class="manager-name" th:utext="${row.manager}"></div>
+                            <div class="manager-medal">
+                                <th:block th:if="${row.firstPlaceCount!=0}" th:each="i : ${#numbers.sequence(1,row.firstPlaceCount)}">
+                                    <img class="medal-img" th:src="@{/img/first-place.svg}" alt="" >
+                                </th:block>
+                                <th:block th:if="${row.secondPlaceCount!=0}" th:each="i : ${#numbers.sequence(1,row.secondPlaceCount)}">
+                                    <img class="medal-img" th:src="@{/img/second-place.svg}" alt="" >
+                                </th:block>
+                                <th:block th:if="${row.thirdPlaceCount!=0}" th:each="i : ${#numbers.sequence(1,row.thirdPlaceCount)}">
+                                    <img class="medal-img" th:src="@{/img/third-place.svg}" alt="" >
+                                </th:block>
+                            </div>
+                            <div class="manager-star" th:classappend="${(row.firstPlaceCount!=0 || row.secondPlaceCount!=0 || row.thirdPlaceCount!=0) && (row.starCount!=0)} ? manager-star_delim : ''">
+                                <th:block th:if="${row.starCount!=0}" th:each="i : ${#numbers.sequence(1,row.starCount)}">
+                                    <img class="star-img" th:src="@{/img/star.svg}" alt="" >
+                                </th:block>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+            <div class="managers-monitor__element block_400">
+                <div class="manager-element__title">Выставленные счета</div>
+                <div class="manager-element__header">
+                    <div class="header-element">День</div>
+                    <div class="header-element">Неделя</div>
+                    <div class="header-element">Месяц</div>
+                    <div class="header-element">План</div>
+                </div>
+                <th:block th:each="row : ${monitorRows}">
+                    <div class="manager manager_values">
+                        <div class="manager-value " th:classappend="'manager-value_type' + ${row.dayBillType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${row.dayBill}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${row.dayBillPlan}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value " th:classappend="'manager-value_type' + ${row.weekBillType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${row.weekBill}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${row.weekBillPlan}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value " th:classappend="'manager-value_type' + ${row.monthBillType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${row.monthBill}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${row.monthBillPlan}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value " th:classappend="'manager-value_type' + ${row.monthBillType}">
+                            <span class="manager-value_fact" th:utext="${row.percentBill + '%'}"></span>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+            <div class="managers-monitor__element block_500">
+                <div class="manager-element__title">Продажи</div>
+                <div class="manager-element__header">
+                    <div class="header-element">День</div>
+                    <div class="header-element">Неделя</div>
+                    <div class="header-element">Месяц</div>
+                    <div class="header-element">План</div>
+                    <div class="header-element">Рассылки</div>
+                </div>
+                <th:block th:each="row : ${monitorRows}">
+                    <div class="manager manager_values">
+                        <div class="manager-value " th:classappend="'manager-value_type' + ${row.daySalesType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${row.daySales}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${row.daySalesPlan}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value " th:classappend="'manager-value_type' + ${row.weekSalesType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${row.weekSales}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${row.weekSalesPlan}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value " th:classappend="'manager-value_type' + ${row.monthSalesType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${row.monthSales}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${row.monthSalesPlan}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value " th:classappend="'manager-value_type' + ${row.monthSalesType}">
+                            <span class="manager-value_fact" th:utext="${row.percentSales + '%'}"></span>
+                        </div>
+                        <div class="manager-value manager-value_gray" th:classappend="'manager-value_type' + ${row.percentMailingType}">
+                            <span class="manager-value_fact" th:utext="${row.percentMailing + '%'}"></span>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+            <div class="managers-monitor__element block_full">
+                <div class="manager-element__title">Выручка</div>
+                <div class="manager-element__header">
+                    <div class="header-element header-element_xlarge">Неделя факт/план</div>
+                    <div class="header-element header-element_xlarge">Месяц факт/план</div>
+                    <div class="header-element">План</div>
+                    <div class="header-element header-element_large">Осталось</div>
+                    <div class="header-element header-element_large">Отклонение</div>
+                </div>
+                <th:block th:each="row : ${monitorRows}">
+                    <div class="manager manager_values manager_values_p35">
+                        <div class="manager-value manager-value_mlr5 manager-value_xlarge" th:classappend="'manager-value_type' + ${row.proceedsWeekType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.proceedsWeekFact,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:if="${row.proceedsWeekPlan != '—'}" th:utext="${#numbers.formatInteger(row.proceedsWeekPlan,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_plan" th:if="${row.proceedsWeekPlan == '—'}" th:utext="${row.proceedsWeekPlan + ' ₽'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_mlr5 manager-value_xlarge" th:classappend="'manager-value_type' + ${row.proceedsType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.proceedsFact,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:if="${row.proceedsPlan != '—'}" th:utext="${#numbers.formatInteger(row.proceedsPlan,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_plan" th:if="${row.proceedsPlan == '—'}" th:utext="${row.proceedsPlan + ' ₽'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_mlr5 " th:classappend="'manager-value_type' + ${row.proceedsType}">
+                            <span class="manager-value_fact" th:utext="${row.percentProceeds + '%'}"></span>
+                        </div>
+                        <div class="manager-value manager-value_mlr5 manager-value_text manager-value_large"
+                             th:if="${row.proceedsPlan != '—'}"
+                             th:utext="${#numbers.formatInteger(row.leftProceeds,0,'WHITESPACE') + ' ₽'}"></div>
+                        <div class="manager-value manager-value_mlr5 manager-value_text manager-value_large"
+                             th:if="${row.proceedsPlan == '—'}"
+                             th:utext="${row.leftProceeds + ' ₽'}"></div>
+                        <div class="manager-value manager-value_mlr5 manager-value_large"  th:classappend="'manager-value_type' + ${row.deviationType}">
+                            <span class="manager-value_fact"
+                                  th:if="${row.proceedsPlan != '—'}"
+                                  th:utext="${#numbers.formatInteger(row.deviationProceeds,0,'WHITESPACE') + ' ₽'}"></span>
+                            <span class="manager-value_fact"
+                                  th:if="${row.proceedsPlan == '—'}"
+                                  th:utext="${row.deviationProceeds + ' ₽'}"></span>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div tr-filter class="cfilter">
+    <div class="cfilter__wrapper">
+        <div tr-filter-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="filter-content">
+            <div class="filter-head">
+                <div class="filter-head__title">Фильтровать монитор</div>
+            </div>
+            <div class="filter-content__body custom-scroll">
+                <form tr-filter-form action="#" th:action="@{/monitor/}" th:object="${filter}" th:method="post" class="filter-body">
+                    <div class="filter-body__wrapper">
+                        <div class="filter-column">
+                            <div class="filter-column__title">Параметры</div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Выручка</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select filter-courses class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{proceedType}">
+                                            <option th:value="0" selected>Все</option>
+                                            <option th:value="1">Трафик</option>
+                                            <option th:value="2">Допродажи</option>
+                                            <option th:value="3">Товарка</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Проекты</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select filter-course-kinds class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{projectId}">
+                                            <option th:value="0" selected>Все проекты</option>
+                                            <option th:each="project : ${projects}"
+                                                    th:value="${project.id}"
+                                                    th:utext="${project.name}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="filter-content__footer">
+                <div tr-filter-form-btn class="button">Применить фильтры</div>
+                <div th:if="${filter.isCanClear()}" class="clear-filter clear-filter_bordered">
+                    <form tr-clear-form action="#" th:action="@{/monitor/clearFilter}" th:method="post" class="clear-filter__form">
+                        <button tr-clear-form-btn class="button button_clear">Сбросить фильтры</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    window.onload = function() {
+        var theList = [[${actionBanners}]]
+        for (i = 0; i < theList.length; i++) {
+            initializeClock(theList[i].id, theList[i].nowDate, theList[i].endDate);
+        }
+    };
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    setFilter(/*[[${filter}]]*/);
+    /*]]>*/
+</script>
+
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/monitor-filter.js}"></script>
+<script th:src="@{/js/manager-scroll.js}"></script>
+<script th:src="@{/js/timer.js}"></script>
+<script th:src="@{/js/more-action.js}"></script>
+</body>
+</html>

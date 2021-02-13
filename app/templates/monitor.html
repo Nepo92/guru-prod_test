@@ -1,0 +1,672 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Рабочий стол">
+
+    <title>Рабочий стол</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body th:style="${'background: ' + bgColor.color + ';'}">
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content">
+    <div class="content-top">
+        <div class="content-top__header">Рабочий стол</div>
+
+        <div th:if="${role == 'ROLE_ADMIN'}"
+             js-update-background
+             class="theme-setting theme-setting_violet">
+            <input type="hidden" name="idCompany" th:value="${company.id}"/>
+        </div>
+    </div>
+    <div class="content-main">
+        <div class="content-main__panel content-main__panel_large">
+            <div class="button-filter filtered" th:classappend="${filter.isCanClear() ? 'filtered' : ''}">
+                <button tr-filter-btn class="content-top__filter content-top__filter_small"></button>
+                <span class="button-filter__label">Фильтр</span>
+            </div>
+
+            <form action="#" th:action="@{/monitor/}" th:object="${filter}" th:method="post" class="content-main__panel-side">
+                <div class="input-element__input input-element__input_violet input-element__input_transp input-element__input_row input-element__input_l30">
+                    <div class="input-element__radio input-element__radio_small">
+                        <input filter-parameter type="radio" id="Сегодня" class="radio radio-mech" th:field="*{period}" th:value="1" th:checked="${filter.period == 1}">
+                        <label for="Сегодня">Сегодня</label>
+                    </div>
+                    <div class="input-element__radio-delim"></div>
+                    <div class="input-element__radio input-element__radio_small">
+                        <input filter-parameter type="radio" id="Вчера" class="radio radio-mech" th:field="*{period}" th:value="2" th:checked="${filter.period == 2}">
+                        <label for="Вчера">Вчера</label>
+                    </div>
+                    <div class="input-element__radio-delim"></div>
+                    <div class="input-element__radio input-element__radio_small">
+                        <input filter-parameter type="radio" id="Неделя" class="radio radio-mech" th:field="*{period}" th:value="3" th:checked="${filter.period == 3}">
+                        <label for="Неделя">Неделя</label>
+                    </div>
+                    <div class="input-element__radio-delim"></div>
+                    <div class="input-element__radio input-element__radio_small">
+                        <input filter-parameter type="radio" id="Месяц" class="radio radio-mech" th:field="*{period}" th:value="4" th:checked="${filter.period == 4}">
+                        <label for="Месяц">Месяц</label>
+                    </div>
+                </div>
+                <div th:if="${role != 'ROLE_ADMIN' && currentManager.isNeedShow}" class="input-element__input input-element__input_violet input-element__input_transp input-element__input_row input-element__input_l30">
+                    <div class="input-element__radio input-element__radio_small">
+                        <input filter-parameter type="radio" id="Все" class="radio radio-mech" th:field="*{showType}" th:value="all" th:checked="${filter.showType == 'all'}">
+                        <label for="Все">Все</label>
+                    </div>
+                    <div class="input-element__radio-delim"></div>
+                    <div class="input-element__radio input-element__radio_small">
+                        <input filter-parameter type="radio" id="Мои" class="radio radio-mech" th:field="*{showType}" th:value="self" th:checked="${filter.showType == 'self'}">
+                        <label for="Мои">Мои</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="content-main__panel content-main__panel_large content-main__panel_p"
+             th:if="${(role == 'ROLE_MANAGER' || role == 'ROLE_HEAD_MANAGER') && actionBanners.size() != 0}">
+            <div class="action-banner">
+                <div class="action-banner__wrapper carousel slide" id="actionSlider" data-ride="carousel">
+                    <div class="action-banner__controls action-banner__controls_dark">
+                        <a class="action-banner__control-prev" href="#actionSlider" role="button" data-slide="prev"></a>
+                        <a class="action-banner__control-next" href="#actionSlider" role="button" data-slide="next"></a>
+                    </div>
+                    <ol class="action-banner__indicators carousel-indicators ">
+                        <th:block th:each="actionBanner, stat : ${actionBanners}" >
+                            <li data-target="#actionSlider" th:attr="data-slide-to=${stat.index}" th:classappend="${stat.index == 0} ? active : ''"></li>
+                        </th:block>
+                    </ol>
+                    <div class="carousel-inner">
+                        <th:block th:each="actionBanner, stat : ${actionBanners}" >
+                        <div class="carousel-item "
+                             th:style="${'background: ' + actionBanner.bgColor + ';'}"
+                             th:classappend="${stat.index == 0} ? active : ''">
+                            <div class="action-banner__item" th:classappend="${'action-banner__item_' + actionBanner.theme}">
+                                <div class="tile__tooltip c-tooltip inherit right">
+                                    <div class="tooltip-content">
+                                        <div class="c-tooltip__text inherit">Активная акция, в которой вы принимаете участие</div>
+                                    </div>
+                                    <span class="inherit">?</span>
+                                </div>
+                                <div class="action-banner__info">
+                                    <div class="tile__title tile__title_mb35 tile__title_flash">Акции</div>
+                                    <div class="action-info__title" th:utext="${actionBanner.name}"></div>
+                                    <div class="action-info__type" th:utext="${actionBanner.actionTypeName}"></div>
+                                    <th:block th:if="${actionBanner.actionType == 2}">
+                                        <div class="action-info__rating">
+                                            <div class="action-rating" th:each="member, stat : ${actionBanner.members}">
+                                                <div class="action-rating__place action-caption "
+                                                     th:classappend="${member.place == 1 ? 'place_first' : (member.place == 2 ? 'place_second' : (member.place == 3 ? 'place_third' : '')) }"
+                                                     th:utext="${(member.place != 0) ? (member.place + ' место') : ''}"></div>
+                                                <div class="action-rating__member">
+                                                    <div class="avatar">
+                                                        <div class="avatar__wrapper avatar__wrapper_medium">
+                                                            <span class="avatar-image" th:classappend="${(member.manager.avatar == null || #strings.isEmpty(member.manager.avatar)) ? 'avatar-image_default' : ''}">
+                                                               <img th:if="${member.manager.avatar}" th:src="'/' + ${member.manager.avatar}" alt="">
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="action-rating__value" th:utext="${member.fact}"></div>
+                                            </div>
+                                        </div>
+                                    </th:block>
+
+                                    <th:block th:if="${actionBanner.actionType != 2}">
+                                        <div class="action-info__value" th:utext="${actionBanner.fact}"></div>
+                                        <div class="progress-bar progress-bar_large">
+                                            <div class="progress-bar__wrapper">
+                                                <div class="progress-bar__progress"
+                                                     th:classappend="${actionBanner.percent > 99 ? 'progress_green' : (actionBanner.percent > 69 ? 'progress_yellow' : 'progress_red')}"
+                                                     th:style="${'width: ' + actionBanner.percent + '%;'}"></div>
+                                                <div class="progress-bar__title inherit " th:classappend="${actionBanner.percent >= 12 ? 'progress-bar__title_white' : ''}"
+                                                     th:utext="${actionBanner.percent + '%'}"></div>
+                                            </div>
+                                            <div class="progress-bar__description action-caption">План <span th:utext="${actionBanner.target}"></span></div>
+                                        </div>
+                                    </th:block>
+                                </div>
+                                <div class="action-banner__img">
+                                    <img th:src="@{${actionBanner.imgPath}}" alt="">
+                                </div>
+                                <div class="action-banner__info action-banner__info_center ">
+                                    <div class="action-info_prize-title action-caption">Награда</div>
+                                    <th:block>
+                                        <div class="action-info_prize c-tooltip">
+                                            <div class="tooltip-content">
+                                                <th:block th:if="${#lists.size(actionBanner.prizes) > 1}">
+                                                    <table class="c-tooltip-table">
+                                                        <th:block th:if="${actionBanner.actionType == 2}">
+                                                            <thead class="c-tooltip-table__head">
+                                                            <tr class="c-tooltip-table__head-row">
+                                                                <td class="c-tooltip-table__head-col"></td>
+                                                                <td class="c-tooltip-table__head-col c-tooltip__text inherit c-tooltip__text_title">Награда</td>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody class="c-tooltip-table__body">
+                                                            <tr class="c-tooltip-table__body-row" th:each="prize,stat : ${actionBanner.prizes}">
+                                                                <td class="c-tooltip-table__body-col c-tooltip__text inherit" th:utext="${stat.count + 'м.'}"></td>
+                                                                <td class="c-tooltip-table__body-col c-tooltip__text inherit" th:if="${actionBanner.bonusType == 1}" th:utext="${#numbers.formatInteger(prize.bonus,0,'WHITESPACE') + prize.bonusPostfix}"></td>
+                                                                <td class="c-tooltip-table__body-col c-tooltip__text inherit" th:unless="${actionBanner.bonusType == 1}" th:utext="${prize.bonus + prize.bonusPostfix}"></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </th:block>
+                                                        <th:block th:if="${actionBanner.actionType == 3}">
+                                                            <thead class="c-tooltip-table__head">
+                                                            <tr class="c-tooltip-table__head-row">
+                                                                <td class="c-tooltip-table__head-col"></td>
+                                                                <td class="c-tooltip-table__head-col c-tooltip__text inherit c-tooltip__text_title">Значение</td>
+                                                                <td class="c-tooltip-table__head-col c-tooltip__text inherit c-tooltip__text_title">Награда</td>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody class="c-tooltip-table__body">
+                                                            <tr class="c-tooltip-table__body-row" th:each="prize,stat : ${actionBanner.prizes}">
+                                                                <td class="c-tooltip-table__body-col c-tooltip__text inherit" th:utext="${stat.count + 'ур.'}"></td>
+                                                                <td class="c-tooltip-table__body-col c-tooltip__text inherit" th:utext="${#numbers.formatInteger(prize.value,0,'WHITESPACE') + prize.valuePostfix}"></td>
+                                                                <td class="c-tooltip-table__body-col c-tooltip__text inherit" th:if="${actionBanner.bonusType == 1}" th:utext="${#numbers.formatInteger(prize.bonus,0,'WHITESPACE') + prize.bonusPostfix}"></td>
+                                                                <td class="c-tooltip-table__body-col c-tooltip__text inherit" th:unless="${actionBanner.bonusType == 1}" th:utext="${prize.bonus + prize.bonusPostfix}"></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </th:block>
+                                                    </table>
+                                                </th:block>
+                                                <div class="c-tooltip__text c-tooltip__text_title inherit">Дополнительные условия: </div>
+                                                <th:block th:each="conditional : ${actionBanner.conditionals}">
+                                                    <div class="c-tooltip__text c-tooltip__text_nowrap inherit" th:utext="${conditional.title + conditional.value}"></div>
+                                                </th:block>
+                                            </div>
+                                            <th:block th:if="${actionBanner.bonusType == 1}">
+                                                <th:block th:if="${#lists.size(actionBanner.prizes) > 1}">
+                                                    <span th:utext="${#numbers.formatInteger(actionBanner.prizes[0].bonus,0,'WHITESPACE') + actionBanner.prizes[0].bonusPostfix + ' - '  + #numbers.formatInteger(actionBanner.prizes[#lists.size(actionBanner.prizes) - 1].bonus,0,'WHITESPACE') + actionBanner.prizes[#lists.size(actionBanner.prizes) - 1].bonusPostfix}"></span>
+                                                </th:block>
+                                                <th:block th:unless="${#lists.size(actionBanner.prizes) > 1}">
+                                                    <span th:utext="${#numbers.formatInteger(actionBanner.prizes[0].bonus,0,'WHITESPACE') + actionBanner.prizes[0].bonusPostfix}"></span>
+                                                </th:block>
+                                            </th:block>
+                                            <th:block th:unless="${actionBanner.bonusType == 1}">
+                                                <th:block th:if="${#lists.size(actionBanner.prizes) > 1}">
+                                                    <span th:utext="${actionBanner.prizes[0].bonus + actionBanner.prizes[0].bonusPostfix + ' - '  + actionBanner.prizes[#lists.size(actionBanner.prizes) - 1].bonus + actionBanner.prizes[#lists.size(actionBanner.prizes) - 1].bonusPostfix}"></span>
+                                                </th:block>
+                                                <th:block th:unless="${#lists.size(actionBanner.prizes) > 1}">
+                                                    <span th:utext="${actionBanner.prizes[0].bonus + actionBanner.prizes[0].bonusPostfix}"></span>
+                                                </th:block>
+                                            </th:block>
+                                            <div class="action-info_prize-title action-caption">(условия акции)</div>
+                                        </div>
+                                    </th:block>
+                                    <div class="action-banner__timer">
+                                        <div class="timer">
+                                            <th:block th:unless="${actionBanner.wasStarted}">
+                                                <div class="timer__description action-caption">Акция начнется</div>
+                                                <div class="timer__wrapper">
+                                                    <div class="timer__value">
+                                                        <div class="timer-value" th:utext="${actionBanner.startDate}"></div>
+                                                    </div>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:if="${actionBanner.wasStarted}">
+                                                <div class="timer__description action-caption">Завершится через</div>
+                                                <div class="timer__wrapper" th:id="${actionBanner.id}">
+                                                    <div class="timer__value">
+                                                        <div class="timer-value days">0</div>
+                                                        <div class="timer-description">д</div>
+                                                    </div>
+                                                    <div class="timer__dots"></div>
+                                                    <div class="timer__value">
+                                                        <div class="timer-value hours">00</div>
+                                                        <div class="timer-description">ч</div>
+                                                    </div>
+                                                    <div class="timer__dots"></div>
+                                                    <div class="timer__value">
+                                                        <div class="timer-value minutes">00</div>
+                                                        <div class="timer-description">м</div>
+                                                    </div>
+                                                    <div class="timer__dots"></div>
+                                                    <div class="timer__value">
+                                                        <div class="timer-value seconds">00</div>
+                                                        <div class="timer-description">с</div>
+                                                    </div>
+                                                </div>
+                                            </th:block>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-main__panel content-main__panel_large content-main__panel_p">
+            <div class="tiles">
+                <div class="tiles__wrapper">
+                    <div class="tile tile_small">
+                        <div class="tile__bg"></div>
+                        <div class="tile__tooltip c-tooltip">
+                            <div class="tooltip-content">
+                                <div class="c-tooltip__text">Количество целевых обращений, учитываются из CRM</div>
+                            </div>
+                            <span>?</span>
+                        </div>
+                        <div class="tile__title tile__title_horn">Заявки</div>
+                        <div class="tile__text" th:utext="${'Виджет отключён'}"></div>
+                    </div>
+                    <div class="tile tile_small" th:classappend="${tiles.bill.percent > 120 ? 'tile_black' : (tiles.bill.percent >= 100 ? 'tile_green' : '')}">
+                        <div class="tile__bg"></div>
+                        <div class="tile__tooltip c-tooltip">
+                            <div class="tooltip-content">
+                                <div class="c-tooltip__text">Количество оформленных заказов, учитываются как оплаченные так и не оплаченные</div>
+                            </div>
+                            <span>?</span>
+                        </div>
+                        <div class="tile__title tile__title_cart">Заказы</div>
+                        <div class="tile__text" th:utext="${tiles.bill.value}"></div>
+                        <th:block th:if="${tiles.bill.percent >= 100}">
+                            <div class="tile__description" th:utext="${'План выполнен на ' + tiles.bill.percent + '%!'}"></div>
+                        </th:block>
+                        <th:block th:unless="${tiles.bill.percent >= 100}">
+                            <div class="progress-bar">
+                                <div class="progress-bar__wrapper">
+                                    <div class="progress-bar__progress"
+                                         th:classappend="${tiles.bill.percent > 99 ? 'progress_green' : (tiles.bill.percent > 69 ? 'progress_yellow' : 'progress_red')}"
+                                         th:style="'width: ' + ${tiles.bill.percent} + '%;'"></div>
+                                    <div class="progress-bar__title"
+                                         th:classappend="${tiles.bill.percent >= 25 ? 'progress-bar__title_white' : ''}"
+                                         th:utext="${tiles.bill.percent + '%'}"></div>
+                                </div>
+                                <div class="progress-bar__description">План <span th:utext="${tiles.bill.plan + ' заказов'}"> </span></div>
+                            </div>
+                        </th:block>
+                    </div>
+                    <div class="tile tile_small" th:classappend="${tiles.sale.percent > 120 ? 'tile_black' : (tiles.sale.percent >= 100 ? 'tile_green' : '')}">
+                        <div class="tile__bg"></div>
+                        <div class="tile__tooltip c-tooltip">
+                            <div class="tooltip-content">
+                                <div class="c-tooltip__text">Количество оплаченных заказов, учитываются как предоплаты так и полные оплаты</div>
+                            </div>
+                            <span>?</span>
+                        </div>
+                        <div class="tile__title tile__title_cash">Оплаты</div>
+                        <div class="tile__text" th:utext="${tiles.sale.value}"></div>
+                        <th:block th:if="${tiles.sale.percent >= 100}">
+                            <div class="tile__description" th:utext="${'План выполнен на ' + tiles.sale.percent + '%!'}"></div>
+                        </th:block>
+                        <th:block th:unless="${tiles.sale.percent >= 100}">
+                            <div class="progress-bar">
+                                <div class="progress-bar__wrapper">
+                                    <div class="progress-bar__progress"
+                                         th:classappend="${tiles.sale.percent > 99 ? 'progress_green' : (tiles.sale.percent > 69 ? 'progress_yellow' : 'progress_red')}"
+                                         th:style="'width: ' + ${tiles.sale.percent} + '%;'"></div>
+                                    <div class="progress-bar__title"
+                                         th:classappend="${tiles.sale.percent >= 25 ? 'progress-bar__title_white' : ''}"
+                                         th:utext="${tiles.sale.percent + '%'}"></div>
+                                </div>
+                                <div class="progress-bar__description">План <span th:utext="${tiles.sale.plan + ' оплат'}"> </span></div>
+                            </div>
+                        </th:block>
+                    </div>
+
+                    <div class="tile tile_small" th:classappend="${tiles.proceed.percent > 120 ? 'tile_black' : (tiles.proceed.percent >= 100 ? 'tile_green' : '')}">
+                        <div class="tile__bg"></div>
+                        <div class="tile__tooltip c-tooltip">
+                            <div class="tooltip-content">
+                                <div class="c-tooltip__text">Сумма вырученных от продаж денег</div>
+                            </div>
+                            <span>?</span>
+                        </div>
+                        <div class="tile__title tile__title_money">Выручка</div>
+                        <div class="tile__text" th:utext="${#numbers.formatInteger(tiles.proceed.value,0,'WHITESPACE') + ' ₽'}"></div>
+                        <th:block th:if="${tiles.proceed.percent >= 100}">
+                            <div class="tile__description" th:utext="${'План выполнен на ' + tiles.proceed.percent + '%!'}"></div>
+                        </th:block>
+                        <th:block th:unless="${tiles.proceed.percent >= 100}">
+                            <div class="progress-bar">
+                                <div class="progress-bar__wrapper">
+                                    <div class="progress-bar__progress"
+                                         th:classappend="${tiles.proceed.percent > 99 ? 'progress_green' : (tiles.proceed.percent > 69 ? 'progress_yellow' : 'progress_red')}"
+                                         th:style="'width: ' + ${tiles.proceed.percent} + '%;'"></div>
+                                    <div class="progress-bar__title"
+                                         th:classappend="${tiles.proceed.percent >= 25 ? 'progress-bar__title_white' : ''}"
+                                         th:utext="${tiles.proceed.percent + '%'}"></div>
+                                </div>
+                                <div class="progress-bar__description" th:if="${tiles.proceed.plan != '—'}">План <span th:utext="${#numbers.formatInteger(tiles.proceed.plan,0,'WHITESPACE') + ' ₽'}"> </span></div>
+                                <div class="progress-bar__description" th:if="${tiles.proceed.plan == '—'}">План <span th:utext="${tiles.proceed.plan + ' ₽'}"> </span></div>
+                            </div>
+                        </th:block>
+                    </div>
+                    <div class="tile tile_small" th:classappend="${!tiles.deviation.plan.matches('[-+]?[0-9]*') && tiles.deviation.plan != '—' ? '' : (tiles.deviation.percent >= 20 ? 'tile_black' : (tiles.deviation.percent > 0 ? 'tile_green' : 'tile_red'))}">
+                        <div class="tile__bg"></div>
+                        <div class="tile__tooltip c-tooltip right">
+                            <div class="tooltip-content">
+                                <div class="c-tooltip__text">Прогноз выручки, считается по формуле:
+                                    (факт по выручке / на количество прошедших дней) * количество дней в месяце</div>
+                            </div>
+                            <span>?</span>
+                        </div>
+                        <div class="tile__title tile__title_chart">Прогноз</div>
+
+                        <th:block th:if="${tiles.prediction.plan.matches('[-+]?[0-9]*')}">
+                            <div class="tile__text" th:utext="${#numbers.formatInteger(tiles.prediction.plan,0,'WHITESPACE') + ' ₽'}"></div>
+                        </th:block>
+                        <th:block th:unless="${tiles.prediction.plan.matches('[-+]?[0-9]*')}">
+                            <div class="tile__text" th:if="${tiles.prediction.plan == '—'}" th:utext="${tiles.prediction.plan + ' ₽'}"></div>
+                            <div class="tile__text" th:unless="${tiles.prediction.plan == '—'}" th:utext="${tiles.prediction.plan}"></div>
+                        </th:block>
+
+                        <th:block th:if="${tiles.deviation.plan.matches('[-+]?[0-9]*') || tiles.deviation.plan == '—'}">
+                            <div class="tile__text-description">
+                                <span th:utext="${#numbers.formatInteger(tiles.deviation.value,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="tile__deviation-percent" th:utext="${tiles.deviation.percent + '%'}"></span>
+                            </div>
+                            <div class="tile__description"
+                            th:utext="${tiles.deviation.value > 0 ? 'Хорошо идём!' : 'Надо поднажать!'}"></div>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-main__panel content-main__panel_large content-main__panel_p">
+            <div class="big-tile">
+                <div class="tile__tooltip c-tooltip right">
+                    <div class="tooltip-content">
+                        <div class="c-tooltip__text">Общий монитор продаж с ранжированием по выбранному критерию</div>
+                    </div>
+                    <span>?</span>
+                </div>
+                <div class="tile__title tile__title_margin tile__title_cup">
+                    <span>Рейтинг</span>
+                    <form action="#" th:action="@{/monitor/}" th:object="${filter}" th:method="post" class="transparent-selector">
+                        <select filter-parameter th:field="*{rowSortType}" class="transparent-selector__selector">
+                            <option value="1">по оплатам</option>
+                            <option value="2">по выручке</option>
+                            <option value="3">по рейтингу</option>
+                        </select>
+                    </form>
+                </div>
+                <table class="tile-table">
+                    <thead class="tile-table__header">
+                        <tr class="tile-table__header-row">
+                            <td class="tile-table__header-col">Менеджер</td>
+                            <td class="tile-table__header-col tile-table__header-col_p30 tile-table__header-col_pl10 tile-table__header-col_small">Награды</td>
+                            <td class="tile-table__header-col">Заказы</td>
+                            <td class="tile-table__header-col">Оплаты</td>
+                            <td class="tile-table__header-col">Выручка</td>
+                            <td class="tile-table__header-col tile-table__header-col_pl30">Осталось</td>
+                            <td class="tile-table__header-col tile-table__header-col_pl10">Прогноз</td>
+                            <td class="tile-table__header-col tile-table__header-col_pl10">Отклонение</td>
+                        </tr>
+                    </thead>
+                    <tbody class="tile-table__body">
+                        <tr class="tile-table__body-row" th:each="row,stat : ${rows}">
+                            <td class="tile-table__body-col tile-table__body-col_pr0 tile-table__body-col_large">
+                                <div class="tile-table__index" th:utext="${stat.count}"></div>
+                                <div class="employee">
+                                    <div class="employee__avatar c-tooltip">
+                                        <div class="c-tooltip__wrapper c-tooltip__wrapper_avatar" th:if="${(row.manager.avatar != null || !#strings.isEmpty(row.manager.avatar))}">
+                                            <span class="c-tooltip__avatar">
+                                                    <img th:if="${row.manager.avatar}" th:src="'/' + ${row.manager.avatar}" alt="">
+                                            </span>
+                                        </div>
+                                        <div class="avatar">
+                                            <div class="avatar__wrapper avatar__wrapper_bordered" th:style="'border-color: ' + ${row.manager.type} + ';'">
+                                                <span class="avatar-image" th:classappend="${(row.manager.avatar == null || #strings.isEmpty(row.manager.avatar)) ? 'avatar-image_default' : ''}">
+                                                    <img th:if="${row.manager.avatar}" th:src="'/' + ${row.manager.avatar}" alt="">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="employee__desc">
+                                        <div class="employee-name" th:utext="${row.manager.name}"></div>
+                                        <div class="employee-score" th:utext="${#numbers.formatDecimal(row.manager.currentScore, 1, 'COMMA', 2, 'POINT')}"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="tile-table__body-col tile-table__body-col_pl10 tile-table__body-col_pr10 tile-table__body-col_small tile-table__body-col_bordered">
+                                <div class="tile-bonus" th:classappend="${#lists.size(row.bonuses) > 0 ? 'c-tooltip' : ''}">
+                                    <div class="c-tooltip__wrapper c-tooltip__wrapper_large">
+                                        <th:block th:each="bonus : ${row.bonuses}">
+                                            <div class="c-tooltip__text-icon"
+                                                 th:classappend="'c-tooltip__text-icon_' + ${bonus.bonusType}"
+                                                 th:utext="${bonus.name}"></div>
+                                        </th:block>
+                                    </div>
+                                    <span th:utext="${#lists.size(row.bonuses)}"></span>
+                                </div>
+                            </td>
+                            <td class="tile-table__body-col tile-table__body-col_bordered">
+                                <div class="tile-table___value">
+                                    <div class="color-block" th:classappend="'color-block_type' + ${row.bill.type}">
+                                        <div class="color-block__wrapper">
+                                            <div class="color-block__value color-block__value_bold" th:utext="${row.bill.value}"></div>
+                                            <div class="color-block__delim">/</div>
+                                            <div class="color-block__value" th:utext="${row.bill.plan}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="color-block color-block_transparent">
+                                        <div class="color-block__wrapper">
+                                            <div class="color-block__value color-block__value_bold" th:utext="${row.bill.percent + ' %'}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="tile-table__body-col tile-table__body-col_bordered">
+                                <div class="tile-table___value">
+                                    <div class="color-block" th:classappend="'color-block_type' + ${row.sale.type}">
+                                        <div class="color-block__wrapper">
+                                            <div class="color-block__value color-block__value_bold" th:utext="${row.sale.value}"></div>
+                                            <div class="color-block__delim">/</div>
+                                            <div class="color-block__value" th:utext="${row.sale.plan}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="color-block color-block_transparent">
+                                        <div class="color-block__wrapper">
+                                            <div class="color-block__value color-block__value_bold" th:utext="${row.sale.percent + ' %'}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="tile-table__body-col tile-table__body-col_bordered">
+                                <div class="tile-table___value">
+                                    <div class="color-block color-block_large" th:classappend="'color-block_type' + ${row.proceed.type}">
+                                        <div class="color-block__wrapper">
+                                            <div class="color-block__value color-block__value_bold" th:utext="${#numbers.formatInteger(row.proceed.value,0,'WHITESPACE') + ' ₽'}"></div>
+                                            <div class="color-block__delim">/</div>
+                                            <div class="color-block__value " th:if="${row.proceed.plan != '—'}" th:utext="${#numbers.formatInteger(row.proceed.plan,0,'WHITESPACE') + ' ₽'}"></div>
+                                            <div class="color-block__value " th:if="${row.proceed.plan == '—'}" th:utext="${row.proceed.plan + ' ₽'}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="color-block color-block_transparent">
+                                        <div class="color-block__wrapper">
+                                            <div class="color-block__value color-block__value_bold" th:utext="${row.proceed.percent + ' %'}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="tile-table__body-col tile-table__body-col_pr10 tile-table__body-col_pl30">
+                                <div class="tile-table___value">
+                                    <div class="color-block color-block_transparent color-block_small color-block_p0">
+                                        <div class="color-block__wrapper color-block__wrapper_align-left">
+                                            <div class="color-block__value color-block__value_bold" th:if="${row.proceedLeft.plan != '—'}" th:utext="${#numbers.formatInteger(row.proceedLeft.plan,0,'WHITESPACE') + ' ₽'}"></div>
+                                            <div class="color-block__value color-block__value_bold" th:if="${row.proceedLeft.plan == '—'}" th:utext="${row.proceedLeft.plan + ' ₽'}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="tile-table__body-col tile-table__body-col_pr10 tile-table__body-col_pl10">
+                                <div class="tile-table___value">
+                                    <div class="color-block color-block_transparent color-block_small color-block_p0">
+                                        <div class="color-block__wrapper color-block__wrapper_align-left">
+                                            <th:block th:if="${row.prediction.plan.matches('[-+]?[0-9]*')}">
+                                                <div class="color-block__value color-block__value_bold" th:utext="${#numbers.formatInteger(row.prediction.plan,0,'WHITESPACE') + ' ₽'}"></div>
+                                            </th:block>
+                                            <th:block th:unless="${row.prediction.plan.matches('[-+]?[0-9]*')}">
+                                                <div class="color-block__value color-block__value_bold" th:if="${row.prediction.plan != '—'}" th:utext="${row.prediction.plan}"></div>
+                                                <div class="color-block__value color-block__value_bold" th:if="${row.prediction.plan == '—'}" th:utext="${row.prediction.plan + ' ₽'}"></div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="tile-table__body-col tile-table__body-col_pr30 tile-table__body-col_pl10">
+                                <div class="tile-table___value">
+                                    <div class="color-block color-block_medium" th:classappend="'color-block_type' + ${row.deviation.type}">
+                                        <div class="color-block__wrapper">
+                                            <th:block th:if="${row.deviation.plan.matches('[-+]?[0-9]*')}">
+                                                <div class="color-block__value color-block__value_bold" th:utext="${#numbers.formatInteger(row.deviation.plan,0,'WHITESPACE') + ' ₽'}"></div>
+                                            </th:block>
+                                            <th:block th:unless="${row.deviation.plan.matches('[-+]?[0-9]*')}">
+                                                <div class="color-block__value color-block__value_bold" th:if="${row.deviation.plan != '—'}" th:utext="${row.deviation.plan}"></div>
+                                                <div class="color-block__value color-block__value_bold" th:if="${row.deviation.plan == '—'}" th:utext="${row.deviation.plan + ' ₽'}"></div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div tr-filter class="cfilter">
+    <div class="cfilter__wrapper">
+        <div tr-filter-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="filter-content">
+            <div class="filter-head">
+                <div class="filter-head__title">Фильтровать монитор</div>
+            </div>
+            <div class="filter-content__body custom-scroll">
+                <form tr-filter-form action="#" th:action="@{/monitor/}" th:object="${filter}" th:method="post" class="filter-body">
+                    <div class="filter-body__wrapper">
+                        <div class="filter-column">
+                            <div class="filter-column__title">Параметры</div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Выручка</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select filter-courses class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{proceedType}">
+                                            <option th:value="0" selected>Все</option>
+                                            <option th:value="1">Трафик</option>
+                                            <option th:value="2">Допродажи</option>
+                                            <option th:value="3">Товарка</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Проекты</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select filter-course-kinds class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{projectId}">
+                                            <option th:value="0" selected>Все проекты</option>
+                                            <option th:each="project : ${projects}"
+                                                    th:value="${project.id}"
+                                                    th:utext="${project.name}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row" th:if="${role == 'ROLE_ADMIN'}">
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Отображать</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select filter-courses class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{showManagerType}">
+                                            <option th:value="1">Все</option>
+                                            <option th:value="2">Работающие</option>
+                                            <option th:value="3">Уволенные</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="filter-content__footer">
+                <div tr-filter-form-btn class="button">Применить фильтры</div>
+                <div th:if="${filter.isCanClear()}" class="clear-filter clear-filter_bordered">
+                    <form tr-clear-form action="#" th:action="@{/monitor/clearFilter}" th:method="post" class="clear-filter__form">
+                        <button tr-clear-form-btn class="button button_clear">Сбросить фильтры</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-background class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-background-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-background-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Изменить фон рабочего стола
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_grow menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__wrapper menu-input__wrapper_row">
+                            <div class="menu-input menu-input_m">
+                                <div class="menu-input__title">Фон</div>
+                                <div class="menu-input__wrapper  menu-input__wrapper_row">
+                                    <div class="input-element__radio-wrapper input-element__radio-wrapper_dark">
+                                        <div class="input-element__radio input-element__radio_big">
+                                            <input default-background-color type="checkbox" id="default" class="radio radio_circle-colored" name="colorDefault" value="#f4f4f6">
+                                            <label for="default" class="colored-circle colored-circle_default"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="menu-input menu-input_m  menu-input_full">
+                                <div class="menu-input__title">Фон рабочего стола</div>
+                                <div class="menu-input__wrapper">
+                                    <input background-color type="color" name="color" class="menu-input__input menu-input__input_small menu-input__input_color"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <input type="hidden" name="idCompany" th:value="${company.id}"/>
+                    <button type="button" js-save-background class="button button_white">Сохранить фон</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    window.onload = function() {
+        var theList = [[${actionBanners}]]
+        for (i = 0; i < theList.length; i++) {
+            if (theList[i].wasStarted) {
+                initializeClock(theList[i].id, theList[i].nowDate, theList[i].endDate);
+            }
+        }
+    };
+</script>
+
+<div class="c-tooltip__wrapper c-tooltip__wrapper_right tooltip-wrapper"></div>
+<div class="c-tooltip__wrapper c-tooltip__wrapper_maxwidth tooltip-wrapper"></div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/monitor-filter.js}"></script>
+<!--<script th:src="@{/js/manager-scroll.js}"></script>-->
+<script th:src="@{/js/timer.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    setDashboardFilter(/*[[${filter}]]*/);
+    /*]]>*/
+</script>
+</body>
+</html>

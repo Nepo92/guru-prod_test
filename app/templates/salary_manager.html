@@ -1,0 +1,357 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Расчет ЗП">
+
+    <title>Расчет ЗП</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-medium ">
+    <div class="content-top">
+        <div class="content-top__header">Расчет ЗП</div>
+
+        <div js-update-line-color
+             class="theme-setting theme-setting_violet">
+            <input type="hidden" name="idCompany" th:value="${company.id}"/>
+        </div>
+    </div>
+    <div class="content-top content-top_small">
+        <div th:replace="base :: salary-tab"></div>
+    </div>
+    <div class="content-main ">
+        <div class="salary salary_delim">
+            <div class="managers-monitor__element block_230">
+                <div>
+                    <div class="manager-element__header manager-element__header_bg">
+                        <div class="header-element header-element_xmlarge">Год / месяц<br><br></div>
+                    </div>
+                        <div class="manager manager_name manager_name_center">
+                            <form filter-form action="#" th:action="@{/salary/}" th:object="${filter}" th:method="post">
+                                <div class="selects-wrapper">
+                                    <select class="filter__element" filter-param th:field="*{year}">
+                                        <option th:each="y : ${ys}" th:value="${y}" th:utext="${y}"></option>
+                                    </select>
+                                    <select filter-param class="filter__element" th:field="*{month}">
+                                        <option th:value="1">Январь</option>
+                                        <option th:value="2">Февраль</option>
+                                        <option th:value="3">Март</option>
+                                        <option th:value="4">Апрель</option>
+                                        <option th:value="5">Май</option>
+                                        <option th:value="6">Июнь</option>
+                                        <option th:value="7">Июль</option>
+                                        <option th:value="8">Август</option>
+                                        <option th:value="9">Сентябрь</option>
+                                        <option th:value="10">Октябрь</option>
+                                        <option th:value="11">Ноябрь</option>
+                                        <option th:value="12">Декабрь</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+            </div>
+            <div class="managers-monitor__element">
+                <div class="manager-element__header manager-element__header_p10">
+                    <div class="header-element header-element_xmlarge">Выручка общая</div>
+                    <div class="header-element header-element_xmlarge">РБ</div>
+                    <div class="header-element header-element_xmlarge">Выручка - РБ - ЗП</div>
+                    <div class="header-element ">%Выручка - РБ - ЗП</div>
+                </div>
+                <div class="manager manager_values manager_values_p10">
+                    <div class="manager-value manager-value_xmlarge manager-value_m10 manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.proceed,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_xmlarge manager-value_m10 manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.adv,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_xmlarge manager-value_m10" th:classappend="'manager-value_type' + ${commonRow.dirtyType}">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.dirty,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_m10 " th:classappend="'manager-value_type' + ${commonRow.dirtyType}">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${commonRow.dirtyPercent + ' %'}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="managers-monitor__element">
+                <div class="manager-element__header manager-element__header_p10">
+                    <div class="header-element header-element_large">Оклад</div>
+                    <div class="header-element header-element_slarge">% от выручки трафик</div>
+                    <div class="header-element header-element_slarge">% от выручки допродажи</div>
+                    <div class="header-element header-element_slarge">Фикс оплата за товар</div>
+                    <div class="header-element">Выполнение плана</div>
+                    <div class="header-element header-element_slarge">РК</div>
+                </div>
+                <div class="manager manager_values manager_values_p10">
+                    <div class="manager-value manager-value_m10 manager-value_large manager-value_text">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.salary,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_m10 manager-value_slarge manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.traffic,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_m10 manager-value_slarge manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.additional,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_m10 manager-value_slarge manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.goods,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_m10 manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.executePlan,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_m10 manager-value_slarge manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.rk,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="managers-monitor__element">
+                <div class="manager-element__header manager-element__header_p10">
+                    <div class="header-element header-element_large">Премия менеджер</div>
+                    <div class="header-element header-element_mlarge">Премия руководитель</div>
+                    <div class="header-element header-element_large">Награды</div>
+                </div>
+                <div class="manager manager_values manager_values_p10">
+                    <div class="manager-value manager-value_m10 manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.bonus,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_m10 manager-value_mlarge manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.bonusHead,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                    <div class="manager-value manager-value_m10 manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.actionBonus,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="managers-monitor__element">
+                <div class="manager-element__header manager-element__header_p10">
+                    <div class="header-element header-element_xmlarge">Итоговая зарплата</div>
+                </div>
+                <div class="manager manager_values manager_values_p10">
+                    <div class="manager-value manager-value_xmlarge manager-value_type10">
+                        <div class="manager-value__wrapper">
+                            <span class="manager-value_fact" th:utext="${#numbers.formatInteger(commonRow.total,0,'WHITESPACE') + ' ₽'}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="salary" th:if="${rows.size() != 0}">
+            <div class="managers-monitor__element block_230">
+                <div manager-name>
+                    <div class="manager-element__header manager-element__header_bg">
+                        <div class="header-element">Имя и фамилия</div>
+                    </div>
+
+                    <th:block th:each="row, stat : ${rows}">
+                        <div class="manager manager_name">
+                            <div class="manager-id" th:utext="${stat.index + 1}"></div>
+                            <div class="manager-name" th:utext="${row.name}"></div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+            <div class="managers-monitor__element">
+                <div class="manager-element__header manager-element__header_p10">
+                    <div class="header-element header-element_xmlarge">Выручка общая</div>
+                    <div class="header-element header-element_xmlarge">РБ</div>
+                    <div class="header-element header-element_xmlarge">Выручка - РБ - ЗП</div>
+                    <div class="header-element ">%Выручка - РБ - ЗП</div>
+                </div>
+                <th:block th:each="row : ${rows}">
+                    <div class="manager manager_values manager_values_p10">
+                        <div class="manager-value manager-value_xmlarge manager-value_m10 manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.proceed,0,'WHITESPACE') + ' ₽'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_xmlarge manager-value_m10 manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.adv,0,'WHITESPACE') + ' ₽'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_xmlarge manager-value_m10" th:classappend="'manager-value_type' + ${row.dirtyType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.dirty,0,'WHITESPACE') + ' ₽'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_m10" th:classappend="'manager-value_type' + ${row.dirtyType}">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${row.dirtyPercent + ' %'}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+            <div class="managers-monitor__element">
+                <div class="manager-element__header manager-element__header_p10">
+                    <div class="header-element header-element_large">Оклад</div>
+                    <div class="header-element header-element_slarge">% от выручки трафик</div>
+                    <div class="header-element header-element_slarge">% от выручки допродажи</div>
+                    <div class="header-element header-element_slarge">Фикс оплата за товар</div>
+                    <div class="header-element">Выполнение плана</div>
+                    <div class="header-element header-element_slarge">РК</div>
+                </div>
+                <th:block th:each="row : ${rows}">
+                    <div class="manager manager_values manager_values_p10">
+                        <div class="manager-value manager-value_m10 manager-value_large manager-value_text">
+                            <div class="manager-value__wrapper c-tooltip">
+                                <div class="c-tooltip__wrapper c-tooltip__wrapper_medium" th:if="${row.qualitySalary != 0}">
+                                    <div class="c-tooltip__text c-tooltip__text_title">Основа</div>
+                                    <div class="c-tooltip__text" th:utext="${#numbers.formatInteger(row.baseSalary,0,'WHITESPACE') + ' ₽'}"></div>
+                                    <div class="c-tooltip__text c-tooltip__text_title">За качество</div>
+                                    <div class="c-tooltip__text" th:utext="${#numbers.formatInteger(row.qualitySalary,0,'WHITESPACE') + ' ₽'}"></div>
+                                </div>
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.salary,0,'WHITESPACE') + ' ₽'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_m10 manager-value_slarge manager-value_type10">
+                            <div class="manager-value__wrapper c-tooltip">
+                                <div class="c-tooltip__wrapper c-tooltip__wrapper_medium" th:if="${row.qualityTraffic != 0}">
+                                    <div class="c-tooltip__text c-tooltip__text_title">Основа</div>
+                                    <div class="c-tooltip__text" th:utext="${#numbers.formatInteger(row.baseTraffic,0,'WHITESPACE')}"></div>
+                                    <div class="c-tooltip__text c-tooltip__text_title">За качество</div>
+                                    <div class="c-tooltip__text" th:utext="${#numbers.formatInteger(row.qualityTraffic,0,'WHITESPACE') + ' ₽'}"></div>
+                                </div>
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.traffic,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${row.trafficPercent + '%'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_m10 manager-value_slarge manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.additional,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${row.additionalPercent + '%'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_m10 manager-value_slarge manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.goods,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${row.goodsRate + ' ₽'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_m10 manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.executePlan,0,'WHITESPACE') + ' ₽'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_m10 manager-value_slarge manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.rk,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan" th:utext="${'1.15'}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+            <div class="managers-monitor__element">
+                <div class="manager-element__header manager-element__header_p10">
+                    <div class="header-element header-element_large">Премия менеджер</div>
+                    <div class="header-element header-element_mlarge">Премия руководитель</div>
+                    <div class="header-element header-element_large">Награды</div>
+                </div>
+                <th:block th:each="row : ${rows}">
+                    <div class="manager manager_values manager_values_p10">
+                        <div class="manager-value manager-value_m10 manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.bonus,0,'WHITESPACE') + ' ₽'}"></span>
+                             </div>
+                        </div>
+                        <div class="manager-value manager-value_m10 manager-value_mlarge manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.bonusHead,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_delim">/</span>
+                                <span class="manager-value_plan"
+                                      th:if="${row.subordinatesProceed != '—'}"
+                                      th:utext="${#numbers.formatInteger(row.subordinatesProceed,0,'WHITESPACE') + ' ₽'}"></span>
+                                <span class="manager-value_plan"
+                                      th:if="${row.subordinatesProceed == '—'}"
+                                      th:utext="${row.subordinatesProceed + ' ₽'}"></span>
+                            </div>
+                        </div>
+                        <div class="manager-value manager-value_m10 manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.actionBonus,0,'WHITESPACE') + ' ₽'}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+            <div class="managers-monitor__element">
+                <div class="manager-element__header manager-element__header_p10">
+                    <div class="header-element header-element_xmlarge">Итоговая зарплата</div>
+                </div>
+                <th:block th:each="row : ${rows}">
+                    <div class="manager manager_values manager_values_p10">
+                        <div class="manager-value manager-value_xmlarge manager-value_type10">
+                            <div class="manager-value__wrapper">
+                                <span class="manager-value_fact" th:utext="${#numbers.formatInteger(row.total,0,'WHITESPACE') + ' ₽'}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+<div js-menu-line-color class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-line-color-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-line-color-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Изменить цвет колонок
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll" line-colors>
+
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-save-line-color class="button button_white">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/manager-scroll.js}"></script>
+<script th:src="@{/js/line-color-menu.js}"></script>
+</body>
+</html>

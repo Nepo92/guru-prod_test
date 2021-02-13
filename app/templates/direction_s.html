@@ -1,0 +1,206 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Направления и курсы">
+
+    <title>Направления и курсы</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content">
+    <!--<div th:replace="base :: settings-said-nav"></div>-->
+    <div class="content-top">
+        <div th:replace="base :: course-nav"></div>
+    </div>
+    <div class="content-main">
+        <div class="container-table">
+            <h4>Курсы</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th>Проект</th>
+                        <th>Цена</th>
+                        <th class="cell-120"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="course : ${courses}">
+                        <td th:text="${course.id}"></td>
+                        <td th:text="${course.name}"></td>
+                        <td th:text="${course.project}"></td>
+                        <td>
+                            <form action="#" class="table-form table_update" th:action="@{updatePrice}" th:method="get">
+                                <input class="input-sm input_110 input_mr-10" th:name="price" th:value="${course.price}" placeholder="Цена" required>
+                                <input type="hidden" th:name="id" th:value="${course.id}">
+                                <button class="btn btn-sm btn_110 btn-outline-secondary">Обновить</button>
+                            </form>
+                        </td>
+                        <td class="cell-120">
+                            <form class="table-form" action="#" th:action="@{'deleteCourse/{id}'(id=${course.id})}" th:method="delete">
+                                <button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form class="table-form" action="#" th:action="@{addCourse}" th:object="${course}" th:method="post">
+                        <tr>
+                            <td></td>
+                            <td><input class="input-sm input-large" th:field="*{name}" placeholder="Название" required></td>
+                            <td><input class="input-sm input-large" th:field="*{price}" placeholder="Цена" required></td>
+                            <td>
+                                <select class="input-sm input-large" filter-param th:field="*{idProject}">
+                                    <option th:each="project : ${projects}"
+                                            th:value="${project.id}"
+                                            th:utext="${project.name}"></option>
+                                </select>
+                            </td>
+                            <td class="cell-120">
+                                <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container-table">
+            <h4>Разновидность курсов</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th>Курс</th>
+                        <th class="cell-120"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="kind : ${kinds}">
+                        <td th:text="${kind.id}"></td>
+                        <td th:text="${kind.name}"></td>
+                        <td th:text="${kind.courseName}"></td>
+                        <td class="cell-120">
+                            <form class="table-form" action="#" th:action="@{'deleteKind/{id}'(id=${kind.id})}" th:method="delete">
+                                <button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form class="table-form" action="#" th:action="@{addKind}" th:object="${kind}" th:method="post">
+                        <tr>
+                            <td></td>
+                            <td><input class="input-sm input-large" th:field="*{name}" placeholder="Название" required></td>
+                            <td>
+                                <select class="input-sm input-large" filter-param th:field="*{idCourse}">
+                                    <option th:each="course : ${courses}"
+                                            th:value="${course.id}"
+                                            th:utext="${course.name}"></option>
+                                </select>
+                            </td>
+                            <td class="cell-120">
+                                <button class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+<!--        <div class="container-table">-->
+<!--            <h4>Направления</h4>-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table table-sm">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>#</th>-->
+<!--                        <th>Название</th>-->
+<!--                        <th class="cell-120"></th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="direction : ${directions}">-->
+<!--                        <td th:text="${direction.id}"></td>-->
+<!--                        <td th:text="${direction.name}"></td>-->
+<!--                        <td class="cell-120">-->
+<!--                            <form class="table-form" action="#" th:action="@{'deleteDirection/{id}'(id=${direction.id})}" th:method="delete">-->
+<!--                                <button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>-->
+<!--                            </form>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <form class="table-form" action="#" th:action="@{addDirection}" th:object="${direction}" th:method="post">-->
+<!--                        <tr>-->
+<!--                            <td></td>-->
+<!--                            <td><input class="input-sm input-large" th:field="*{name}" placeholder="Название" required></td>-->
+<!--                            <td class="cell-120">-->
+<!--                                <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                    </form>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="container-table">
+            <h4>Связка Направление - Курс</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Направление</th>
+                        <th>Курс</th>
+                        <th class="cell-120"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="bunch : ${bunches}">
+                        <td th:text="${bunch.id}"></td>
+                        <td th:text="${bunch.directionName}"></td>
+                        <td th:text="${bunch.courseName}"></td>
+                        <td class="cell-120">
+                            <form class="table-form" action="#" th:action="@{'deleteBunch/{id}'(id=${bunch.id})}" th:method="delete">
+                                <button class="btn btn-sm btn-large btn-outline-secondary">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form class="table-form" action="#" th:action="@{addBunch}" th:object="${bunch}" th:method="post">
+                        <tr>
+                            <td></td>
+                            <td>
+                                <select class="input-sm input-large" filter-param th:field="*{directionId}">
+                                    <option th:each="direction : ${directions}"
+                                            th:value="${direction.id}"
+                                            th:utext="${direction.name}"></option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="input-sm input-large" filter-param th:field="*{courseId}">
+                                    <option th:each="course : ${courses}"
+                                            th:value="${course.id}"
+                                            th:utext="${course.name}"></option>
+                                </select>
+                            </td>
+                            <td class="cell-120">
+                                <button type="submit" class="btn btn-sm btn-large btn-outline-secondary">Добавить</button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

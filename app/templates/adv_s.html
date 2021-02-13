@@ -1,0 +1,239 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Реклама">
+
+    <title>Рекламный кабинет</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: dialog"></div>
+<div th:replace="base :: main-nav (logoClass='main-nav__logo_white')"></div>
+
+<div class="main-content main-content_s-white-top">
+    <th:block th:unless="${role == 'ROLE_ADMIN'}">
+        <div class="content-top content-top_btn">
+            <div class="content-top__header">Распределение сделок</div>
+        </div>
+    </th:block>
+
+    <th:block th:if="${role == 'ROLE_ADMIN'}">
+        <div class="content-top content-top_btn">
+            <div class="content-top__header">Рекламный кабинет</div>
+        </div>
+    </th:block>
+
+    <div class="content-main">
+        <div class="content-main__wrapper content-main__wrapper_col">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+                <div class="content-setting">
+                    <div class="search-form menu-search__wrapper">
+                        <input link-search id="search" class="menu-search__input menu-search__input_small" placeholder="Поиск" >
+                        <label for="search"></label>
+                    </div>
+
+                    <div js-add-outside-link class="add-button add-button_right">+ Добавить внешнюю ссылку</div>
+                </div>
+
+                <div class="content-delim">
+                    <span></span>
+                </div>
+            </div>
+
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+                <table class="custom-table custom-table_fixed">
+                    <thead class="custom-table__header">
+                    <tr class="custom-table__header-row">
+                        <td class="custom-table__header-col custom-table__header-col_big custom-table__header-col_30per">Назввание</td>
+                        <td class="custom-table__header-col custom-table__header-col_big custom-table__body-col_35per">Ссылка</td>
+                        <td class="custom-table__header-col custom-table__header-col_big"></td>
+                        <td class="custom-table__header-col custom-table__header-col_xsmall"></td>
+                    </tr>
+                    </thead>
+                    <tbody links-table class="custom-table__body custom-table__body_white">
+                        <th:block th:each="outsideLink : ${outsideLinks}">
+                            <tr th:attr="data-outside=${outsideLink.id}" class="custom-table__body-row link-row" >
+                                <td class="custom-table__body-col">
+                                    <input o-name name="name" class="menu-input__input menu-input__input_small link-name editable" th:value="${outsideLink.name}" disabled required placeholder="Введите название">
+                                </td>
+                                <td class="custom-table__body-col">
+                                    <div class="column-wrapper">
+                                        <div class="column-full-text" th:utext="${outsideLink.link}"></div>
+                                        <div class="column-links">
+                                            <div js-copy-link class="column_mwidth column_mwidth-copy" th:attr="data-link=${outsideLink.link}"></div>
+                                            <a th:attr="href=${outsideLink.link}" target="_blank" class="column_mwidth column_mwidth-open"></a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="div-table__body-col div-table__body-col_center div-table__body-col_xxsmall div-table__body-col_lauto">
+                                        <div js-edit-btns class="column-links display-flex-none">
+                                            <div js-edit-outside-accept class="column_mwidth column_mwidth-accept"></div>
+                                            <div js-edit-outside-cancel class="column_mwidth column_mwidth-cancel"></div>
+                                        </div>
+                                        <div js-edit-menu class="column-links display-flex-none is-open">
+                                            <div js-edit-outside class="column_mwidth div-table__body-col_center column_mwidth-edit"></div>
+                                            <form delete-outside-link-form class="column-form" action="#">
+                                                <input type="hidden" th:value="${outsideLink.id}" name="id" required>
+                                                <button delete-outside-link-btn type="button" class="column_mwidth column_mwidth-delete"></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col">
+                                    <div class="accordion-btn">
+                                        <div data-toggle="collapse" aria-expanded="false" th:attr="data-target=${'#out' + outsideLink.id}, aria-controls=${'out' + outsideLink.id}" class="accordion-btn__wrapper collapsed" >
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:attr="parent=${outsideLink.id}" th:id="${'out' + outsideLink.id}" class="custom-table__body-row collapse" >
+                                <td colspan="4" class="custom-table__body-col custom-table__body-col_center">
+                                    <table class="custom-table custom-table_inset">
+                                        <th:block th:each="insideLink : ${insideLinksMap.get(outsideLink.id)}">
+                                            <tr th:attr="data-inside=${insideLink.id}" class="custom-table__body-row custom-table__body-row_gray">
+                                                <td class="custom-table__body-col custom-table__body-col_15per">
+                                                    <input i-name name="name" class="menu-input__input menu-input__input_small editable" th:value="${insideLink.name}" disabled required placeholder="Введите имя">
+                                                </td>
+                                                <td class="custom-table__body-col custom-table__body-col_15per" th:utext="${insideLink.counter + ' переходов'}"></td>
+                                                <td class="custom-table__body-col custom-table__body-col_center custom-table__body-col_35per">
+                                                    <div class="column-wrapper">
+                                                        <div class="column-full-text">
+                                                            <input i-link name="link" class="menu-input__input menu-input__input_small editable" th:value="${insideLink.link}" disabled required placeholder="Введите ссыдку">
+                                                        </div>
+                                                        <div class="column-links">
+                                                            <div js-copy-link class="column_mwidth column_mwidth-copy" th:attr="data-link=${insideLink.link}"></div>
+                                                            <a th:attr="href=${insideLink.link}" target="_blank" class="column_mwidth column_mwidth-open"></a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="custom-table__body-col custom-table__body-col_center">
+                                                    <form action="#" js-link-active-form class="input-element__input input-element__input_status input-element__input_max input-element__input_right input-element__input_row">
+                                                        <div class="input-element__radio input-element__input_xxsmall">
+                                                            <input js-link-active type="radio" th:id="${'active' + insideLink.id}" th:checked="${insideLink.isActive}" class="radio radio_green" name="isActive" value="true">
+                                                            <label th:for="${'active' + insideLink.id}" class="label">Включена</label>
+                                                        </div>
+                                                        <div class="input-element__radio input-element__input_xxsmall">
+                                                            <input js-link-active type="radio" th:id="${'inactive' + insideLink.id}" th:checked="${!insideLink.isActive}" class="radio radio_red" name="isActive" value="false">
+                                                            <label th:for="${'inactive' + insideLink.id}" class="label">Выключена</label>
+                                                        </div>
+                                                        <input type="hidden" name="id" th:value="${insideLink.id}">
+                                                    </form>
+                                                </td>
+                                                <td class="custom-table__body-col custom-table__body-col_lsmall">
+                                                    <div class="div-table__body-col div-table__body-col_center div-table__body-col_xxsmall">
+                                                        <div js-edit-btns class="column-links display-flex-none">
+                                                            <div js-edit-inside-accept class="column_mwidth column_mwidth-accept"></div>
+                                                            <div js-edit-inside-cancel class="column_mwidth column_mwidth-cancel"></div>
+                                                        </div>
+                                                        <div js-edit-menu class="column-links display-flex-none is-open">
+                                                            <div js-edit-inside class="column_mwidth div-table__body-col_center column_mwidth-edit"></div>
+                                                            <form delete-inside-link-form class="column-form" action="#">
+                                                                <input type="hidden" th:value="${insideLink.id}" name="id" required>
+                                                                <button delete-inside-link-btn type="button" class="column_mwidth column_mwidth-delete"></button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </th:block>
+                                        <tr class="custom-table__body-row">
+                                            <td colspan="5" class="custom-table__body-col custom-table__body-col_p18 custom-table__body-col_r30">
+                                                <div class="column-wrapper">
+                                                    <div js-add-inside-link class="add-button add-button_right add-button_medium">+ Добавить внутреннюю ссылку</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-add-outside class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-add-outside-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-menu-add-outside-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить внешнюю ссылку
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название *</div>
+                        <div class="menu-input__wrapper">
+                            <input name="name" autocomplete="off" class="menu-input__input menu-input__input_small" placeholder="Введите название" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-add-outside class="button button_white">Добавить ссылку</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-add-inside class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-add-inside-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-menu-add-inside-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить внутреннюю ссылку
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название *</div>
+                        <div class="menu-input__wrapper">
+                            <input name="name" autocomplete="off" class="menu-input__input menu-input__input_small" placeholder="Введите название" required/>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Ссылка *</div>
+                        <div class="menu-input__wrapper">
+                            <input name="link" autocomplete="off" class="menu-input__input menu-input__input_small" placeholder="Введите ссылку" required/>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="menu__footer">
+                    <input inside-parent type="hidden" name="idParent" required/>
+                    <button type="button" js-add-inside class="button button_white">Добавить ссылку</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/adv-setting.js}"></script>
+<script th:src="@{/js/copy.js}"></script>
+
+</body>
+</html>

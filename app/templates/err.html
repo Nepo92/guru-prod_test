@@ -1,0 +1,63 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Панель администратора">
+
+    <title>Ошибки заполнения</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content">
+    <div class="content-top">
+        <div class="content-top__header">Ошибки заполнения</div>
+    </div>
+    <div class="content-main content-main_xl">
+        <th:block th:if="${errors.result.size() != 0}">
+            <div class="errors errors_delim errors_max">
+                <div class="error-header error-header_max">
+                    <div class="error-header_text block_230"></div>
+                    <div class="error-header_line" th:each="line : ${errors.lines}" th:utext="${line}"></div>
+                </div>
+                <div class="error-line error-line_max">
+                    <div class="error-line_name block_230">За все время</div>
+                    <div class="error-line_line" th:each="line : ${errors.lines}">
+                        <div class="error-col error-col_red">
+                            <span class="error-value" th:utext="${commonErrors.get(line)}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="errors errors_max">
+                <div class="error-header error-header_max">
+                    <div  manager-name class="error-header_text bg_gray block_230">Имя<br>и фамилия</div>
+                    <div class="error-header_line" th:each="line : ${errors.lines}" th:utext="${line}"></div>
+                </div>
+                <div class="error-line error-line_max" th:each="error : ${errors.result}">
+                    <div  manager-name class="error-line_name bg_white block_230" th:utext="${error.key}"></div>
+                    <div class="error-line_line" th:each="line : ${errors.lines}">
+                        <div th:if="${error.value.get(line)} == null" class="error-col error-col_green">
+                            <span class="error-value">0</span>
+                        </div>
+                        <div th:if="${error.value.get(line)} != null" class="error-col error-col_red">
+                            <span class="error-value" th:utext="${error.value.get(line).size()}"></span>
+                            <span class="error-delim">/</span>
+                            <span class="error-l">
+                                <th:block th:each="l : ${error.value.get(line)}" th:utext="${l + ' '}"></th:block>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/manager-scroll.js}"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+
+
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Панель администратора">
+
+    <title>GuruPlatform Alpha | Вход</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/auth.css}" rel="stylesheet">
+</head>
+
+<body>
+<div class="auth">
+
+    <div class="side-title side-title_left">
+        <span>GuruPlatform Alpha | 2020</span>
+    </div>
+    <div class="side-title side-title_right">
+        <span>Образовательная платформа</span>
+    </div>
+
+    <div class="auth-wrapper">
+        <div class="auth-header">
+            <div class="auth-header__logo">
+                <div class="auth-logo auth-logo_credu"></div>
+            </div>
+        </div>
+
+        <div class="auth-content">
+
+            <div class="auth-content__main">
+                <div class="auth-title">Образовательная платформа</div>
+                <div class="auth-subtitle">Обучаем творческим навыкам более 1 500 человек в месяц</div>
+                <div class="auth-img-phone"></div>
+            </div>
+            <div class="auth-content__side">
+                <form action="#" class="auth-form" th:action="@{/perform_login}" method="post">
+                    <div class="auth-form__title">Вход</div>
+                    <div class="auth-form__element">
+                        <label for="username" class="auth-element__label">Логин</label>
+                        <input id="username"
+                               name="username"
+                               class="auth-element__input" placeholder="Введите ваш логин" required>
+                    </div>
+                    <div class="auth-form__element">
+                        <label for="password" class="auth-element__label">Пароль</label>
+                        <input id="password"
+                               name="password"
+                               type="password" class="auth-element__input" placeholder="Введите ваш пароль" required>
+                    </div>
+                    <div class="auth-form__delim"></div>
+                    <div class="auth-form__element auth-form__element_submit">
+                        <button class="auth-element__button auth-element__button_violet">
+                            <span class="auth-element__button-value">Войти</span>
+                        </button>
+                    </div>
+                    <div class="auth-form__error" th:if="${param.error}">
+                        <div class="auth-form__error-msg">
+                            Неверное имя пользователя или пароль
+                        </div>
+                    </div>
+                </form>
+                <div class="auth-text mt-3">Забыли пароль? Пишите <a href="https://vk.com/app5898182_-185779370#s=425692" class="auth-link">сюда</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+
+</body>
+</html>

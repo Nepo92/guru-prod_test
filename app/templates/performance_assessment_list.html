@@ -1,0 +1,228 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Оценка работы">
+
+    <title>Оценка работы</title>
+
+    <th:block th:insert="base :: links" />
+    <link th:href="@{/css/block.css}" rel="stylesheet">
+    <link th:href="@{/css/side-content.css}" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="base :: dialog"></div>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-medium">
+    <div class="content-top content-top_btn">
+        <div class="content-top__header">Оценка работы</div>
+    </div>
+
+    <div class="content-top content-top_small">
+        <div th:replace="base :: performance-assessment-tab"></div>
+    </div>
+
+    <div class="content-main">
+        <div class="content-main__wrapper content-main__wrapper_col">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+                <div class="content-setting">
+                    <div class="block-title">Продажи</div>
+                    <div add-template class="add-button add-button_right">+ Добавить список</div>
+                </div>
+
+                <div class="content-delim">
+                    <span></span>
+                </div>
+            </div>
+
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+                <table class="custom-table">
+                    <thead class="custom-table__header">
+                        <tr class="custom-table__header-row">
+                            <td class="custom-table__header-col custom-table__header-col_big ">Название</td>
+                            <td class="custom-table__header-col custom-table__header-col_big ">Количество пунктов</td>
+                            <td class="custom-table__header-col custom-table__header-col_big ">Роль</td>
+                            <td class="custom-table__header-col custom-table__header-col_big "></td>
+                        </tr>
+                    </thead>
+                    <tbody template-list class="custom-table__body custom-table__body_white">
+                        <th:block th:each="template : ${templates}">
+                            <tr th:attr="data-template=${template.id}" class="custom-table__body-row">
+                                <td class="custom-table__body-col custom-table__body-col_30per">
+                                    <div class="column-text column-text_full" th:utext="${template.name}"></div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_20per">
+                                    <div class="side-tooltip c-tooltip">
+                                        <div class="c-tooltip__wrapper" th:if="${#lists.size(template.items) > 0}">
+                                            <th:block th:each="item : ${template.items}">
+                                                <div class="c-tooltip__row">
+                                                    <div class="c-tooltip__text" th:utext="${item.name}"></div>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                        <span th:utext="${#lists.size(template.items) + ' пунктов'}"></span>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_40per">
+                                    <div class="side-list">
+                                        <th:block th:each="userType : ${template.userTypes}">
+                                            <span class="side-list__item" th:utext="${userType.title}"></span>
+                                        </th:block>
+                                    </div>
+                                </td>
+                                <td class="custom-table__body-col custom-table__body-col_10per">
+                                    <div class="column-links display-flex-none is-open">
+                                        <div update-template class="column_mwidth div-table__body-col_center column_mwidth-edit"></div>
+                                        <form class="column-form" action="#">
+                                            <button delete-template type="button" class="column_mwidth column_mwidth-delete"></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-add-template class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-add-template-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-template-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить список оценки: продажи
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название *</div>
+                        <div class="menu-input__wrapper">
+                            <input name="name" autocomplete="off" class="menu-input__input menu-input__input_small" placeholder="Введите название" required>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Роль *</div>
+                        <div class="menu-input__checkbox-wrapper">
+                            <th:block th:each="managerType, stat : ${managerTypes}">
+                                <div class="input-element__checkbox">
+                                    <input checked type="checkbox" class="checkbox" th:id="'addType' + ${stat.index}" th:name="'userTypes[' + ${stat.index} + '].id'" th:value="${managerType.id}"/>
+                                    <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="'addType' + ${stat.index}" th:utext="${managerType.title}"></label>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+
+                    <div class="rate-fields">
+                        <div class="rate-titles">
+                            <div class="rate-title rate-title_field-small">Пункт оценки</div>
+                            <div class="rate-title rate-title_value">Оценка</div>
+                        </div>
+                        <div data-item="0" class="rate-filed">
+                            <div class="rate-filed__wrapper menu-input__input_rate-filed">
+                                <input name="items[0].name" autocomplete="off" class="menu-input__input menu-input__input_small " placeholder="Введите название пункта" required="">
+                            </div>
+                            <div class="rate-filed__wrapper menu-input__input_rate-value">
+                                <input name="items[0].goodScore" autocomplete="off" class="menu-input__input menu-input__input_small " placeholder="0" required="">
+                            </div>
+                            <div class="rate-field__delete rate-field__delete_disabled"></div>
+                        </div>
+                        <div class="rate-totals">
+                            <div class="rate-title rate-title_field-small"></div>
+                            <div class="rate-title rate-title_value" u-template-items-total>Итого: 3</div>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall menu-input_t20">
+                        <div class="menu-input__wrapper">
+                            <div add-rate-item class="menu-input__input menu-input__add">
+                                <span>+ Добавить пункт</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" save-template class="button button_not-allowed button_white">+ Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-template class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-template-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-template-form action="#" class="menu__content-side menu__content-side_large">
+                <input u-template-id name="id" type="hidden" required>
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Редактировать список оценки: продажи
+                        </div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Название *</div>
+                        <div class="menu-input__wrapper">
+                            <input u-template-name name="name" autocomplete="off" class="menu-input__input menu-input__input_small" placeholder="Введите название" required>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Роль *</div>
+                        <div class="menu-input__checkbox-wrapper">
+                            <th:block th:each="managerType, stat : ${managerTypes}">
+                                <div class="input-element__checkbox">
+                                    <input u-template-type type="checkbox" class="checkbox" th:id="'updateType' + ${stat.index}" th:name="'userTypes[' + ${stat.index} + '].id'" th:value="${managerType.id}"/>
+                                    <label class="checkbox-label checkbox-label_gray checkbox-label_told" th:for="'updateType' + ${stat.index}" th:utext="${managerType.title}"></label>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+
+                    <div class="rate-fields">
+                        <div class="rate-titles" u-template-items>
+                            <div class="rate-title rate-title_field-small">Пункт оценки</div>
+                            <div class="rate-title rate-title_value">Оценка</div>
+                        </div>
+
+                        <div class="rate-totals">
+                            <div class="rate-title rate-title_field-small"></div>
+                            <div class="rate-title rate-title_value" u-template-items-total>Итого: 3</div>
+                        </div>
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall menu-input_t20">
+                        <div class="menu-input__wrapper">
+                            <div add-rate-item class="menu-input__input menu-input__add">
+                                <span>+ Добавить пункт</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" u-template class="button button_not-allowed button_white">Сохранить изменения</button>
+                    <span style="color: red; display: none;" u-rate-alert>Сумма оценок должна быть 5</span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/performance-assessment-template.js}"></script>
+
+</body>
+</html>

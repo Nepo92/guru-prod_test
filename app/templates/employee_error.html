@@ -1,0 +1,46 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Монитор продаж">
+
+    <title>Ошибки заполнения</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content">
+    <div class="content-top">
+        <div class="content-top__header">Ошибки заполнения</div>
+    </div>
+    <div class="content-main content-main_xl">
+        <div class="errors" th:if="${errors.size() != 0}">
+            <div class="error-header">
+                <div class="error-header_text block_230">Название<br>колонки</div>
+                <div class="error-header_count">Общее кол-во<br>ошибок</div>
+                <div class="error-header_lines">Номера<br>строк с ошибками</div>
+            </div>
+            <div class="error-line" th:each="error : ${errors}">
+                <div class="error-line_text block_230" th:utext="${error.key}"></div>
+                <div class="error-line_count">
+                    <div class="error-count error-count_red">
+                        <span class="error-value" th:utext="${error.value.size()}"></span>
+                    </div>
+                </div>
+                <div class="error-line_lines">
+                    <div class="line-number line-number_gray" th:each="err : ${error.value}">
+                            <span class="line-number-value" th:utext="${err}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/manager-scroll.js}"></script>
+</body>
+</html>

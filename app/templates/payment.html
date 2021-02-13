@@ -1,0 +1,311 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Распределение сделок">
+
+    <title>Распределение сделок</title>
+
+    <th:block th:insert="base :: links" />
+</head>
+
+<body>
+<div th:replace="base :: dialog2"></div>
+<div th:replace="base :: transition-loader"></div>
+<div th:replace="base :: main-nav"></div>
+
+<!--<div class="main-content main-content_pl40">-->
+<div class="main-content ">
+    <!--<div th:replace="base :: advertising-nav"></div>-->
+
+    <div class="drop-message" js-distributed-message>
+        <div class="drop-message__title">Количество выбранных транзакций <span js-distributed-count>#</span>, нажмите кнопку "забрать"</div>
+
+        <form distribute-form action="#" class="channel-form" th:action="@{/payment/distributeFew/}" th:method="post">
+            <input distribute-json type="hidden" name="jsonString" value=""/>
+            <button distribute-submit-btn class="input-element__input input-element__input_small input-element__input_violet-bord">Забрать</button>
+        </form>
+    </div>
+
+    <div class="content-top">
+        <div class="content-top__header">Распределение сделок</div>
+    </div>
+    <div class="content-main content-main_relative">
+        <div class="input-element input-element_b20">
+            <div class="input-element__input input-element__input_violet
+            input-element__input_max
+            input-element__input_bg
+            input-element__input_row">
+                <div class="input-element__link" th:classappend="${type == 'undistributed'} ? active : ''">
+                    <a th:href="@{/payment/page?id=1}">Нераспределенные</a>
+                </div>
+                <div class="input-element__link" th:classappend="${type == 'distributed'} ? active : ''">
+                    <a th:href="@{/payment/distributed/page?id=1}">Распределенные</a>
+                </div>
+            </div>
+        </div>
+        <div class="content-main__panel content-main__panel_large">
+            <div class="button-filter" th:classappend="${filter.isCanClear() ? 'filtered' : ''}">
+                <button tr-filter-btn class="content-top__filter content-top__filter_small"></button>
+                <span class="button-filter__label">Фильтр</span>
+            </div>
+
+            <div class="counter counter_right counter_bordered" th:utext="${#numbers.formatInteger(payment.count,0,'WHITESPACE') + ' транзакций | ' + #numbers.formatInteger(payment.sum,0,'WHITESPACE') + ' рублей'}"></div>
+            <a th:href="@{/payment/download/payments.xlsx}" class="button button_download">Выгрузить в таблицу</a>
+            <form js-report-form action="#" enctype="multipart/form-data">
+                <input js-report-file accept=".xlsx" class="input-file" name="file" type="file" id="uploadReport"/>
+                <label for="uploadReport" class="button button_download">Загрузить таблицу</label>
+            </form>
+        </div>
+        <div class="payment">
+            <div class="payment__wrapper">
+                <table id="is-need-sort-table" class="white-table white-table_half-top">
+                    <thead class="white-table__header">
+                    <tr class="header__row">
+                        <th class="header__text">Дата оплаты</th>
+                        <th class="header__text">Менеджер</th>
+                        <th class="header__text">Курс</th>
+                        <th class="header__text">Сумма</th>
+                        <th class="header__text">Клиент</th>
+                        <th class="header__text">Дата обращ</th>
+                        <th class="header__text">Ссылка ВК</th>
+                        <th class="header__text">Телефон</th>
+                        <th class="header__text">Пометка</th>
+                        <th class="header__text">Подканал</th>
+                        <th class="header__text">Закуп</th>
+                        <!--<th class="header__text"></th>-->
+                    </tr>
+                    </thead>
+                    <tbody class="white-table__body">
+                    <tr class="body__row" th:each="payment, stat : ${payments}">
+                        <td class="body__cell" th:utext="${payment.paymentDate}"></td>
+                        <td class="body__cell" th:utext="${payment.name}"></td>
+                        <td class="body__cell" th:utext="${payment.course}"></td>
+                        <td class="body__cell body__cell_bordered" th:utext="${#numbers.formatInteger(payment.sum,0,'WHITESPACE') + ' ₽'}"></td>
+                        <td th:attr="title=${payment.client}" class="body__cell body__cell_small" th:utext="${payment.client}"></td>
+                        <td class="body__cell" th:utext="${payment.dealDate}"></td>
+                        <td th:attr="title=${payment.link}" class="body__cell" th:utext="${payment.link}"></td>
+                        <td th:attr="title=${payment.phone}" class="body__cell" th:utext="${payment.phone}"></td>
+                        <td th:attr="title=${payment.tagging}" class="body__cell body__cell_bordered" th:utext="${payment.tagging}"></td>
+                        <td class="body__cell">
+                            <select js-menu-channel class="input-element__input input-element__input_medium">
+                                <option disabled value selected>Выберите подканал</option>
+                                <th:block th:each="channel, stat : ${channels}">
+                                    <option th:value="${'channel' + stat.index}" th:utext="${channel.key}"></option>
+                                </th:block>
+                                <option value="unknown">Неопределен</option>
+                            </select>
+                            <input distribute-id type="hidden" name="id" th:value="${payment.id}"/>
+                        </td>
+                        <td class="body__cell body__cell_bordered">
+                            <input disabled js-menu-button class="input-element__input input-element__input_cursor input-element__input_medium" placeholder="Выберите закуп">
+                        </td>
+                        <!--<td class="body__cell">-->
+                            <!--<form distribute-from action="#" class="channel-form" th:action="@{/payment/distribute/}" th:method="get">-->
+                                <!--<input distribute-id type="hidden" name="billNumber" th:value="${payment.id}"/>-->
+                                <!--<input distribute-id-channel type="hidden" name="idChannel" value="" required/>-->
+                                <!--<input distribute-channel type="hidden" name="channel" value="" required/>-->
+                                <!--<button distribute-submit-btn class="input-element__input input-element__input_small input-element__input_violet-bord">Забрать</button>-->
+                            <!--</form>-->
+                        <!--</td>-->
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div th:unless="${filter.isAllPayments()}" class="input-element input-element_b20 input-element_t20">
+            <div class="input-element__input input-element__input_violet
+                        input-element__input_max
+                        input-element__input_bg
+                        input-element__input_row">
+                <div class="input-element__link active">
+                    <a th:href="@{'/payment/page?id=' + ${filter.pageId + 1}}">Загрузить еще</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div js-menu class="menu">
+    <div class="menu__wrapper">
+        <div class="menu__header-wrapper">
+            <div class="menu-header">
+                <div class="menu-header__title">
+                    Список закупов
+                </div>
+                <div js-menu-close-btn class="menu-header__close-btn"></div>
+            </div>
+        </div>
+        <div class="menu-search">
+            <input js-menu-search id="search" type="text" class="menu-search__input" placeholder="Введите параметрый закупа"/>
+            <label for="search"></label>
+        </div>
+        <div js-menu-content class="menu-content">
+            <div class="menu-content__wrapper" th:each="channel, stat : ${channels}" th:id="${'channel' + stat.index}">
+                <table class="white-table white-table_full white-table_half-top">
+                    <thead class="white-table__header">
+                    <tr class="header__row">
+                        <th class="header__text"></th>
+                        <th class="header__text">Дата закупа</th>
+                        <th class="header__text">База/паблик</th>
+                        <th class="header__text">Курс</th>
+                        <th class="header__text">Ссылка</th>
+                        <th class="header__text">Тизер</th>
+                    </tr>
+                    </thead>
+                    <tbody class="white-table__body">
+                    <tr js-menu-purchase class="body__row body__row_small body__row_channel">
+                        <td class="body__cell body__cell_5p">
+                            <div class="circle"></div>
+                            <input js-menu-purchase-id type="hidden" th:value="unknown">
+                            <input js-menu-purchase-name type="hidden" th:value="unknown">
+                        </td>
+                        <td class="body__cell body__cell_19p" js-menu-purchase-date th:utext="Неизвестно"></td>
+                        <td class="body__cell body__cell_19p" js-menu-purchase-community th:utext="Неизвестно"></td>
+                        <td class="body__cell body__cell_19p" js-menu-purchase-course th:utext="Неизвестно"></td>
+                        <td class="body__cell body__cell_19p" js-menu-purchase-link th:utext="Неизвестно"></td>
+                        <td class="body__cell body__cell_19p" js-menu-purchase-tiser th:utext="Неизвестно"></td>
+                    </tr>
+                        <tr js-menu-purchase class="body__row body__row_small body__row_channel" th:each="ch : ${channel.value}">
+                            <td class="body__cell body__cell_5p">
+                                <div class="circle"></div>
+                                <input js-menu-purchase-id type="hidden" th:value="${ch.id}">
+                                <input js-menu-purchase-name type="hidden" th:value="${ch.community}">
+                            </td>
+                            <td class="body__cell body__cell_19p" js-menu-purchase-date th:utext="${ch.date}"></td>
+                            <td class="body__cell body__cell_19p" js-menu-purchase-community th:utext="${ch.community}"></td>
+                            <td class="body__cell body__cell_19p" js-menu-purchase-course th:utext="${ch.course}"></td>
+                            <td class="body__cell body__cell_19p" js-menu-purchase-link th:utext="${ch.link}"></td>
+                            <td class="body__cell body__cell_19p" js-menu-purchase-tiser th:utext="${ch.tiser}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div tr-filter class="cfilter">
+    <div class="cfilter__wrapper">
+        <div tr-filter-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="filter-content">
+            <div class="filter-head">
+                <div class="filter-head__title">Фильтровать оплаты</div>
+            </div>
+            <div class="filter-content__body custom-scroll">
+                <form tr-filter-form action="#" th:action="@{/payment/}" th:object="${filter}" th:method="post" class="filter-body">
+                    <div class="filter-body__wrapper">
+                        <div class="filter-column">
+                            <div class="filter-column__title">Параметры</div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Менеджер</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{idManager}">
+                                            <option th:value="0" selected>Все менеджеры</option>
+                                            <option th:each="manager : ${managers}"
+                                                    th:value="${manager.id}"
+                                                    th:utext="${manager.name}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Курсы</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_select">
+                                        <select class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{course}">
+                                            <option th:value="0" selected>Все курсы</option>
+                                            <option th:each="c : ${courses}"
+                                                    th:value="${c}"
+                                                    th:utext="${c}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Начало периода</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                        <input data-date-format="yyyy-mm-dd" class="datepicker-here menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату" th:field="*{startPeriod}">
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Конец периода</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                        <input data-date-format="yyyy-mm-dd" class="datepicker-here menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату" th:field="*{endPeriod}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Дата оплаты</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                        <input data-date-format="yyyy-mm-dd" class="datepicker-here menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату" th:field="*{payDate}">
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Дата обращения</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                        <input data-date-format="yyyy-mm-dd" class="datepicker-here menu-input__input menu-input__input_small menu-input__input_white" placeholder="Выберите дату" th:field="*{dealDate}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Клиент</div>
+                                    <div class="menu-input__wrapper">
+                                        <input class=" menu-input__input menu-input__input_small menu-input__input_white" placeholder="Введите имя" th:field="*{client}">
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Ссылка</div>
+                                    <div class="menu-input__wrapper">
+                                        <input class=" menu-input__input menu-input__input_small menu-input__input_white" placeholder="Введите ссылку" th:field="*{link}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-column__row">
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Номер</div>
+                                    <div class="menu-input__wrapper">
+                                        <input class=" menu-input__input menu-input__input_small menu-input__input_white" placeholder="Введите номер" th:field="*{number}">
+                                    </div>
+                                </div>
+                                <div class="menu-input menu-input_lsmall">
+                                    <div class="menu-input__title">Сумма</div>
+                                    <div class="menu-input__wrapper menu-input__wrapper_sum">
+                                        <input class=" menu-input__input menu-input__input_small menu-input__input_white" placeholder="Введите сумму" th:field="*{sum}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="filter-content__footer">
+                <div tr-filter-form-btn class="button">Применить фильтры</div>
+                <div th:if="${filter.isCanClear()}" class="clear-filter clear-filter_bordered">
+                    <form tr-clear-form action="#" th:action="@{/payment/clearFilter}" th:method="post" class="clear-filter__form">
+                        <button tr-clear-form-btn class="button button_clear">Сбросить фильтры</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/js-menu.js}"></script>
+<script th:src="@{/js/transaction-filter.js}"></script>
+<script th:src="@{/js/jquery.tablesorter.min.js}"></script>
+<script th:src="@{/js/table-sort2.js}"></script>
+<script th:src="@{/js/transition-loader.js}"></script>
+<script th:src="@{/js/upload-payment-table.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    setDashboardFilter(/*[[${filter}]]*/);
+    /*]]>*/
+</script>
+</body>
+</html>

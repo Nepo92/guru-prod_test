@@ -1,0 +1,249 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Потоки">
+
+    <title>Потоки</title>
+
+    <th:block th:insert="base :: links" />
+    <link th:href="@{/css/calendar.css}" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="base :: main-nav"></div>
+
+<div class="main-content main-content_white-top-small">
+    <div class="content-top content-top_btn">
+        <div class="content-top__header">Потоки</div>
+    </div>
+    <div class="content-main">
+        <div class="content-main__wrapper content-main__wrapper_col">
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+
+                <form s-filter-form action="#" th:action="@{/streams/}" th:object="${filter}" th:method="post" class="content-setting">
+                    <div class="menu-input__wrapper menu-input__wrapper_select menu-input__wrapper_medium menu-input__wrapper_mr">
+                        <select s-filter class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{year}">
+                            <option th:each="year : ${years}"  th:value="${year}"  th:utext="${year}"></option>
+                        </select>
+                    </div>
+                    <div class="menu-input__wrapper menu-input__wrapper_select menu-input__wrapper_medium menu-input__wrapper_mr">
+                        <select s-filter class="menu-input__input menu-input__input_small menu-input__input_select menu-input__input_white" th:field="*{month}">
+                            <option value="1">Январь</option>
+                            <option value="2">Февраль</option>
+                            <option value="3">Март</option>
+                            <option value="4">Апрель</option>
+                            <option value="5">Май</option>
+                            <option value="6">Июнь</option>
+                            <option value="7">Июль</option>
+                            <option value="8">Август</option>
+                            <option value="9">Сентябрь</option>
+                            <option value="10">Октбярь</option>
+                            <option value="11">Ноябрь</option>
+                            <option value="12">Декабрь</option>
+                        </select>
+                    </div>
+
+                    <div add-streams class="add-button add-button_right">+ Добавить повторяющиеся потоки</div>
+                </form>
+
+                <div class="content-delim">
+                    <span></span>
+                </div>
+            </div>
+            <div class="content-main__panel content-main__panel_align content-main__panel_p content-main__panel_large content-main__panel_col">
+                <table class="calendar">
+                    <thead class="calendar__header">
+                        <tr class="calendar__header-row">
+                            <td class="calendar-header">ПН</td>
+                            <td class="calendar-header">ВТ</td>
+                            <td class="calendar-header">СР</td>
+                            <td class="calendar-header">ЧТ</td>
+                            <td class="calendar-header">ПТ</td>
+                            <td class="calendar-header">СБ</td>
+                            <td class="calendar-header">ВС</td>
+                        </tr>
+                    </thead>
+                    <tbody class="calendar__body">
+                        <th:block th:each="calendarRow : ${calendarRows}">
+                            <tr class="calendar__body-row">
+                                <th:block th:each="calendarDate : ${calendarRow}">
+                                    <th:block th:unless="${calendarDate.isCurrentMonth}">
+                                        <td class="calendar-cell">
+                                            <div class="calendar-cell__wrapper">
+                                                <div class="calendar-cell__date calendar-cell__date_gray" th:utext="${calendarDate.day}"></div>
+                                            </div>
+                                        </td>
+                                    </th:block>
+
+                                    <th:block th:if="${calendarDate.isCurrentMonth}">
+                                        <td class="calendar-cell">
+                                            <div edit-streams th:attr="data-date=${calendarDate.date}"class="calendar-cell__wrapper calendar-cell__wrapper_white" th:classappend="${calendarDate.isToday ? 'calendar-cell__wrapper_today' : ''}">
+                                                <div class="calendar-cell__date" th:utext="${calendarDate.day}"></div>
+                                                <div stream-list class="calendar-cell__streams">
+                                                    <th:block th:if="${streamsMap.get(calendarDate.date)}">
+                                                        <div  class="calendar-streams c-tooltip">
+                                                            <div class="c-tooltip__wrapper c-tooltip__wrapper_right">
+                                                                <th:block th:each="streams : ${streamsMap.get(calendarDate.date)}">
+                                                                    <div class="calendar-stream" th:classappend="${streams.isStarted ? 'calendar-stream_started' : ''}"><span th:utext="${streams.nameCourse}"></span></div>
+                                                                </th:block>
+                                                            </div>
+                                                            <div class="calendar-stream calendar-stream_hover"><span th:utext="${#lists.size(streamsMap.get(calendarDate.date)) + ' потоков'}"></span></div>
+                                                        </div>
+                                                    </th:block>
+                                                    <th:block th:unless="${streamsMap.get(calendarDate.date)}">
+                                                        <div class="calendar-streams">
+                                                            <div class="calendar-text">Нет потоков</div>
+                                                        </div>
+                                                    </th:block>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </th:block>
+                                </th:block>
+                            </tr>
+                        </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div js-menu-add-streams class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-add-streams-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-add-streams-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header">
+                        <div class="menu-header__title">
+                            Добавить повторяющиеся потоки
+                        </div>
+                    </div>
+                </div>
+                <div block-wrapper class="menu__list menu__list_p0 custom-scroll">
+                    <div class="menu-input menu-input_xsmall menu-input_t30">
+                        <div class="menu-input__title">Проект *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select add-streams-project projects class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <th:block th:each="project : ${projects}">
+                                    <option th:value="${project.id}" th:utext="${project.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="menu-input menu-input_xsmall">
+                        <div class="menu-input__title">Продукт *</div>
+                        <div class="menu-input__wrapper menu-input__wrapper_select">
+                            <select courses name="idCourse" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                <option value="" disabled>Выберите продукт</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__delim">
+                        <span></span>
+                    </div>
+
+                    <div class="menu-input__wrapper menu-input__wrapper_row">
+                        <div class="menu-input menu-input_full">
+                            <div class="menu-input__title">Дата от *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                <input name="startDate" autocomplete="off" class="datepicker-here-start menu-input__input menu-input__input_small" placeholder="Выберите дату" required/>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_full">
+                            <div class="menu-input__title">Дата до *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                <input name="endDate" data-position="bottom right" autocomplete="off" class="datepicker-here menu-input__input menu-input__input_small" placeholder="Выберите дату" required/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-input__wrapper menu-input__wrapper_row">
+                        <div class="menu-input menu-input_full">
+                            <div class="menu-input__title">День недели *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_select">
+                                <select name="dayOfWeek" class="menu-input__input menu-input__input_small menu-input__input_select" required>
+                                    <option value="" disabled>Выберите день недели</option>
+                                    <option value="1">Понедельник</option>
+                                    <option value="2">Вторник</option>
+                                    <option value="3">Среда</option>
+                                    <option value="4">Четверг</option>
+                                    <option value="5">Пятница</option>
+                                    <option value="6">Суббота</option>
+                                    <option value="7">Воскресенье</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="menu-input menu-input_full">
+                            <div class="menu-input__title">Время старта *</div>
+                            <div class="menu-input__wrapper menu-input__wrapper_cal">
+                                <input name="startTime" data-position="bottom right" autocomplete="off" class="only-time menu-input__input menu-input__input_small" placeholder="Выберите время" required/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="menu__footer">
+                    <button type="button" js-add-streams class="button button_white">+ Добавить потоки</button>
+                    <button type="button" js-menu-add-streams-close-btn class="button button_right button_white">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div js-menu-update-streams class="menu">
+    <div class="menu__wrapper">
+        <div js-menu-update-streams-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+        <div class="menu__content menu__content_end">
+            <form js-update-streams-form action="#" class="menu__content-side menu__content-side_large">
+                <div class="menu__header-wrapper">
+                    <div class="menu-header menu-header_start">
+                        <div class="menu-header__title">
+                            Редактировать дату
+                        </div>
+                        <div class="menu-header__delim"><span></span></div>
+                        <div u-date class="menu-header__title"></div>
+                    </div>
+                </div>
+                <div class="menu__list menu__list_p0 custom-scroll">
+
+                    <div u-start-list class="collapse-block">
+
+                    </div>
+
+                    <div class="menu-input menu-input_xsmall menu-input_t20">
+                        <div class="menu-input__wrapper">
+                            <div add-start class="menu-input__input menu-input__add">
+                                <span>+ Добавить ещё поток</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="menu__footer">
+                    <input update-start-date type="hidden" name="startDate">
+                    <button type="button" js-update-streams class="button button_white">+ Сохранить изменения</button>
+                    <button type="button" js-menu-update-streams-close-btn class="button button_right button_white">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="base :: scripts" />
+<script th:src="@{/js/streams-filter.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    setCoursesMap(/*[[${coursesMap}]]*/);
+    setProjectsList(/*[[${projects}]]*/);
+    /*]]>*/
+</script>
+</body>
+</html>

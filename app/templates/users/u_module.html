@@ -1,0 +1,122 @@
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" th:attr="content=${module.name}">
+
+    <title  th:utext="${module.name}"></title>
+
+    <link th:href="@{/css/u_main.css}" rel="stylesheet">
+    <link th:href="@{/css/gap.css}" rel="stylesheet">
+    <link th:href="@{/css/custom-tabs.css}" rel="stylesheet">
+    <link th:href="@{/css/available-course.css}" rel="stylesheet">
+    <link th:href="@{/css/info-blocks.css}" rel="stylesheet">
+    <link th:href="@{/css/progress-bar.css}" rel="stylesheet">
+    <link th:href="@{/css/btn.css}" rel="stylesheet">
+    <link th:href="@{/css/main-nav.css}" rel="stylesheet">
+</head>
+
+<body class="body">
+<div th:replace="base :: user-nav"></div>
+    <div class="body__wrapper">
+        <div class="body__header">
+            <header class="header">
+                <div class="header__box block">
+                    <div class="header__wrapper block-wrapper">
+                        <div class="header__main">
+                            <div class="header__items">
+                                <div class="header__items-wrapper">
+                                    <div class="header__item header__item_title">
+                                        <h3>Модули курса</h3>
+                                    </div>
+                                    <div class="header__item header__item_btn">
+                                        <a th:href="'/user/courses/' + ${idDeal} + '/'" class="btn btn_outline">
+                                            <div class="btn__content btn__content_large">
+                                                <span class="btn__title btn__title_small btn__icon btn__icon_arrow-left">
+                                                    <span class="btn_title-text btn_title-text_small">К списку модулей</span>
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="body__content">
+            <div class="lessons block -gap-inner-bottom_5 -gap-inner-top_5">
+                <div class="lessons__wrapper block-wrapper">
+                    <div class="lessons__main">
+                        <div class="block-header -gap_5">
+                            <div class="title title-h2 -gap_0" th:utext="${module.name}"></div>
+                            <div class="subtitle subtitle-h5" th:utext="'Модуль ' + ${module.index}"></div>
+                        </div>
+
+                        <th:block th:each="lesson, stat : ${lessons}">
+                            <div class="content-element">
+                                <div class="content-element__wrapper">
+                                    <div class="content-element__side">
+                                        <div class="content-element__header">
+                                            <div class="content-element__header-wrapper">
+                                                <div class="content-element__header-item">
+                                                    <div class="content-element__header-main">
+                                                        <div class="content-element__header-element">
+                                                            <span class="content-element__title content-element__title_blue title title-h4" th:utext="${stat.count}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="content-element__header-item">
+                                                    <div class="content-element__header-main -gap_2">
+                                                        <div class="content-element__header-element">
+                                                            <span class="content-element__title title title-h5" th:utext="${lesson.title}"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="content-element__header-side">
+                                                        <div class="info-blocks">
+                                                            <div class="info-blocks__wrapper">
+                                                                <div class="info-block info-block_icon info-block_icon_clock">
+                                                                    <span class="info-block__text"  th:utext="${lesson.duration / 60 } + ' ч ' + ${lesson.duration % 60 } + ' мин'"></span>
+                                                                </div>
+                                                                <div class="info-block info-block_icon info-block_icon_doc">
+                                                                    <span class="info-block__text" th:utext="${lesson.documentsCounter} + ' документов'"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="content-element__header-item">
+                                                    <div class="content-element__header-main">
+                                                        <div class="content-element__header-btn">
+                                                            <th:block th:if="${allowHomeworkStart or lesson.type != 'homework'}">
+                                                            <a th:href="'/user/courses/' + ${idDeal} + '/' + ${lesson.idModule} + '/' + ${lesson.id} + '/'" class="btn btn_outline">
+                                                                <div class="btn__content btn__content_large">
+                                                                    <span class="btn__title btn__title_small">
+                                                                        <th:block th:if="${lesson.type} == 'homework'">
+                                                                            <span class="btn_title-text btn_title-text_small">Перейти к ДЗ</span>
+                                                                        </th:block>
+                                                                        <th:block th:unless="${lesson.type} == 'homework'">
+                                                                            <span class="btn_title-text btn_title-text_small">Перейти к уроку</span>
+                                                                        </th:block>
+                                                                    </span>
+                                                                </div>
+                                                            </a>
+                                                            </th:block>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
