@@ -1,0 +1,570 @@
+@import "./variables";
+
+.lessons {
+    padding-top: 0;
+    margin-top: 120px;
+    margin-left: 110px;
+    margin-right: 30px;
+
+    &__title {
+        margin-bottom: 0;
+    }
+
+    &__subtitle {
+        margin-top: 12px;
+    }
+
+    &__list {
+        margin-top: 30px;
+        width: 100%;
+        max-width: 1181px;
+        margin--bottom: 20px;
+    }
+
+    &__item {
+        margin-top: 20px;
+        background-color: white;
+        padding: 30px 30px 40px 30px;
+        border-radius: 10px;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    &__title {
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 23px;
+        letter-spacing: 0em;
+        text-align: left;
+    }
+}
+
+.lesson-video__content {
+    display: flex;
+    width: 100%;
+    height: auto;
+    max-height: 640px;
+    position: relative;
+    margin-top: 20px;
+    background-color: transparent;
+
+    img {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        top: 0;
+        left: 0;
+        background-color: transparent;
+    }
+}
+
+.lesson-text__content {
+    margin-top: 20px;
+    white-space: pre-line;
+}
+
+.lessons-document {
+    &__inner {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+    }
+
+    &__left {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    &__format {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 96px;
+        height: 96px;
+        background-color: #f5244a;
+        color: white;
+        border-radius: 5px;
+        font-size: 28px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 32px;
+        letter-spacing: 0em;
+        text-align: center;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 23px;
+        letter-spacing: 0em;
+        text-align: left;
+        margin-left: 10px;
+    }
+
+    &__btn {
+        transition: all 0.2s linear;
+
+        &:hover {
+            box-shadow: 2px 2px 5px 0 rgba(black, 0.2);
+        }
+    }
+
+    &__controls {
+        display: flex;
+        width: 330px;
+    }
+}
+
+.btn-read {
+    background-color: $inProcess;
+    color: white;
+    width: 160px;
+    height: 40px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-download {
+    border: 1px solid $inProcess;
+    color: $inProcess;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 160px;
+    height: 40px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.lessons-image {
+    &__inner {
+        width: 100%;
+        height: auto;
+        max-height: 640px;
+
+        img {
+            width: 100%;
+            height: auto;
+            max-height: 640px;
+        }
+    }
+}
+
+.gallery-item__preview {
+    display: flex;
+    width: 100%;
+    height: auto;
+    max-height: 640px;
+}
+
+.lessons-raiting {
+    &__inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__controls {
+        display: flex;
+        width: 490px;
+    }
+
+    &__btn {
+        width: 240px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid#C3C2C9;
+        border-radius: 5px;
+    }
+}
+
+.raiting-btn__for {
+    .raiting-btn__icon {
+        display: flex;
+        width: 23px;
+        height: 20px;
+        position: relative;
+
+        &::before {
+            display: flex;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            content: "";
+            mask-image: url(../../img/like.svg);
+            background-color: $succes;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            mask-size: 100% 100%;
+        }
+    }
+}
+
+.raiting-btn__against {
+    margin-left: 10px;
+
+    .raiting-btn__icon {
+        display: flex;
+        width: 23px;
+        height: 20px;
+        position: relative;
+
+        &::before {
+            display: flex;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            content: "";
+            mask-image: url(../../img/dislike.svg);
+            background-color: #ff284f;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            mask-size: 100% 100%;
+        }
+    }
+}
+
+.lessons-gallery {
+    &__content {
+        margin-top: 20px;
+    }
+
+    &__item {
+        width: 217px;
+        height: 217px;
+    }
+}
+
+.lessons-nav {
+    margin-top: 20px;
+}
+
+.content-nav__item {
+    width: 50%;
+    padding: 41px 46px;
+}
+
+.content-nav__item-text {
+    padding-left: 70px;
+}
+
+.content-nav__item-number {
+    margin-left: 40px;
+    margin-right: 15px;
+    position: absolute;
+}
+
+@media (max-width: 1075px) {
+    .content-element__side {
+        padding-left: 30px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .header__box.block {
+        display: none;
+    }
+
+    .back {
+        margin-top: 20px;
+    }
+
+    .lessons {
+        margin-top: 0;
+        margin-left: 30px;
+        margin-right: 30px;
+
+        &__headtitle {
+            margin-top: 20px;
+        }
+    }
+}
+
+@media (max-width: 737px) {
+    .lessons-document {
+        &__format {
+            width: 60px;
+            height: 60px;
+        }
+
+        &__controls {
+            width: 90px;
+        }
+    }
+
+    .lessons__item {
+        padding: 20px 27px 30px;
+    }
+
+    .btn-read {
+        width: 40px;
+
+        &__text {
+            display: none;
+        }
+
+        &__icon {
+            display: flex;
+            width: 40px;
+            height: 40px;
+            position: relative;
+
+            &::before {
+                display: flex;
+                width: 70%;
+                height: 70%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                content: "";
+                mask-image: url(../../img/read.svg);
+                background-color: white;
+                mask-repeat: no-repeat;
+                mask-position: center;
+                mask-size: 100% 100%;
+            }
+        }
+    }
+
+    .btn-download {
+        width: 40px;
+
+        &__text {
+            display: none;
+        }
+
+        &__icon {
+            display: flex;
+            width: 40px;
+            height: 40px;
+            position: relative;
+
+            &::before {
+                display: flex;
+                width: 70%;
+                height: 70%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                content: "";
+                mask-image: url(../../img/download.svg);
+                background-color: $inProcess;
+                mask-repeat: no-repeat;
+                mask-position: center;
+                mask-size: 100% 100%;
+            }
+        }
+    }
+
+    .lessons-raiting {
+        &__inner {
+            display: flex;
+            flex-direction: column;
+        }
+
+        &__title {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        &__controls {
+            display: flex;
+            justify-content: space-between;
+            max-width: 294px;
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+    }
+
+    .raiting-btn__for {
+        height: 40px;
+        width: calc(50% - 5px);
+    }
+
+    .raiting-btn__against {
+        height: 40px;
+        width: calc(50% - 5px);
+    }
+}
+
+@media (max-width: 569px) {
+    .upload-btn__wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .upload-btn__item {
+        &:last-child {
+            margin-top: 10px;
+        }
+    }
+
+    .upload-btn__item-label {
+        width: 100%;
+
+        &:last-child {
+            margin-top: 10px;
+        }
+    }
+
+    .homework__send {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        margin: 0;
+        transform: translate(0, 0);
+    }
+
+    .content-nav__item-text {
+        padding-left: 46px;
+    }
+
+    .content-nav__item-number {
+        margin-left: 25px;
+        margin-right: 15px;
+        position: absolute;
+    }
+
+    .lessons {
+        &__headtitle {
+            font-size: 30px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 30px;
+            letter-spacing: 0em;
+            text-align: left;
+        }
+
+        &__headsubtitle {
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 23px;
+            letter-spacing: 0em;
+            text-align: left;
+        }
+
+        &__title {
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 21px;
+            letter-spacing: 0em;
+            text-align: left;
+        }
+    }
+
+    .lessons-text {
+        &__content {
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 18px;
+            letter-spacing: 0em;
+            text-align: left;
+        }
+    }
+
+    .lessons-document {
+        &__left {
+            .lessons-document-item {
+                &:last-child {
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: 18px;
+                    letter-spacing: 0em;
+                    text-align: left;
+                }
+            }
+        }
+    }
+
+    .content-nav__item-text {
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 23px;
+        letter-spacing: 0em;
+        text-align: left;
+    }
+}
+
+@media (max-width: 528px) {
+    .lessons {
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+
+    .content-nav__item_prev {
+        width: 100%;
+    }
+
+    .content-nav__item_next {
+        width: 100%;
+    }
+
+    .content-nav__item {
+        width: calc(100% - 20px);
+        margin: 0 10px;
+        padding: 21px 46px;
+    }
+}
+
+@media (max-width: 374px) {
+    .lessons-raiting {
+        &__inner {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        &__controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 370px) {
+    .lessons-document__left {
+        .lessons-document__item:last-child {
+            display: none;
+        }
+    }
+}

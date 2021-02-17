@@ -4372,11 +4372,11 @@ th.headerSortUp {
 	color: #B4B3BB;
 }
 .menu__deal-wrapper {
-	display: flex;
-	margin-right: -10px;
-	margin-left: -10px;
-	max-width: 867px;
+	display: inline-flex;
 	flex-wrap: wrap;
+	margin-right: 0px;
+	margin-left: 0px;
+	width: 880px;
 }
 .deal {
 	width: 269px;
@@ -4398,8 +4398,14 @@ th.headerSortUp {
 	border: 1px dashed #B4B3BB;
 	position: relative;
 	cursor: pointer;
-	display: flex;
-	justify-content: center;
+	display: block;
+	width: 280px;
+	margin: 0;
+	background-color: transparent;
+	overflow: hidden;
+	border-radius: 10px;
+	margin-top: 20px;
+	height: 450px;
 }
 .deal:hover {
 	border-color: #29006C ;
@@ -4927,6 +4933,7 @@ div.deal-select {
 	background: #F1F1F3;
 	bottom: 0;
 }
+
 .deal__select:after {
 	content: '';
 	position: absolute;

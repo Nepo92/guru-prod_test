@@ -1,13 +1,18 @@
-$(document).on('click', '.datepicker-here', function(event){
+function changeIndicatorColor(str) {
+
+}
+
+
+$(document).on('click', '.datepicker-here', function (event) {
     $('.datepicker.active').find('[data-action="today"]').trigger('click');
 });
-$(document).on('click', '.datepicker-here-deal', function(event){
+$(document).on('click', '.datepicker-here-deal', function (event) {
     $('.datepicker.active').find('[data-action="today"]').trigger('click');
 });
-$(document).on('click', '.datepicker-here-cs', function(event){
+$(document).on('click', '.datepicker-here-cs', function (event) {
     $('.datepicker.active').find('[data-action="today"]').trigger('click');
 });
-$(document).on('click', '.datepicker-here-pay', function(event){
+$(document).on('click', '.datepicker-here-pay', function (event) {
     $('.datepicker.active').find('[data-action="today"]').trigger('click');
 });
 
@@ -24,7 +29,7 @@ function setStatusesList(statusesList) {
 
 
 //изменение чекера напоминания при редактировании сделки
-$(document).on('click', '[js-update-open-reminder]', function(event) {
+$(document).on('click', '[js-update-open-reminder]', function (event) {
     $('[js-update-form-deal-reminder-btn]').removeClass('is-open');
     $('[js-update-form-deal-reminder-block]').addClass('is-open');
     $('[js-update-form-deal-reminder-date]').val('');
@@ -32,7 +37,7 @@ $(document).on('click', '[js-update-open-reminder]', function(event) {
     $('[js-update-form-deal-reminder]').prop("checked", true);
 });
 //изменение чекера напоминания при редактировании сделки закрытие
-$(document).on('click', '[js-update-close-reminder]', function(event) {
+$(document).on('click', '[js-update-close-reminder]', function (event) {
     $('[js-update-form-deal-reminder-btn]').addClass('is-open');
     $('[js-update-form-deal-reminder-block]').removeClass('is-open');
     $('[js-update-form-deal-reminder-date]').val('—');
@@ -40,7 +45,7 @@ $(document).on('click', '[js-update-close-reminder]', function(event) {
     $('[js-update-form-deal-reminder]').prop("checked", false);
 });
 //в меню редактирования
-$(document).on('change', '[js-update-form-deal-sale-type]', function(event) {
+$(document).on('change', '[js-update-form-deal-sale-type]', function (event) {
     if ($(this).val() === 'traffic') {
         $('[js-update-form-deal-mailing-block]').addClass('is-open');
     } else {
@@ -49,7 +54,7 @@ $(document).on('change', '[js-update-form-deal-sale-type]', function(event) {
     }
 });
 //в меню редактирования
-$(document).on('change', '[js-update-form-deal-pr]', function(event) {
+$(document).on('change', '[js-update-form-deal-pr]', function (event) {
     $('[js-update-form-deal-price]').val($('option:selected', this).attr('data-price'));
     $('[js-update-form-deal-product-type]').val($('option:selected', this).attr('data-type'));
 
@@ -64,13 +69,13 @@ $(document).on('change', '[js-update-form-deal-pr]', function(event) {
         $('[js-update-form-kind]').html('');
     }
 
-    if ($('[u-product-types]').val() == 'курс' ) {
+    if ($('[u-product-types]').val() == 'курс') {
         setStreams($('[js-update-form-deal-start-date]'), $('option:selected', this).attr('data-id'));
     }
 });
 
 //в меню создания
-$(document).on('change', '[js-deal-form-sale-type]', function(event) {
+$(document).on('change', '[js-deal-form-sale-type]', function (event) {
     if ($(this).val() === 'traffic') {
         $('[js-deal-form-mailing-block]').addClass('is-open');
         checkBodyHidden()
@@ -81,7 +86,7 @@ $(document).on('change', '[js-deal-form-sale-type]', function(event) {
     }
 });
 //в меню создания
-$(document).on('change', '[js-deal-form-product]', function(event) {
+$(document).on('change', '[js-deal-form-product]', function (event) {
     $('[js-deal-form-price]').val($('option:selected', this).attr('data-price'));
     $('[js-deal-form-product-type]').val($('option:selected', this).attr('data-type'));
     $('[js-deal-form-product-id]').val($('option:selected', this).attr('data-id'));
@@ -95,12 +100,12 @@ $(document).on('change', '[js-deal-form-product]', function(event) {
         $('[js-deal-form-kind]').html('');
     }
 
-    if ($('[product-types]').val() == 'курс' ) {
+    if ($('[product-types]').val() == 'курс') {
         setStreams($('[js-deal-form-start-date]'), $('option:selected', this).attr('data-id'));
     }
 });
 
-function setStreams(selector, idCourse){
+function setStreams(selector, idCourse) {
     var formData = new FormData();
     formData.set('idCourse', Number(idCourse));
 
@@ -113,10 +118,10 @@ function setStreams(selector, idCourse){
         cache: false,
         success: function (data) {
             var seloption = '<option value="" disabled selected>Выберите дату старта</option>';
-            $.each(data, function(index, stream){
+            $.each(data, function (index, stream) {
                 seloption += '<option value="' + stream.id + '">' + stream.startDate + '</option>';
             });
-
+            console.log(data);
             selector.html(seloption);
         },
         error: function (data) {
@@ -125,7 +130,7 @@ function setStreams(selector, idCourse){
 }
 
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('.datepicker-here-deal').datepicker({
         autoClose: true,
         maxDate: new Date(),
@@ -153,7 +158,7 @@ $(document).ready(function() {
     const $menuUpdateDeal = $('[js-menu-update-deal]');
     const $menuUpdateDealCloseBtn = $('[js-menu-update-deal-close-btn]');
     //закрытие редактирование сделки
-    $menuUpdateDealCloseBtn.on('click', function() {
+    $menuUpdateDealCloseBtn.on('click', function () {
         $menuUpdateDeal.removeClass('is-open');
         checkBodyHidden()
     });
@@ -162,7 +167,7 @@ $(document).ready(function() {
     const $menuBillsCloseBtn = $('[js-menu-bills-close-btn]');
     const $menuBills = $('[js-menu-bills]');
     //закрытие меню счетов
-    $menuBillsCloseBtn.on('click', function() {
+    $menuBillsCloseBtn.on('click', function () {
         $menuBills.removeClass('is-open');
         checkBodyHidden();
         BILLS_TEMP_INFO = {};
@@ -171,7 +176,7 @@ $(document).ready(function() {
     const $menuSearchCloseBtn = $('[js-menu-search-close-btn]');
     const $menuSearch = $('[js-menu-search]');
 
-    $menuSearchCloseBtn.on('click', function() {
+    $menuSearchCloseBtn.on('click', function () {
         $menuSearch.removeClass('is-open');
         checkBodyHidden()
     });
@@ -179,7 +184,7 @@ $(document).ready(function() {
     const $menuUpdateReminderCloseBtn = $('[js-menu-update-reminder-close-btn]');
     const $menuUpdateReminder = $('[js-menu-update-reminder]');
 
-    $menuUpdateReminderCloseBtn.on('click', function() {
+    $menuUpdateReminderCloseBtn.on('click', function () {
         clearReminderForm();
         $menuUpdateReminder.removeClass('is-open');
         checkBodyHidden();
@@ -189,7 +194,7 @@ $(document).ready(function() {
     const $menuCreateClientCloseBtn = $('[js-menu-create-client-close-btn]');
     const $menuCreateClient = $('[js-menu-create-client]');
 
-    $menuCreateClientCloseBtn.on('click', function() {
+    $menuCreateClientCloseBtn.on('click', function () {
         $('js-create-client-form').submit('reset');
         $menuCreateClient.removeClass('is-open');
         checkBodyHidden()
@@ -198,7 +203,7 @@ $(document).ready(function() {
     const $menuCreateDealCloseBtn = $('[js-menu-create-deal-close-btn]');
     const $menuCreateDeal = $('[js-menu-create-deal]');
 
-    $menuCreateDealCloseBtn.on('click', function() {
+    $menuCreateDealCloseBtn.on('click', function () {
         $menuCreateDeal.removeClass('is-open');
         checkBodyHidden();
     });
@@ -206,7 +211,7 @@ $(document).ready(function() {
     const $menuBillCloseBtn = $('[js-menu-bill-close-btn]');
     const $menuBill = $('[js-menu-bill]');
 
-    $menuBillCloseBtn.on('click', function() {
+    $menuBillCloseBtn.on('click', function () {
         $menuBill.removeClass('is-open');
         $('[js-bill-form]').submit('reset');
         checkBodyHidden()
@@ -215,7 +220,7 @@ $(document).ready(function() {
     initDatePickerPayDate();
 });
 
-$(document).on('submit', '[js-bill-form]', function(event) {
+$(document).on('submit', '[js-bill-form]', function (event) {
     event.preventDefault();
     if (validateForm(this)) {
         saveBill($(this).serializeObject());
@@ -244,12 +249,12 @@ function saveBill(billDate) {
     });
 }
 
-$(document).on('click', '[js-save-bills]', function(event) {
+$(document).on('click', '[js-save-bills]', function (event) {
     event.preventDefault();
     $('[js-bills-form]').trigger('submit');
 });
 
-$(document).on('submit', '[js-bills-form]', function(event) {
+$(document).on('submit', '[js-bills-form]', function (event) {
     event.preventDefault();
     if (validateForm(this)) {
         var billData = $(this).serializeObject();
@@ -280,19 +285,19 @@ function saveBillWithUpdate(billData) {
     });
 }
 
-$(document).on('click', '[js-create-deal]', function(event) {
+$(document).on('click', '[js-create-deal]', function (event) {
     resetCreateDealForm();
 
     $('[js-menu-create-deal]').addClass('is-open');
     checkBodyHidden()
 });
 
-$(document).on('click', '[close-dialog]', function(event) {
+$(document).on('click', '[close-dialog]', function (event) {
     removeAcceptBtnAttribute($(this).siblings('[accept-dialog]'));
     $(this).closest('.dialog').removeClass('is-open');
 });
 
-$(document).on('change', '[js-form-status]', function(event) {
+$(document).on('change', '[js-form-status]', function (event) {
     var form = $(this).parent($('[js-status-form]'));
     form.removeClassWild("deal-status__form_*");
     form.addClass("deal-status__form_" + ($('option:selected', this).attr('data-code')));
@@ -314,7 +319,7 @@ $(document).on('change', '[js-form-status]', function(event) {
 
 });
 
-$(document).on('change', '[js-deal-form-status]', function(event){
+$(document).on('change', '[js-deal-form-status]', function (event) {
     var form = $(this).parent($('[js-deal-status-form]'));
     form.removeClassWild("deal__select_*");
     var code = $('option:selected', this).attr('data-code');
@@ -322,6 +327,30 @@ $(document).on('change', '[js-deal-form-status]', function(event){
 
     var formData = form.serializeObject();
     formData['code'] = code;
+
+    // const indicator = this.parentNode.parentNode.parentNode.parentNode.parentNode.children[1].children[0].children[0];
+
+    const indicator = $(this).parent().parent().parent().parent().parent().children(".deal-card__indicator").children('.deal-indicator__left').children('.deal-indicator__value');
+
+    let color;
+
+    if (code === 'important') {
+        color = '#d9d9d9';
+    } else if (code === 'prepaid') {
+        color = '#f9ed5d';
+    } else if (code === 'reservation') {
+        color = '#4a86e8';
+    } else if (code === 'installment') {
+        color = '#ff852f';
+    } else if (code === 'successfully') {
+        color = '#01fe03';
+    } else if (code === 'closed') {
+        color = '#e06665';
+    } else if (code === 'unknown') {
+        color = 'rgba(217, 20, 0, 0.44)';
+    }
+
+    indicator.css('backgroundColor', `${color}`);
 
     $('[js-deal-form-status]').prop("disabled", true);
     $.ajax({
@@ -352,7 +381,7 @@ function updateDealStatusOnList(value) {
 }
 
 //кнопка открытия поиска клиента
-$(document).on('click', '[js-search-client]', function(event) {
+$(document).on('click', '[js-search-client]', function (event) {
     resetSearchClientMenu();
 
     $('[js-menu-search]').addClass('is-open');
@@ -361,13 +390,13 @@ $(document).on('click', '[js-search-client]', function(event) {
 
 
 //кнопка создания клиента
-$(document).on('click', '[js-create-client-btn]', function(event) {
+$(document).on('click', '[js-create-client-btn]', function (event) {
     event.preventDefault();
     $('[js-menu-search]').removeClass('is-open');
     $('[js-create-client-form]').trigger('submit');
 });
 
-$(document).on('submit', '[js-create-client-form]', function(event) {
+$(document).on('submit', '[js-create-client-form]', function (event) {
     event.preventDefault();
     if (validateForm(this)) {
         createClientCard();
@@ -408,7 +437,7 @@ function createClientCard() {
         }
     });
 }
-$(document).on('click', '[use-client]', function(event) {
+$(document).on('click', '[use-client]', function (event) {
     event.preventDefault();
     $('[dialog]').removeClass('is-open');
     removeAcceptBtnAttribute($(this));
@@ -433,7 +462,7 @@ $(document).on('click', '[use-client]', function(event) {
 });
 
 //форма поиска клиента
-$(document).on('submit', '[js-menu-search-form]', function(event) {
+$(document).on('submit', '[js-menu-search-form]', function (event) {
     event.preventDefault();
     var searchValue = $('[js-menu-search-input]').val();
 
@@ -456,7 +485,7 @@ $(document).on('submit', '[js-menu-search-form]', function(event) {
                 } else {
                     $('[js-create-client]').prop('disabled', true);
 
-                    $.each(data, function(index, value) {
+                    $.each(data, function (index, value) {
                         var response = $("<div/>").attr("js-client-card", "").attr("class", "client-card")
                             .append($("<input/>").attr("type", "hidden").attr("class", "js-client-id-l").attr("js-client-id", "").val(value.id))
                             .append($("<div/>").attr("class", "client-card__title").html(value.name))
@@ -539,15 +568,18 @@ function updateDealCard(idClient) {
             success: function (data) {
                 var $dealList = $('[js-deals-list]');
                 $dealList.html('');
-                $.each(data, function(index, value) {
+
+                console.log(data);
+
+                $.each(data, function (index, value) {
                     // установка значения в списке
                     updateDealPriceOnList(value);
 
                     // установка значения в в меню
                     var seloption = "";
-                    $.each($statusesList, function(index, value2){
-                        seloption += '<option js-deal-form-status value="'+ value2.id +'" data-code="'+
-                            value2.code + '" ' + (value2.id === value.status ? 'selected="selected" ': '') +'">' + value2.title + '</option>';
+                    $.each($statusesList, function (index, value2) {
+                        seloption += '<option js-deal-form-status value="' + value2.id + '" data-code="' +
+                            value2.code + '" ' + (value2.id === value.status ? 'selected="selected" ' : '') + '">' + value2.title + '</option>';
                     });
 
                     var reminder = "";
@@ -559,108 +591,153 @@ function updateDealCard(idClient) {
                             '<div class="deal__comment">Нет напоминаний</div></div>';
                     }
 
-                    var response = $("<div/>").attr("class", "deal deal_told deal_white")
-                        .append($("<div/>").attr("class", "deal-wrapper")
-                            .append($("<div/>").attr("class", "deal__wrapper deal__wrapper_bordered deal__wrapper_column")
-                                .append($("<div/>").attr("class", "deal__title").html(value.status === 1 ? 'Целевая заявка' : value.course))
-                                .append($("<div/>").attr("class", "deal__subtitle")
-                                    .append($("<div/>").attr("class", value.kind !== null ? "deal__kind deal__kind_del" : "deal__kind").html(value.kind))
-                                    .append($("<div/>").attr("class", "deal__date").html(value.createDate)))
-                            )
-                            .append($("<div/>").attr("class", "deal__wrapper deal__wrapper_overflow deal__wrapper_bordered c-tooltip").attr('js-deal-id', value.id)
-                                .append($("<div/>").attr("class", "c-tooltip__wrapper")
-                                    .append($("<div/>").attr("class", "c-tooltip__text").html(value.managerAccessName)))
-                                .append($("<div/>").attr("class", "deal__social")
-                                    .append($("<div/>").attr("class", "deal-social deal-social_" + value.socialCode)))
-                                .append($("<div/>").attr("class", "deal__manager").html(value.managerName))
-                                .append($("<div/>").attr("class", "deal__sale-type").html(value.type))
-                            )
-                            .append($("<div/>").attr("class", "deal__wrapper deal__wrapper_between deal__wrapper_bordered ")
-                                .append($("<div/>").attr("class", "deal__sum")
-                                    .append($("<div/>").attr("class", "deal__sum-title").html("Стоимость"))
-                                    .append($("<div/>").attr("class", "deal__sum-value").html(value.price))
-                                )
-                                .append($("<div/>").attr("class", "deal__sum")
-                                    .append($("<div/>").attr("class", "deal__sum-title").html("Получено"))
-                                    .append($("<div/>").attr("class", "deal__sum-value deal__sum-value_blue").html(value.paid))
-                                )
-                                .append((value.isEditable && value.status !== 1) ?
-                                    $("<div/>").attr("class", "deal_bill")
-                                    .append($("<form/>").attr("js-add-bill-form", "").attr("action", "#").attr("class", value.isHidden ? "hidden-deal" : "")
-                                        .append($("<input/>").attr("type", "hidden").attr("name", "id").val(value.id))
-                                        .append($("<button/>").attr("js-add-bill-button", "").attr("class", "add-btn"))
-                                    ) : ''
-                                )
-                            )
-                            .append((value.isEditable && value.status !== 1) ?
-                                $("<div/>").attr("class", "deal__wrapper deal__wrapper_column deal__wrapper_bordered")
-                                .append($("<form/>").attr("js-deal-status-form","").attr("class", "deal__select deal__select_" + value.statusCode)
-                                    .append($("<input/>").attr("name", "id").attr("type", "hidden").val(value.id))
-                                    .append($("<select/>").attr("class","deal-select menu-input__input_select").attr("name","status").attr("js-deal-form-status","").html(seloption))
-                                ) :
-                                $("<div/>").attr("class", "deal__wrapper deal__wrapper_column deal__wrapper_bordered")
-                                    .append($("<div/>").attr("class", "deal__select deal__select_" + value.statusCode)
-                                        .append($("<div/>").attr("class","deal-select menu-input__input_select").html(value.statusName))
+                    var response = $("<div/>").attr("class", "deal-card")
+                        .append($("<div/>").attr("class", "deal-card__inner")
+                            .append($("<div/>").attr("class", "deal-card__header")
+                                .append($("<div/>").attr("class", "deal-card__name")
+                                    .append($("<div/>").attr("class", "deal-card__title").html(value.status === 1 ? 'Целевая заявка' : value.course))
+                                    .append($("<div/>").attr("class", "deal-card__date").html(value.createDate))
+
+                                    .append($("<div/>").attr("class", " c-tooltip")
+                                        .append($("<div/>").attr("class", "c-tooltip__wrapper")
+                                            .append($("<div/>").attr("class", "c-tooltip__text").html(value.managerAccessName)))
+                                        .append($("<div/>").attr("class", "deal-card__author").html(value.managerName))
                                     )
-                            )
-                            .append($("<div/>").attr("class", "deal__wrapper deal__wrapper_column deal__wrapper_bordered")
-                                .append($("<div/>").attr("class", "deal__reminder")
-                                    .append($("<div/>").attr("class", (value.reminder) ?
-                                        (value.reminderExpiration) ? "deal__reminder-title deal-reminder deal-reminder_red " :
-                                            (value.reminderToday) ? "deal__reminder-title deal-reminder deal-reminder_green " : "deal__reminder-title deal-reminder deal-reminder_gray " : "deal__reminder-title deal__reminder-title_left")
-                                        .html((value.reminder) ? value.reminderDate : "Нет напоминания"))
-                                    .append((value.isEditable && value.status !== 1) ?
-                                        $("<div/>").attr("class", "add-reminder")
-                                            .append($("<form/>").attr("js-add-reminder-form", "").attr("action", "#")
-                                                .append($("<input/>").attr("type", "hidden").attr("name", "idDeal").val(value.id))
-                                                .append($("<button/>").attr("js-add-reminder-button", "").attr("class", "add-btn"))
-                                            ) : ''
-                                    )
-                                )
-                            )
-                            .append( (value.isEditable) ?
-                                $("<div/>").attr("class", "deal__wrapper deal__wrapper_column")
-                                .append($("<form/>").attr("class", "button_full").attr("action", "#").attr("js-update-deal-form", "")
-                                    .append($("<input/>").attr("name", "id").attr("type", "hidden").val(value.id))
-                                    .append($("<button/>").attr("type", "button").attr("class", "button button_white button_full").attr("js-update-deal-btn", "").html("Редактировать сделку"))
                                 )
 
-                                .append(
-                                    (value.isHidden)
-                                        ?
-                                        $("<form/>").attr("class", "button_full").attr("action", "#").attr("js-reveal-deal-form", "")
-                                            .append($("<input/>").attr("data-hide-deal", value.id).attr("name", "id").attr("type", "hidden").val(value.id))
-                                            .append(
-                                                $("<button/>").attr("type", "button").attr("class", "button button_red button_full").attr("js-reveal-deal-btn", "")
-                                                    .append($("<span/>").attr("class", "hidden-btn hidden-btn_left hidden-btn_reveal").html("Восстановить сделку"))
-                                            )
-                                        :
-                                        $("<form/>").attr("class", "button_full").attr("action", "#").attr("js-hide-deal-form", "")
-                                            .append($("<input/>").attr("data-hide-deal", value.id).attr("name", "id").attr("type", "hidden").val(value.id))
-                                            .append($("<button/>").attr("type", "button").attr("class", "button button_red button_full").attr("js-hide-deal-btn", "")
-                                                .append($("<span/>").attr("class", "hidden-btn hidden-btn_left hidden-btn_hide").html("Скрыть сделку")))
-                                ) :
-                                $("<div/>").attr("class", "deal__wrapper deal__wrapper_column")
-                                    .append($("<form/>").attr("class", "button_full").attr("action", "#").attr("js-view-deal-form", "")
+                                .append($("<div/>").attr("class", "deal-card__task deal-task")
+                                    .append($("<p/>").attr("class", "deal-task__taskchecker")
+                                        .append($("<div/>").attr("class", (value.reminder) ?
+                                            (value.reminderExpiration) ? "deal__reminder-title deal-reminder deal-reminder_red " :
+                                                (value.reminderToday) ? "deal__reminder-title deal-reminder deal-reminder_green " : "deal__reminder-title deal-reminder deal-reminder_gray " : "deal__reminder-title deal__reminder-title_left")
+                                            .html((value.reminder) ? value.reminderDate : "Нет задач"))
+                                        .append((value.isEditable && value.status !== 1) ?
+                                            $("<div/>").attr("class", "deal-task__add-task")
+                                                .append($("<form/>").attr("js-add-reminder-form", "").attr("action", "#")
+                                                    .append($("<input/>").attr("type", "hidden").attr("name", "idDeal").val(value.id))
+                                                    .append($("<button/>").attr("js-add-reminder-button", "").attr("class", "deal-task__icon"))
+                                                ) : ''
+                                        )
+                                    )
+                                    .append($("<img>").attr("src", "../../img/test-preview.png"))
+                                )
+                            )
+
+                            .append($("<div/>").attr("class", "deal-card__info")
+                                .append($("<div/>").attr("class", "deal-card__status deal-status")
+                                    .append($("<div/>").attr("class", "deal-status__left")
+                                        .append($("<div/>").attr("class", "deal__social")
+                                            .append($("<div/>").attr("class", "deal-social deal-social_" + value.socialCode))
+                                        )
+                                        .append((value.isEditable && value.status !== 1) ?
+                                            $("<div/>").attr("class", "deal-status__text")
+                                                .append($("<form/>").attr("js-deal-status-form", "").attr("class", "deal__select deal__select_" + value.statusCode)
+                                                    .append($("<input/>").attr("name", "id").attr("type", "hidden").val(value.id))
+                                                    .append($("<select/>").attr("class", "deal-select menu-input__input_select").attr("name", "status").attr("js-deal-form-status", "").html(seloption))
+                                                ) :
+                                            $("<div/>").attr("class", "deal-status__text")
+                                                .append($("<div/>").attr("class", "deal__select deal__select_" + value.statusCode)
+                                                    .append($("<div/>").attr("class", "deal-select menu-input__input_select").html(value.statusName))
+                                                )
+                                        )
+                                    )
+                                    .append($("<div/>").attr("class", "deal-status__right")
+                                        .append($("<div/>").attr("class", "deal-status__angle"))
+                                    )
+                                )
+                                .append($("<div/>").attr("class", "deal-card__indicator deal-indicator")
+                                    .append($("<div/>").attr("class", "deal-indicator__left")
+                                        .append($("<div>").attr("class", "deal-indicator__value"))
+                                    )
+                                    .append($("<div/>").attr("class", "deal-indicator__right"))
+                                )
+                            )
+                            .append($("<div/>").attr("class", "deal-card__access deal-access"))
+                            .append($("<div/>").attr("class", "deal-access__inner").attr('js-deal-id', value.id))
+                            .append($("<div/>").attr("class", "deal-card__price deal-price")
+                                .append($("<div/>").attr("class", "deal-price__cost")
+                                    .append($("<div/>").attr("class", "deal-price__name").html("Стоимость"))
+                                    .append($("<div/>").attr("class", "deal-price__value").html("4900 &#8381;"))
+                                )
+                                .append($("<div/>").attr("class", "deal-price__received")
+                                    .append($("<div/>").attr("class", "deal-price__name").html("Получено"))
+                                    .append($("<div/>").attr("class", "deal-price__value--purple").html("4900 &#8381;"))
+                                )
+                                .append((value.isEditable && value.status !== 1) ?
+                                    $("<div/>").attr("class", "deal-price__btn")
+                                        .append($("<form/>").attr("js-add-bill-form", "").attr("action", "#").attr("class", value.isHidden ? "hidden-deal" : "")
+                                            .append($("<input/>").attr("type", "hidden").attr("name", "id").val(value.id))
+                                            .append($("<button/>").attr("js-add-bill-button", "").attr("class", "deal-price__icon"))
+                                        ) : ''
+                                )
+                            )
+                            .append((value.isEditable) ?
+                                $("<div/>").attr("class", "deal-card__controls")
+                                    .append($("<form/>").attr("class", "deal-card__form-management").attr("action", "#").attr("js-update-deal-form", "")
                                         .append($("<input/>").attr("name", "id").attr("type", "hidden").val(value.id))
-                                        .append($("<button/>").attr("type", "button").attr("class", "button button_white button_full").attr("js-view-deal-btn", "").html("Посмотреть сделку"))
+                                        .append($("<button/>").attr("type", "button").attr("class", "deal-card__management").attr("js-update-deal-btn", "").html("Управление сделкой"))
+                                    )
+                                    .append(
+                                        (value.isHidden)
+                                            ?
+                                            $("<form/>").attr("class", "deal-card__controls").attr("action", "#").attr("js-reveal-deal-form", "")
+                                                .append($("<input/>").attr("data-hide-deal", value.id).attr("name", "id").attr("type", "hidden").val(value.id))
+                                                .append(
+                                                    $("<button/>").attr("type", "button").attr("class", "deal-card__management").attr("js-reveal-deal-btn", "")
+                                                        .append($("<span/>").attr("class", "hidden-btn hidden-btn_left hidden-btn_reveal").html("Восстановить сделку"))
+                                                )
+                                            :
+                                            $("<form/>").attr("class", "").attr("action", "#").attr("js-hide-deal-form", "")
+                                                .append($("<input/>").attr("data-hide-deal", value.id).attr("name", "id").attr("type", "hidden").val(value.id))
+                                                .append($("<button/>").attr("type", "button").attr("class", "deal-card__delete").attr("js-hide-deal-btn", "")
+                                                    .append($("<span>").attr("class", "deal-card__delete-icon"))
+                                                )
+                                    ) :
+                                $("<div/>").attr("class", "deal-card__controls")
+                                    .append($("<form/>").attr("class", "deal-card__form-management").attr("action", "#").attr("js-view-deal-form", "")
+                                        .append($("<input/>").attr("name", "id").attr("type", "hidden").val(value.id))
+                                        .append($("<button/>").attr("type", "button").attr("class", "deal-card__management").attr("js-view-deal-btn", "").html("Посмотреть сделку"))
                                     )
                             )
+
                         );
                     $dealList.append(response);
                     loadModules(idClient, value.id);
                 });
 
-                var $createDealBlock = $("<div/>").attr("js-create-deal", "").attr("class", "deal deal_told deal_create")
-                    .append($("<div/>").attr("class", "deal__btm-message").html('Добавить сделку'));
+                let color;
+                $.each($('.deal-card'), function (index, item) {
+                    let color;
+                    const indicator = $(this).find('.deal-indicator__value');
+                    const selArr = $(this).find('.deal__select').attr('class').split('_');
 
+                    if (selArr[5] === 'important') {
+                        color = '#d9d9d9';
+                    } else if (selArr[5] === 'prepaid') {
+                        color = '#f9ed5d';
+                    } else if (selArr[5] === 'reservation') {
+                        color = '#4a86e8';
+                    } else if (selArr[5] === 'installment') {
+                        color = '#ff852f';
+                    } else if (selArr[5] === 'successfully') {
+                        color = '#01fe03';
+                    } else if (selArr[5] === 'closed') {
+                        color = '#e06665';
+                    } else if (selArr[5] === 'unknown') {
+                        color = 'rgba(217, 20, 0, 0.44)';
+                    }
+
+                    indicator.css('backgroundColor', `${color}`);
+                });
+
+                var $createDealBlock = $("<div/>").attr("js-create-deal", "").attr("class", "deal-card deal_create")
+                    .append($("<div/>").attr("class", "deal__btm-message").html('Добавить сделку'));
                 $dealList.append($createDealBlock);
             }
         });
-
     }
 }
-function loadModules(idClient, idDeal){
+function loadModules(idClient, idDeal) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
@@ -669,10 +746,10 @@ function loadModules(idClient, idDeal){
         dataType: 'json',
         cache: false,
         success: function (data) {
-            if (data.modules.length > 0){
+            if (data.modules.length > 0) {
                 $modulesRoot = $("<div/>").attr("class", "deal__access-lessons ");
                 $lessons = $("<div/>").attr("class", "deal__lessons");
-                $.each(data.modules, function(index, value) {
+                $.each(data.modules, function (index, value) {
                     $lessons.append($("<div/>").attr('js-module', value.idModule).attr('js-module-deal', idDeal).attr('js-module-client', idClient).attr('js-allowed', data.allowed).attr("class", "deal__lessons-item " + (value.enabled ? 'deal__lessons-item_active' : '')).html(value.number));
                 });
                 $access = $("<div/>").attr("class", "deal__access")
@@ -682,30 +759,30 @@ function loadModules(idClient, idDeal){
                 $modulesRoot.append($access);
                 $modulesRoot.append($lessons);
 
-                $modulesRoot.insertAfter($('[js-deal-id='+idDeal+']'));
-                $(".slide-toggle[js-id-deal-toggle="+idDeal+"]").click(function (event) {
+                $modulesRoot.insertAfter($('[js-deal-id=' + idDeal + ']'));
+                $(".slide-toggle[js-id-deal-toggle=" + idDeal + "]").click(function (event) {
                     var toggle = $(this);
                     var idDeal = toggle.attr('js-id-deal-toggle');
                     var allowed = toggle.hasClass('slide-toggle_active');
-                    if (allowed){
+                    if (allowed) {
                         toggle.removeClass('slide-toggle_active');
-                    }else{
+                    } else {
                         toggle.addClass('slide-toggle_active');
-                        $('.deal__lessons-item[js-module-deal='+idDeal+']').toggleClass('deal__lessons-item_active', true)
+                        $('.deal__lessons-item[js-module-deal=' + idDeal + ']').toggleClass('deal__lessons-item_active', true)
                     }
                     changeAllowed(idDeal, idClient, !allowed);
                 });
-                $('.deal__lessons-item[js-module-deal='+idDeal+']').click(function (event){
+                $('.deal__lessons-item[js-module-deal=' + idDeal + ']').click(function (event) {
                     var $this = $(this);
                     var idModule = $this.attr('js-module');
                     var idDeal = $this.attr('js-module-deal');
-                    var allowed = $(".slide-toggle[js-id-deal-toggle="+idDeal+"]").hasClass('slide-toggle_active');
+                    var allowed = $(".slide-toggle[js-id-deal-toggle=" + idDeal + "]").hasClass('slide-toggle_active');
                     var idClient = $this.attr('js-module-client');
                     var enabled = $this.hasClass('deal__lessons-item_active');
-                    if (allowed){
-                        if (enabled){
+                    if (allowed) {
+                        if (enabled) {
                             $this.removeClass('deal__lessons-item_active');
-                        }else{
+                        } else {
                             $this.addClass('deal__lessons-item_active');
                         }
                         changeEnabledModule(idClient, idDeal, idModule, !enabled);
@@ -716,13 +793,13 @@ function loadModules(idClient, idDeal){
     });
 }
 
-function changeAllowed(idDeal, idClient, allowed){
+function changeAllowed(idDeal, idClient, allowed) {
     console.log('Change allowed', idDeal, idClient, allowed);
     $.ajax({
         type: "POST",
         contentType: "application/json",
         url: "/api/deals/changeModulesAllowed",
-        data: JSON.stringify({id: idDeal, idClient: idClient, value: allowed}),
+        data: JSON.stringify({ id: idDeal, idClient: idClient, value: allowed }),
         dataType: 'json',
         cache: false,
         success: function (data) {
@@ -731,14 +808,14 @@ function changeAllowed(idDeal, idClient, allowed){
     });
 }
 
-function changeEnabledModule(idClient, idDeal, idModule, enabled){
+function changeEnabledModule(idClient, idDeal, idModule, enabled) {
     console.log('Change enabled', idClient, idDeal, idModule, enabled);
 
     $.ajax({
         type: "POST",
         contentType: "application/json",
         url: "/api/deals/changeModulesEnabled",
-        data: JSON.stringify({idDeal: idDeal, idModule: idModule, idClient: idClient, value: enabled}),
+        data: JSON.stringify({ idDeal: idDeal, idModule: idModule, idClient: idClient, value: enabled }),
         dataType: 'json',
         cache: false,
         success: function (data) {
@@ -760,12 +837,12 @@ function changeEnabledModule(idClient, idDeal, idModule, enabled){
 //     dealRow.find('[data-deal-paid]').html(value.paid + ' ₽');
 // }
 //кнопка добавления напоминания
-$(document).on('click', '[js-add-reminder-button]', function(event) {
+$(document).on('click', '[js-add-reminder-button]', function (event) {
     event.preventDefault();
     $(this).closest('[js-add-reminder-form]').trigger('submit');
 });
 //form'a напоминания
-$(document).on('submit', '[js-add-reminder-form]', function(event) {
+$(document).on('submit', '[js-add-reminder-form]', function (event) {
     event.preventDefault();
     openUpdateReminder($(this).find('[name="idDeal"]').val());
 });
@@ -837,11 +914,11 @@ $(document).on('click', '[js-delete-reminder]', function (event) {
 
 })
 $(document).on('click', '[js-update-reminder]', function (event) {
-   event.preventDefault();
-   $('[js-update-form-reminder]').trigger('submit');
+    event.preventDefault();
+    $('[js-update-form-reminder]').trigger('submit');
 
 });
-$(document).on('submit', '[js-update-form-reminder]', function(event) {
+$(document).on('submit', '[js-update-form-reminder]', function (event) {
     event.preventDefault();
     if (validateForm(this)) {
         var formData = $(this).serializeObject();
@@ -891,23 +968,23 @@ function updateReminderOnList(value) {
 
 //скрыть сделкуedit-bill-accept
 var HIDE_DEAL_FORM;
-$(document).on('click', '[js-hide-deal-btn]', function(event) {
+$(document).on('click', '[js-hide-deal-btn]', function (event) {
     event.preventDefault();
     $('[dialog]').find('.dialog__title').html('Вы действительно хотите скрыть сделку?');
     $('[dialog]').find('.dialog__text').html('В данном случае информация о сделке не будет учитываться');
     $('[dialog]').find('[accept-dialog]').attr('hide-deal', '');
     $('[dialog]').addClass('is-open');
-    HIDE_DEAL_FORM =  $(this).closest('[js-hide-deal-form]');
+    HIDE_DEAL_FORM = $(this).closest('[js-hide-deal-form]');
 });
 
-$(document).on('click', '[hide-deal]', function(event) {
+$(document).on('click', '[hide-deal]', function (event) {
     event.preventDefault();
     $('[dialog]').removeClass('is-open');
     removeAcceptBtnAttribute($(this));
     HIDE_DEAL_FORM.trigger('submit');
 });
 
-$(document).on('submit', '[js-hide-deal-form]', function(event) {
+$(document).on('submit', '[js-hide-deal-form]', function (event) {
     event.preventDefault();
     if (validateForm(this)) {
         var formData = $(this).serializeObject();
@@ -934,12 +1011,12 @@ function hideDeal(formData) {
     });
 }
 
-$(document).on('click', '[js-update-deal-btn]', function(event) {
+$(document).on('click', '[js-update-deal-btn]', function (event) {
     event.preventDefault();
     $(this).closest('[js-update-deal-form]').trigger('submit');
 });
 
-$(document).on('submit', '[js-update-deal-form]', function(event) {
+$(document).on('submit', '[js-update-deal-form]', function (event) {
     event.preventDefault();
     if (validateForm(this)) {
         var formData = $(this).serializeObject();
@@ -966,7 +1043,7 @@ function setDealInfo(data) {
     });
 }
 
-function setUpdateStreams(idCourse){
+function setUpdateStreams(idCourse) {
     var formData = new FormData();
     formData.set('idCourse', Number(idCourse));
 
@@ -979,7 +1056,7 @@ function setUpdateStreams(idCourse){
         cache: false,
         success: function (data) {
             var seloption = '';
-            $.each(data, function(index, stream){
+            $.each(data, function (index, stream) {
                 seloption += '<option value="' + stream.id + '">' + stream.startDate + '</option>';
             });
 
@@ -990,12 +1067,12 @@ function setUpdateStreams(idCourse){
     });
 }
 
-$(document).on('click', '[js-update-deal]', function(event) {
+$(document).on('click', '[js-update-deal]', function (event) {
     event.preventDefault();
     $('[js-update-form-deal]').trigger('submit');
 });
 
-$(document).on('submit', '[js-update-form-deal]', function(event) {
+$(document).on('submit', '[js-update-form-deal]', function (event) {
     event.preventDefault();
     if (validateForm(this)) {
         var formData = $(this).serializeObject();
@@ -1031,14 +1108,14 @@ function updateDealAfterUpdateOnList(value) {
 
     dealRow.find('[data-deal-social]').removeClassWild("deal-social_*").addClass("deal-social_" + value.socialCode).addClass("deal-social_big");
 
-    var course = value.course != null ? (value.course + (value.kind !== null && value.kind !== '' ? ' (' + value.kind + ')' : '')) : 'Целевая заявка' ;
+    var course = value.course != null ? (value.course + (value.kind !== null && value.kind !== '' ? ' (' + value.kind + ')' : '')) : 'Целевая заявка';
     dealRow.find('[data-deal-course]').attr('title', course).html(course);
     dealRow.find('[data-deal-type]').html(value.type);
     dealRow.find('[data-deal-price]').html(value.price);
 
     var colPaid = dealRow.find('.column-paid');
     colPaid.removeClassWild('column-paid_*');
-    if (value.price <= dealRow.find('[data-deal-paid]').html().replace(/\D+/g,"")) {
+    if (value.price <= dealRow.find('[data-deal-paid]').html().replace(/\D+/g, "")) {
         colPaid.addClass('column-paid_green');
     }
 
@@ -1075,7 +1152,7 @@ function updateDealAfterUpdateOnList(value) {
 
 }
 
-$(document).on('submit', '[js-add-bill-form]', function(event) {
+$(document).on('submit', '[js-add-bill-form]', function (event) {
     event.preventDefault();
     openBills($(this).serializeObject());
 });
@@ -1110,14 +1187,14 @@ function createBills(billList) {
         $('[js-bills]').removeClass('is-open');
     }
     // checkBodyHidden();
-    $.each(billList, function(index, value) {
+    $.each(billList, function (index, value) {
         var response = "";
         response += '<div class="div-table__body-row">';
 
         // установка значения в в меню
         var seloption = "";
-        $.each($paymentMethodList, function(index, value2){
-            seloption += '<option value="'+ value2.title +'" data-code="' + value2.code + '">' + value2.title + '</option>';
+        $.each($paymentMethodList, function (index, value2) {
+            seloption += '<option value="' + value2.title + '" data-code="' + value2.code + '">' + value2.title + '</option>';
         });
 
         //если статус 1 проверено, то зеленая иначе можно редактировать
@@ -1144,7 +1221,7 @@ function createBills(billList) {
 
         // add сумму
         response += '<div class="div-table__body-col div-table__body-col_center div-table__body-col_xsmall">' +
-            '<input b-sum disabled name="sum" class="menu-input__input menu-input__input_small editable" value="'+ value.sum +'" placeholder="0 ₽">' +
+            '<input b-sum disabled name="sum" class="menu-input__input menu-input__input_small editable" value="' + value.sum + '" placeholder="0 ₽">' +
             '</div>';
 
         response += '<div class="div-table__body-col div-table__body-col_xxsmall">' +
@@ -1156,8 +1233,8 @@ function createBills(billList) {
             '</div>';
 
         // add номер счета
-        response +=   '<div class="div-table__body-col div-table__body-col_medium  div-table__body-col_center div-table__body-col_r10">' +
-            '<input b-account-number disabled name="accountNumber" class="menu-input__input menu-input__input_small editable" value="'+ (value.accountNumber === null ? '' : value.accountNumber) +'" placeholder="—">' +
+        response += '<div class="div-table__body-col div-table__body-col_medium  div-table__body-col_center div-table__body-col_r10">' +
+            '<input b-account-number disabled name="accountNumber" class="menu-input__input menu-input__input_small editable" value="' + (value.accountNumber === null ? '' : value.accountNumber) + '" placeholder="—">' +
             '</div>';
 
         response += '<div class="div-table__body-col col-pay-date div-table__body-col_center div-table__body-col_medium ">' +
@@ -1212,7 +1289,7 @@ function createBills(billList) {
         response += '<div class="div-table__body-col div-table__body-col_center div-table__body-col_xxsmall">';
 
         if (value.status === 1 && value.isEditable) {
-            response +=  '<div js-edit-btns class="column-links display-flex-none">' +
+            response += '<div js-edit-btns class="column-links display-flex-none">' +
                 '<div js-edit-bill-accept class="column_mwidth column_mwidth-accept"></div>' +
                 '<div js-edit-bill-cancel class="column_mwidth column_mwidth-cancel"></div>' +
                 '</div>' +
@@ -1225,7 +1302,7 @@ function createBills(billList) {
                 '</div>';
         }
 
-        response += '</div>'+
+        response += '</div>' +
             '</div>';
 
         $('[js-bills-body]').html($('[js-bills-body]').html() + response);
@@ -1261,7 +1338,7 @@ function initFancy() {
         ],
     });
 }
-$(document).on('click', '[js-add-bill-up-client]', function(event) {
+$(document).on('click', '[js-add-bill-up-client]', function (event) {
     var clientId = $(this).closest('.custom-table__body-row').find('[js-client-id]').val();
     var clientName = $(this).closest('.custom-table__body-row').find('[js-client-id]').siblings('span').html();
 
@@ -1271,7 +1348,7 @@ $(document).on('click', '[js-add-bill-up-client]', function(event) {
     $('[js-client-name-copy]').attr('data-link', clientName);
 });
 
-$(document).on('change', '[js-upload-bill]', function(event) {
+$(document).on('change', '[js-upload-bill]', function (event) {
     var form = $(this).closest('[js-upload-bill-form]')
     var data = new FormData(form[0]);
     $('[js-upload-bill]').prop("disabled", true);
@@ -1298,7 +1375,7 @@ $(document).on('change', '[js-upload-bill]', function(event) {
         }
     });
 });
-$(document).on('change', '[js-upload-bill-front]', function(event) {
+$(document).on('change', '[js-upload-bill-front]', function (event) {
     var form = $(this).closest('[js-upload-bill-form]')
     var data = new FormData(form[0]);
     $('[js-upload-bill-front]').prop("disabled", true);
@@ -1330,7 +1407,7 @@ function updateBillImageOnList(billData) {
 //активация редактирования формы
 var BILLS_INFO_TEMP = {};
 
-$(document).on('click', '[edit-bill]', function(event) {
+$(document).on('click', '[edit-bill]', function (event) {
     event.preventDefault();
     $(this).closest('[edit-menu]').removeClass('is-open').siblings('[edit-btns]').addClass('is-open');
     var list = {};
@@ -1340,7 +1417,7 @@ $(document).on('click', '[edit-bill]', function(event) {
 
     var s = $(this).closest('.custom-table__body-row').find('[b-sum]');
     list['sum'] = s.val();
-    s.val(s.val().replace(' ₽','')).removeAttr('disabled');
+    s.val(s.val().replace(' ₽', '')).removeAttr('disabled');
 
     $(this).closest('.custom-table__body-row').find('[b-pm-wrapper]').removeClass('disabled');
     $(this).closest('.custom-table__body-row').find('[b-pm-selector]').removeAttr('disabled');
@@ -1356,7 +1433,7 @@ $(document).on('click', '[edit-bill]', function(event) {
     BILLS_INFO_TEMP[$(this).closest('.custom-table__body-row').find('[b-id-bill]').val()] = list;
 });
 
-$(document).on('click', '[edit-bill-cancel]', function(event) {
+$(document).on('click', '[edit-bill-cancel]', function (event) {
     event.preventDefault();
     var values = BILLS_INFO_TEMP[$(this).closest('.custom-table__body-row').find('[b-id-bill]').val()];
 
@@ -1375,7 +1452,7 @@ $(document).on('click', '[edit-bill-cancel]', function(event) {
 });
 
 var ACCEPT_EDITE_BTN;
-$(document).on('click', '[edit-bill-accept]', function(event) {
+$(document).on('click', '[edit-bill-accept]', function (event) {
     event.preventDefault();
     ACCEPT_EDITE_BTN = $(this);
 
@@ -1401,7 +1478,7 @@ $(document).on('click', '[edit-bill-accept]', function(event) {
             ACCEPT_EDITE_BTN.closest('.custom-table__body-row').find('[b-sum]').val(data.sum + ' ₽').attr("disabled", true);
             ACCEPT_EDITE_BTN.closest('.custom-table__body-row').find('[b-account-number]').val(data.accountNumber).attr("disabled", true);
 
-            if(data.payDate === null || data.payDate === '') {
+            if (data.payDate === null || data.payDate === '') {
                 ACCEPT_EDITE_BTN.closest('.custom-table__body-row').find('.column-bill__status').removeClass('column-bill__status_paid').html('Выставлен');
             } else {
                 ACCEPT_EDITE_BTN.closest('.custom-table__body-row').find('.column-bill__status').addClass('column-bill__status_paid').html('Оплачен');
@@ -1441,20 +1518,20 @@ $(document).on('click', '[edit-bill-accept]', function(event) {
 
 // сохранение сделки
 var SAVE_DEAL_TYPE;
-$(document).on('click', '[js-save-deal]', function(event) {
+$(document).on('click', '[js-save-deal]', function (event) {
     event.preventDefault();
     SAVE_DEAL_TYPE = "s";
     $('[js-deal-form]').trigger('submit');
 });
 ///сохранение сделки и открытие выставление счета
-$(document).on('click', '[js-save-and-bill-deal]', function(event) {
+$(document).on('click', '[js-save-and-bill-deal]', function (event) {
     event.preventDefault();
     SAVE_DEAL_TYPE = "sb";
     $('[js-deal-form]').trigger('submit');
 });
 
 
-$(document).on('submit', '[js-deal-form]', function(event) {
+$(document).on('submit', '[js-deal-form]', function (event) {
     event.preventDefault();
     if (validateForm(this)) {
         var dealData = $(this).serializeObject();
@@ -1493,7 +1570,7 @@ function createDeal(dealData) {
         }
     });
 }
-function createDealAndBill(dealData)    {
+function createDealAndBill(dealData) {
     $('[js-save-deal]').prop("disabled", true);
     $('[js-save-and-bill-deal]').prop("disabled", true);
     $.ajax({
@@ -1531,7 +1608,7 @@ function setBillInfo(data) {
 }
 
 
-$(document).on('change', '[product-types]', function(event) {
+$(document).on('change', '[product-types]', function (event) {
     $('[js-deal-form-price]').val(0);
     $('[js-deal-form-start-date]').html('<option value="" disabled selected>Выберите дату старта</option>');
     var idType = $('option:selected', this).attr('data-id');
@@ -1567,8 +1644,8 @@ function setCoursesList(coursesList) {
 function createProductOptions(list, ident) {
     var seloption = "";
     seloption += '<option value="" disabled selected>Выберите продукт</option>';
-    $.each(list, function(index, value2){
-        seloption += '<option data-id="'+ value2.id + '" value="'+ value2.name +'" data-type="'+ value2.type + '" data-price="' + value2.price + '"">' + value2.name + '</option>';
+    $.each(list, function (index, value2) {
+        seloption += '<option data-id="' + value2.id + '" value="' + value2.name + '" data-type="' + value2.type + '" data-price="' + value2.price + '"">' + value2.name + '</option>';
     });
     $('[' + ident + ']').html(seloption);
 }
@@ -1581,22 +1658,21 @@ var $productMap;
 function setProductMap(productMap) {
     $productMap = productMap;
 }
-$(document).on('change', '[product-category]', function(event) {
+$(document).on('change', '[product-category]', function (event) {
     $('[js-deal-form-price]').val(0);
     var idCategory = $('option:selected', this).val();
     createProductOptions($productMap[idCategory], 'js-deal-form-product');
     $('[product-block]').removeClass('menu-input_close');
-
 });
 
-$(document).on('change', '[u-product-category]', function(event) {
+$(document).on('change', '[u-product-category]', function (event) {
     $('[js-update-form-deal-price]').val(0);
     var idCategory = $('option:selected', this).val();
     createProductOptions($productMap[idCategory], 'js-update-form-deal-pr');
     $('[u-product-block]').removeClass('menu-input_close');
 
 });
-$(document).on('change', '[u-product-types]', function(event) {
+$(document).on('change', '[u-product-types]', function (event) {
     $('[js-update-form-deal-price]').val(0);
     $('[js-update-form-deal-start-date]').html('<option value="" disabled selected>Выберите дату старта</option>');
     var idType = $('option:selected', this).attr('data-id');
@@ -1625,3 +1701,4 @@ $(document).on('change', '[u-product-types]', function(event) {
         $('[u-start-date-block]').removeClass('menu-input_close');
     }
 });
+

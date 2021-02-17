@@ -1,21 +1,21 @@
 function cardMedia() {
 
-  const span = document.querySelectorAll('.info-block');
+    const span = document.querySelectorAll('.info-block');
 
-   for (let i = 5; i < span.length; i += 6) {
-     const block = span[i].children[0];
-     const text = span[i].children[0].innerText;
+    for (let i = 5; i < span.length; i += 6) {
+        const block = span[i].children[0];
+        const text = span[i].children[0].innerText;
 
-     if (innerWidth < 515) {
-        const arr = text.split(' ');
+        if (innerWidth < 515) {
+            const arr = text.split(' ');
 
-        if (arr.length > 2) {
-            arr.splice(1, 1);
+            if (arr.length > 2) {
+                arr.splice(1, 1);
+            }
+
+            result = arr.join(' ');
+            block.innerHTML = result;
         }
-
-        result = arr.join(' ');
-        block.innerHTML = result;
-     }
 
         if (innerWidth >= 515) {
             const arr = text.split(' ');

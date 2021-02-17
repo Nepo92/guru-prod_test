@@ -35,7 +35,7 @@ function copyCss() {
 }
 
 function createCss() {
-  return gulp.src([`${path.prod.sass}/**/*.scss`])
+  return gulp.src([`${path.prod.sass}/**/*.scss`, `!${path.prod.sass}/**/_*.scss`])
     .pipe(sass({
       outputStyle: 'expanded',
     }))

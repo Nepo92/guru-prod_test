@@ -1,0 +1,430 @@
+@import "./variables";
+
+* {
+    box-sizing: border-box;
+}
+
+/* Страница со списком уроков */
+
+.lessons-main {
+    margin-top: 60px;
+}
+
+.lessons-item {
+    background-color: white;
+    padding: 30px;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+
+    &__left {
+        display: flex;
+    }
+
+    &__inner {
+        display: flex;
+        justify-content: space-between;
+        backgorund-color: white;
+        align-items: center;
+    }
+
+    &__title {
+    }
+
+    &__element {
+        &:first-child {
+            font-size: 30px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 34px;
+            letter-spacing: 0em;
+            text-align: center;
+            color: $inProcess;
+            margin-right: 17px;
+            display: flex;
+            align-items: center;
+        }
+
+        &:nth-child(2) {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    &__btn {
+        width: 200px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        border: 1px solid $inProcess;
+        color: $inProcess;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 18px;
+        letter-spacing: 0em;
+        transition: all 0.2s linear;
+
+        &:hover {
+            box-shadow: 2px 2px 5px 0 rgba(black, 0.2);
+        }
+    }
+}
+
+.lessons-about {
+    &__title {
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 28px;
+        letter-spacing: 0em;
+        text-align: left;
+    }
+
+    &__content {
+        display: flex;
+        margin-top: 4px;
+    }
+
+    &__item {
+        display: flex;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 16px;
+        letter-spacing: 0em;
+        text-align: left;
+        margin-right: 30px;
+        position: relative;
+
+        &:first-child {
+            .lessons-about__icon {
+                display: flex;
+                width: 20px;
+                height: 20px;
+                margin-right: 12px;
+                position: relative;
+
+                &::before {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    display: flex;
+                    width: 100%;
+                    height: 100%;
+                    content: "";
+                    mask-image: url(../../img/on-checked.svg);
+                    background-color: $inProcess;
+                    mask-repeat: no-repeat;
+                    mask-position: center;
+                    mask-size: 100% 100%;
+                }
+            }
+
+            &::after {
+                display: flex;
+                width: 1px;
+                height: 20px;
+                content: "";
+                background-color: $notStart;
+                position: absolute;
+                right: -15px;
+            }
+        }
+
+        &:last-child {
+            margin-right: 0;
+
+            .lessons-about__icon {
+                width: 16px;
+                height: 20px;
+                margin-right: 12px;
+                display: flex;
+                position: relative;
+
+                &::before {
+                    display: flex;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    content: "";
+                    mask-image: url(../../img/document-icon.svg);
+                    background-color: $inProcess;
+                    mask-repeat: no-repeat;
+                    mask-position: center;
+                    mask-size: 100% 100%;
+                }
+            }
+        }
+    }
+
+    &__text {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.lessons-element {
+    &__btn {
+        width: 200px;
+        height: 40px;
+        border: 1px solid $inProcess;
+        color: $inProcess;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.2s linear;
+
+        &:hover {
+            box-shadow: 2px 2px 5px 0 rgba(black, 0.2);
+        }
+    }
+}
+
+.back {
+    margin-top: 20px;
+}
+
+.block-header {
+    margin-top: 20px;
+}
+
+.lessons-header {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 1000px) {
+    .body__header {
+        display: none;
+    }
+}
+
+@media (max-width: 825px) {
+    .lessons-item {
+        &__inner {
+            display: flex;
+            flex-direction: row;
+        }
+    }
+}
+
+@media (max-width: 669px) {
+  .modules-left {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+    .lessons-element {
+        &__text {
+            display: none;
+        }
+
+        &__btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid $inProcess;
+        }
+
+        &__icon {
+            width: 20px;
+            height: 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &::before {
+                position: absolute;
+                top: 0;
+                left: 0;
+                display: flex;
+                content: "";
+                width: 100%;
+                height: 100%;
+                mask-image: url(../../img/arrow-right.svg);
+                background-color: $inProcess;
+                mask-repeat: no-repeat;
+                mask-position: center;
+                mask-size: 100% 100%;
+            }
+        }
+    }
+
+    .lessons-header {
+        font-size: 30px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 30px;
+        letter-spacing: 0em;
+        text-align: left;
+    }
+}
+
+@media (max-width: 525px) {
+    .lessons.block.-gap-inner-bottom_5 {
+        padding: 0 20px;
+    }
+
+    .lessons-item {
+        padding: 20px 20px 20px 15px;
+
+        &__element {
+            &:first-child {
+                font-size: 30px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 34px;
+                letter-spacing: 0em;
+                text-align: center;
+            }
+        }
+    }
+
+    .lessons-about {
+        &__title {
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 21px;
+            letter-spacing: 0em;
+            text-align: left;
+        }
+
+        &__text {
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 14px;
+            letter-spacing: 0em;
+            text-align: left;
+        }
+
+        &__content {
+            margin-top: 8px;
+        }
+
+        &__item {
+            margin-right: 20px;
+
+            &:first-child {
+                .lessons-about__icon {
+                    width: 16px;
+                    height: 16px;
+                }
+
+                &::after {
+                    right: -10px;
+                }
+            }
+
+            &:last-child {
+                margin-right: 0;
+
+                .lessons-about__icon {
+                    width: 13px;
+                    height: 16px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 349px) {
+    .lessons-about__content {
+        display: flex;
+        flex-flow: wrap;
+    }
+
+    .lessons-item__element {
+        &:first-child {
+            margin-right: 9;
+        }
+    }
+
+    .lessons-about__item {
+        margin-right: 10px;
+
+        &:first-child {
+            .lessons-about__icon {
+                margin-right: 5px;
+            }
+        }
+
+        &::last-child {
+            .lessons-about___icon {
+                margin-right: 5px;
+            }
+        }
+    }
+}
+
+/* Страница урока */
+
+.content-element__header-wrapper {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.content-element__header-element {
+    margin-left: 0;
+}
+
+@media (max-width: 1075px) {
+    .content-element__side {
+        padding-left: 30px;
+    }
+
+    .content-element__header-btn {
+        margin-right: 0;
+    }
+
+    .content-element__header-item:first-child {
+        margin-left: 8px;
+    }
+
+    .content-element__header-element {
+        margin-left: 0px;
+    }
+}
+
+@media (max-width: 825px) {
+    .lesson-part__inner {
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+@media (max-width:491px) {
+    .lesson-part {
+        &__download {
+            display: none;
+
+            &-icon {
+                width: 20px;
+                height: 20px;
+                position: relative;
+                border: 1px solid;
+            }
+        }
+
+        &__doc-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .btn__content_medium {
+        min-width: 0;
+        max-width: 40px;
+        height: 40px;
+    }
+}
