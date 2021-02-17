@@ -1,61 +1,65 @@
 function moduleMedia() {
+    const span = $('.info-block__text');
+    const homework = $('.part-content__type');
+    let result;
 
-    const span = document.querySelectorAll('.info-block');
-    const homework = document.querySelectorAll('.part-content__type');
-    const text = homework[1].innerText;
+    $.each(span, (count, elem) => {
+        if (count + 1 !== 1 && (count + 1) % 3 === 0) {
+            const text = $(elem).text();
 
+            if (innerWidth < 515) {
+                const arr = text.split(' ');
+            
+                if (arr.length > 2) {
+                    arr.splice(1, 1);
+                }
 
-    if (innerWidth < 515) {
-        const arr = text.split(' ');
-
-        if (arr.length > 2) {
-            arr.splice(1, 1);
-        }
-
-        result = arr.join(' ');
-        homework[1].innerHTML = result;
-    }
-
-    if (innerWidth >= 515) {
-        const arr = text.split(' ');
-
-        if (arr.length < 3) {
-            arr.splice(1, 0, 'домашнее');
-        }
-
-        result = arr.join(' ');
-        homework[1].innerHTML = result;
-    }
-
-
-    for (let i = 2; i < span.length; i += 2) {
-        const block = span[i].children[0];
-        const text = span[i].children[0].innerText;
-
-        if (innerWidth < 515) {
-            const arr = text.split(' ');
-
-            if (arr.length > 2) {
-                arr.splice(1, 1);
+                result = arr.join(' ');
+                $(elem).html(result);
             }
 
-            result = arr.join(' ');
-            block.innerHTML = result;
+            if (innerWidth >= 515) {
+                const arr = text.split(' ');
+
+                if (arr.length < 3) {
+                    arr.splice(1, 0, 'домашнее');
+                }
+        
+                result = arr.join(' ');
+                $(elem).html(result);
+            }
         }
+    })
 
-        if (innerWidth >= 515) {
-            const arr = text.split(' ');
+    $.each(homework, (index, item) => {
+        if (index % 2 === 1) {
+            const text = $(item).text();
 
-            if (arr.length < 3) {
-                arr.splice(1, 0, 'домашнее');
+            if (innerWidth < 515) {
+                const arr = text.split(' ');
+            
+                if (arr.length > 2) {
+                    arr.splice(1, 1);
+                }
+
+                result = arr.join(' ');
+                $(item).html(result);
             }
 
-            result = arr.join(' ');
-            block.innerHTML = result;
+            if (innerWidth >= 515) {
+                const arr = text.split(' ');
+        
+                if (arr.length < 3) {
+                    arr.splice(1, 0, 'домашнее');
+                }
+        
+                result = arr.join(' ');
+                $(item).html(result);
+            }
         }
-    }
+    });
 }
 
 moduleMedia();
 
-window.addEventListener('resize', moduleMedia);
+$(window).resize(moduleMedia);

@@ -1,4 +1,5 @@
 <html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,264 +12,295 @@
 </head>
 
 <body>
-<div th:replace="base :: main-nav"></div>
+    <div th:replace="base :: main-nav"></div>
 
-<!--<div class="main-content main-content_pl40 main-content_white-top">-->
-<div class="main-content main-content_white-top">
-    <!--<div th:replace="base :: a-corporate-center-nav"></div>-->
-    <div class="content-top content-top_btn">
-        <div th:attr="type=${subtype}" js-type class="content-top__header" th:utext="${title}"></div>
-        <div js-create-article class="add-button add-button_right add-button_violet">+ Добавить регламент</div>
-    </div>
-    <div class="content-top">
-        <div class="top-nav">
-            <div class="top-nav__list-items">
-                <div th:classappend="${subtype == 'all' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
-                    <a th:href="@{/a-corporate-center/regulations/}" class="top-nav__link">Общие</a></div>
-                <div th:classappend="${subtype == 'admin' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
-                    <a th:href="@{/a-corporate-center/regulations/management/}" class="top-nav__link">Управление</a></div>
-                <div th:classappend="${subtype == 'advertiser' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
-                    <a th:href="@{/a-corporate-center/regulations/advertiser/}" class="top-nav__link">Маркетинг</a></div>
-                <div th:classappend="${subtype == 'manager' ? 'top-nav__item_active' : ''}" class="top-nav__item top-nav__item_small">
-                    <a th:href="@{/a-corporate-center/regulations/manager/}" class="top-nav__link">Продажи</a></div>
-            </div>
+    <!--<div class="main-content main-content_pl40 main-content_white-top">-->
+    <div class="main-content main-content_white-top">
+        <!--<div th:replace="base :: a-corporate-center-nav"></div>-->
+        <div class="content-top content-top_btn">
+            <div th:attr="type=${subtype}" js-type class="content-top__header" th:utext="${title}"></div>
+            <div js-create-article class="add-button add-button_right add-button_violet">+ Добавить регламент</div>
         </div>
-    </div>
-    <div class="content-main article-container">
-        <th:block th:each="article, cnt : ${articles}">
-            <th:block th:unless="${article.editable}">
-                <div class="theme">
-                    <div class="theme-wrapper theme-wrapper_row">
-                        <div class="theme__text-wrapper">
-                            <img th:if="${article.kind == 1}" class="article__img" th:src="'/' + ${article.previewImg}">
-                            <img th:if="${article.kind == 2}" js-open-article class="article__img article__img_modal" th:src="'/' + ${article.previewImg}">
-                            <a th:if="${article.kind == 3}" target="_blank" th:href="${article.link}">
-                                <img class="article__img" th:src="'/' + ${article.previewImg}">
-                            </a>
-                        </div>
+        <div class="content-top">
+            <div class="top-nav">
+                <div class="top-nav__list-items">
+                    <div th:classappend="${subtype == 'all' ? 'top-nav__item_active' : ''}"
+                        class="top-nav__item top-nav__item_small">
+                        <a th:href="@{/a-corporate-center/regulations/}" class="top-nav__link">Общие</a>
                     </div>
-                </div>
-            </th:block>
-            <th:block th:if="${article.editable}">
-                <div class="theme" th:attr="data-article=${article.id}">
-                    <div class="theme-wrapper theme-wrapper_row">
-                        <div class="theme__text-wrapper">
-                            <img th:if="${article.kind == 1}" class="article__img" th:src="'/' + ${article.previewImg}">
-                            <img th:if="${article.kind == 2}" js-open-article class="article__img article__img_modal" th:src="'/' + ${article.previewImg}">
-                            <a th:if="${article.kind == 3}" target="_blank" th:href="${article.link}">
-                                <img class="article__img" th:src="'/' + ${article.previewImg}">
-                            </a>
-                        </div>
-                        <div js-update-article class="theme-setting theme-setting_top theme-setting_big"></div>
+                    <div th:classappend="${subtype == 'admin' ? 'top-nav__item_active' : ''}"
+                        class="top-nav__item top-nav__item_small">
+                        <a th:href="@{/a-corporate-center/regulations/management/}" class="top-nav__link">Управление</a>
                     </div>
-                </div>
-            </th:block>
-        </th:block>
-    </div>
-</div>
-
-<div js-menu-create-article class="menu">
-    <div class="menu__wrapper">
-        <div js-menu-create-article-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
-        <div class="menu__content menu__content_end">
-            <form js-article-form action="#" class="menu__content-side menu__content-side_xxxlarge" enctype="multipart/form-data">
-                <div class="menu__header-wrapper">
-                    <div class="menu-header">
-                        <div class="menu-header__title">
-                            Добавить регламент
-                        </div>
+                    <div th:classappend="${subtype == 'advertiser' ? 'top-nav__item_active' : ''}"
+                        class="top-nav__item top-nav__item_small">
+                        <a th:href="@{/a-corporate-center/regulations/advertiser/}" class="top-nav__link">Маркетинг</a>
                     </div>
-                </div>
-                <div class="menu__list menu__list_p0 custom-scroll">
-                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input_t30">
-                        <div class="menu-input menu-input_margin menu-input_full">
-                            <div class="menu-input__title">Название регламента *</div>
-                            <div class="menu-input__wrapper">
-                                <input js-article-form-name name="name" placeholder="Введите название регламента" class="menu-input__input menu-input__input_small" required/>
-                            </div>
-                        </div>
-                        <div class="menu-input menu-input_margin menu-input_full">
-                            <div class="menu-input__title">Тип регламента *</div>
-                            <div class="menu-input__wrapper menu-input__wrapper_select">
-                                <select js-article-form-type name="type" class="menu-input__input menu-input__input_small menu-input__input_select" required>
-                                    <option value="" disabled selected>Выберите тип регламента</option>
-                                    <option value="all">Общий</option>
-                                    <option value="admin">Управление</option>
-                                    <option value="advertiser">Маркетинг</option>
-                                    <option value="manager">Продажи</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="menu-input menu-input_margin menu-input_mt menu-input_full">
-                            <div class="input-element__input input-element__input_transparent input-element__img">
-                                <input type="file" name="img" accept="image/*,image/jpeg" id="file" required class="input-file">
-                                <label for="file" class="js-labelFile js-upload-banner">
-                                    <span class="menu-input__title js-fileName">Загрузите обложку 900x100</span>
-                                </label>
-                            </div>
-                        </div>
+                    <div th:classappend="${subtype == 'manager' ? 'top-nav__item_active' : ''}"
+                        class="top-nav__item top-nav__item_small">
+                        <a th:href="@{/a-corporate-center/regulations/manager/}" class="top-nav__link">Продажи</a>
                     </div>
-
-                    <div class="menu-input__delim">
-                        <span></span>
-                    </div>
-
-                    <div class="menu-input__wrapper menu-input__wrapper_row">
-                        <div class="menu-input menu-input_margin menu-input_full menu-input_large">
-                            <div class="input-element__input input-element__input_violet input-element__input_row">
-                                <div js-article-kind class="input-element__radio">
-                                    <input type="radio" th:id="r1" class="radio radio-mech" name="kind" value="1" checked/>
-                                    <label th:for="r1">Изображение</label>
-                                </div>
-                                <div js-article-kind class="input-element__radio">
-                                    <input type="radio" th:id="r2" class="radio radio-mech" name="kind" value="2"/>
-                                    <label th:for="r2">Внутренний редактор</label>
-                                </div>
-                                <div js-article-kind class="input-element__radio">
-                                    <input type="radio" th:id="r3" class="radio radio-mech" name="kind" value="3"/>
-                                    <label th:for="r3">Внешняя ссылка</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div js-kind-link class="menu-input menu-input_margin menu-input_full menu-input_close">
-                            <div class="menu-input__wrapper">
-                                <input js-article-form-link name="link" placeholder="Введите внешнюю ссылку" class="menu-input__input menu-input__input_small" required/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div js-kind-editor class="menu-input__delim menu-input_close">
-                        <span></span>
-                        <input id="editor-hidden" type="hidden" name="text">
-                    </div>
-                    <div js-kind-editor class="menu-input menu-input_xsmall menu-input_close">
-                        <div id="editor"></div>
-                    </div>
-                </div>
-                <div class="menu__footer">
-                    <button type="button" js-save-article class="button button_white">Добавить регламент</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div js-menu-open-article class="menu">
-    <div class="menu__wrapper">
-        <div js-menu-open-article-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
-        <div class="menu__content menu__content_end">
-            <div class="menu__content-side menu__content-side_xxxlarge">
-                <div class="menu__header-wrapper menu__header-wrapper_not-bordered">
-                    <div class="menu-header">
-                        <div js-open-title class="menu-header__title menu-header__title_big"></div>
-                    </div>
-                </div>
-                <div class="menu__list menu__list_p0 custom-scroll">
-                    <div js-open-text class="article__text"></div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div js-menu-update-article class="menu">
-    <div class="menu__wrapper">
-        <div js-menu-update-article-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
-        <div class="menu__content menu__content_end">
-            <form id="update-article-form" js-update-article-form action="#" class="menu__content-side menu__content-side_xxxlarge" enctype="multipart/form-data">
-                <input js-update-article-form-id type="hidden" name="id">
-                <input js-update-article-form-img type="hidden" name="previewImg" required>
-                <div class="menu__header-wrapper">
-                    <div class="menu-header">
-                        <div class="menu-header__title">
-                            Редактировать регламент
-                        </div>
-                    </div>
-                </div>
-                <div class="menu__list menu__list_p0 custom-scroll">
-                    <div class="menu-input__wrapper menu-input__wrapper_row menu-input_t30">
-                        <div class="menu-input menu-input_margin menu-input_full">
-                            <div class="menu-input__title">Название регламента *</div>
-                            <div class="menu-input__wrapper">
-                                <input js-update-article-form-name name="name" placeholder="Введите название регламента" class="menu-input__input menu-input__input_small" required/>
-                            </div>
-                        </div>
-                        <div class="menu-input menu-input_margin menu-input_full">
-                            <div class="menu-input__title">Тип регламента *</div>
-                            <div class="menu-input__wrapper menu-input__wrapper_select">
-                                <select id="js-update-article-form-type" js-update-article-form-type name="type" class="menu-input__input menu-input__input_small menu-input__input_select" required>
-                                    <option value="all">Общий</option>
-                                    <option value="admin">Управление</option>
-                                    <option value="advertiser">Маркетинг</option>
-                                    <option value="manager">Продажи</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="menu-input menu-input_margin menu-input_mt menu-input_full">
-                            <div class="input-element__input input-element__input_transparent input-element__img">
-                                <input type="file" name="img" accept="image/*,image/jpeg" id="fileUpdate" class="input-file">
-                                <label for="fileUpdate" class="js-labelFile js-upload-banner">
-                                    <span class="menu-input__title js-fileName">Загрузите обложку 900x100</span>
-                                </label>
+        <div class="content-main article-container">
+            <th:block th:each="article, cnt : ${articles}">
+                <th:block th:unless="${article.editable}">
+                    <div class="theme">
+                        <div class="theme-wrapper theme-wrapper_row">
+                            <div class="theme__text-wrapper">
+                                <img th:if="${article.kind == 1}" class="article__img"
+                                    th:src="'/' + ${article.previewImg}">
+                                <img th:if="${article.kind == 2}" js-open-article
+                                    class="article__img article__img_modal" th:src="'/' + ${article.previewImg}">
+                                <a th:if="${article.kind == 3}" target="_blank" th:href="${article.link}">
+                                    <img class="article__img" th:src="'/' + ${article.previewImg}">
+                                </a>
                             </div>
                         </div>
                     </div>
-
-                    <div class="menu-input__delim">
-                        <span></span>
-                    </div>
-
-                    <div class="menu-input__wrapper menu-input__wrapper_row">
-                        <div class="menu-input menu-input_margin menu-input_full menu-input_large">
-                            <div class="input-element__input input-element__input_violet input-element__input_row">
-                                <div js-article-kind class="input-element__radio">
-                                    <input type="radio" th:id="ru1" class="radio radio-mech" name="kind" value="1" checked/>
-                                    <label th:for="ru1">Изображение</label>
-                                </div>
-                                <div js-article-kind class="input-element__radio">
-                                    <input type="radio" th:id="ru2" class="radio radio-mech" name="kind" value="2"/>
-                                    <label th:for="ru2">Внутренний редактор</label>
-                                </div>
-                                <div js-article-kind class="input-element__radio">
-                                    <input type="radio" th:id="ru3" class="radio radio-mech" name="kind" value="3"/>
-                                    <label th:for="ru3">Внешняя ссылка</label>
-                                </div>
+                </th:block>
+                <th:block th:if="${article.editable}">
+                    <div class="theme" th:attr="data-article=${article.id}">
+                        <div class="theme-wrapper theme-wrapper_row">
+                            <div class="theme__text-wrapper">
+                                <img th:if="${article.kind == 1}" class="article__img"
+                                    th:src="'/' + ${article.previewImg}">
+                                <img th:if="${article.kind == 2}" js-open-article
+                                    class="article__img article__img_modal" th:src="'/' + ${article.previewImg}">
+                                <a th:if="${article.kind == 3}" target="_blank" th:href="${article.link}">
+                                    <img class="article__img" th:src="'/' + ${article.previewImg}">
+                                </a>
                             </div>
-                        </div>
-                        <div js-kind-link class="menu-input menu-input_margin menu-input_full menu-input_close">
-                            <div class="menu-input__wrapper">
-                                <input js-update-article-form-link name="link" placeholder="Введите внешнюю ссылку" class="menu-input__input menu-input__input_small" required/>
-                            </div>
+                            <div js-update-article class="theme-setting theme-setting_top theme-setting_big"></div>
                         </div>
                     </div>
-
-                    <div js-kind-editor class="menu-input__delim menu-input_close">
-                        <span></span>
-                        <input id="editor-hidden-update" type="hidden" name="text">
-                    </div>
-                    <div js-kind-editor class="menu-input menu-input_xsmall menu-input_close">
-                        <div id="editor-update"></div>
-                    </div>
-                </div>
-                <div class="menu__footer">
-                    <button type="button" js-update-save-article class="button button_white">Сохранить изменения</button>
-                    <div class="menu-input__wrapper">
-                        <div js-delete-article class="menu-input__input menu-input__delete">
-                            <span>Удалить регламент</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
+                </th:block>
+            </th:block>
         </div>
     </div>
-</div>
 
-<th:block th:insert="base :: scripts" />
-<script th:src="@{/js/quill.js}"></script>
-<!--<script th:src="@{/js/editor.js}"></script>-->
-<script th:src="@{/js/upload-img.js}"></script>
-<script th:src="@{/js/articles-menu.js}"></script>
-<script th:src="@{/js/open-articles.js}"></script>
+    <div js-menu-create-article class="menu">
+        <div class="menu__wrapper">
+            <div js-menu-create-article-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+            <div class="menu__content menu__content_end">
+                <form js-article-form action="#" class="menu__content-side menu__content-side_xxxlarge"
+                    enctype="multipart/form-data">
+                    <div class="menu__header-wrapper">
+                        <div class="menu-header">
+                            <div class="menu-header__title">
+                                Добавить регламент
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu__list menu__list_p0 custom-scroll">
+                        <div class="menu-input__wrapper menu-input__wrapper_row menu-input_t30">
+                            <div class="menu-input menu-input_margin menu-input_full">
+                                <div class="menu-input__title">Название регламента *</div>
+                                <div class="menu-input__wrapper">
+                                    <input js-article-form-name name="name" placeholder="Введите название регламента"
+                                        class="menu-input__input menu-input__input_small" required />
+                                </div>
+                            </div>
+                            <div class="menu-input menu-input_margin menu-input_full">
+                                <div class="menu-input__title">Тип регламента *</div>
+                                <div class="menu-input__wrapper menu-input__wrapper_select">
+                                    <select js-article-form-type name="type"
+                                        class="menu-input__input menu-input__input_small menu-input__input_select"
+                                        required>
+                                        <option value="" disabled selected>Выберите тип регламента</option>
+                                        <option value="all">Общий</option>
+                                        <option value="admin">Управление</option>
+                                        <option value="advertiser">Маркетинг</option>
+                                        <option value="manager">Продажи</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="menu-input menu-input_margin menu-input_mt menu-input_full">
+                                <div class="input-element__input input-element__input_transparent input-element__img">
+                                    <input type="file" name="img" accept="image/*,image/jpeg" id="file" required
+                                        class="input-file">
+                                    <label for="file" class="js-labelFile js-upload-banner">
+                                        <span class="menu-input__title js-fileName">Загрузите обложку 900x100</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="menu-input__delim">
+                            <span></span>
+                        </div>
+
+                        <div class="menu-input__wrapper menu-input__wrapper_row">
+                            <div class="menu-input menu-input_margin menu-input_full menu-input_large">
+                                <div class="input-element__input input-element__input_violet input-element__input_row">
+                                    <div js-article-kind class="input-element__radio">
+                                        <input type="radio" th:id="r1" class="radio radio-mech" name="kind" value="1"
+                                            checked />
+                                        <label th:for="r1">Изображение</label>
+                                    </div>
+                                    <div js-article-kind class="input-element__radio">
+                                        <input type="radio" th:id="r2" class="radio radio-mech" name="kind" value="2" />
+                                        <label th:for="r2">Внутренний редактор</label>
+                                    </div>
+                                    <div js-article-kind class="input-element__radio">
+                                        <input type="radio" th:id="r3" class="radio radio-mech" name="kind" value="3" />
+                                        <label th:for="r3">Внешняя ссылка</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div js-kind-link class="menu-input menu-input_margin menu-input_full menu-input_close">
+                                <div class="menu-input__wrapper">
+                                    <input js-article-form-link name="link" placeholder="Введите внешнюю ссылку"
+                                        class="menu-input__input menu-input__input_small" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div js-kind-editor class="menu-input__delim menu-input_close">
+                            <span></span>
+                            <input id="editor-hidden" type="hidden" name="text">
+                        </div>
+                        <div js-kind-editor class="menu-input menu-input_xsmall menu-input_close">
+                            <div id="editor"></div>
+                        </div>
+                    </div>
+                    <div class="menu__footer">
+                        <button type="button" js-save-article class="button button_white">Добавить регламент</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div js-menu-open-article class="menu">
+        <div class="menu__wrapper">
+            <div js-menu-open-article-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+            <div class="menu__content menu__content_end">
+                <div class="menu__content-side menu__content-side_xxxlarge">
+                    <div class="menu__header-wrapper menu__header-wrapper_not-bordered">
+                        <div class="menu-header">
+                            <div js-open-title class="menu-header__title menu-header__title_big"></div>
+                        </div>
+                    </div>
+                    <div class="menu__list menu__list_p0 custom-scroll">
+                        <div js-open-text class="article__text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div js-menu-update-article class="menu">
+        <div class="menu__wrapper">
+            <div js-menu-update-article-close-btn class="menu-header__close-btn menu-header__close-btn_absolute"></div>
+            <div class="menu__content menu__content_end">
+                <form id="update-article-form" js-update-article-form action="#"
+                    class="menu__content-side menu__content-side_xxxlarge" enctype="multipart/form-data">
+                    <input js-update-article-form-id type="hidden" name="id">
+                    <input js-update-article-form-img type="hidden" name="previewImg" required>
+                    <div class="menu__header-wrapper">
+                        <div class="menu-header">
+                            <div class="menu-header__title">
+                                Редактировать регламент
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu__list menu__list_p0 custom-scroll">
+                        <div class="menu-input__wrapper menu-input__wrapper_row menu-input_t30">
+                            <div class="menu-input menu-input_margin menu-input_full">
+                                <div class="menu-input__title">Название регламента *</div>
+                                <div class="menu-input__wrapper">
+                                    <input js-update-article-form-name name="name"
+                                        placeholder="Введите название регламента"
+                                        class="menu-input__input menu-input__input_small" required />
+                                </div>
+                            </div>
+                            <div class="menu-input menu-input_margin menu-input_full">
+                                <div class="menu-input__title">Тип регламента *</div>
+                                <div class="menu-input__wrapper menu-input__wrapper_select">
+                                    <select id="js-update-article-form-type" js-update-article-form-type name="type"
+                                        class="menu-input__input menu-input__input_small menu-input__input_select"
+                                        required>
+                                        <option value="all">Общий</option>
+                                        <option value="admin">Управление</option>
+                                        <option value="advertiser">Маркетинг</option>
+                                        <option value="manager">Продажи</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="menu-input menu-input_margin menu-input_mt menu-input_full">
+                                <div class="input-element__input input-element__input_transparent input-element__img">
+                                    <input type="file" name="img" accept="image/*,image/jpeg" id="fileUpdate"
+                                        class="input-file">
+                                    <label for="fileUpdate" class="js-labelFile js-upload-banner">
+                                        <span class="menu-input__title js-fileName">Загрузите обложку 900x100</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="menu-input__delim">
+                            <span></span>
+                        </div>
+
+                        <div class="menu-input__wrapper menu-input__wrapper_row">
+                            <div class="menu-input menu-input_margin menu-input_full menu-input_large">
+                                <div class="input-element__input input-element__input_violet input-element__input_row">
+                                    <div js-article-kind class="input-element__radio">
+                                        <input type="radio" th:id="ru1" class="radio radio-mech" name="kind" value="1"
+                                            checked />
+                                        <label th:for="ru1">Изображение</label>
+                                    </div>
+                                    <div js-article-kind class="input-element__radio">
+                                        <input type="radio" th:id="ru2" class="radio radio-mech" name="kind"
+                                            value="2" />
+                                        <label th:for="ru2">Внутренний редактор</label>
+                                    </div>
+                                    <div js-article-kind class="input-element__radio">
+                                        <input type="radio" th:id="ru3" class="radio radio-mech" name="kind"
+                                            value="3" />
+                                        <label th:for="ru3">Внешняя ссылка</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div js-kind-link class="menu-input menu-input_margin menu-input_full menu-input_close">
+                                <div class="menu-input__wrapper">
+                                    <input js-update-article-form-link name="link" placeholder="Введите внешнюю ссылку"
+                                        class="menu-input__input menu-input__input_small" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div js-kind-editor class="menu-input__delim menu-input_close">
+                            <span></span>
+                            <input id="editor-hidden-update" type="hidden" name="text">
+                        </div>
+                        <div js-kind-editor class="menu-input menu-input_xsmall menu-input_close">
+                            <div id="editor-update"></div>
+                        </div>
+                    </div>
+                    <div class="menu__footer">
+                        <button type="button" js-update-save-article class="button button_white">Сохранить
+                            изменения</button>
+                        <div class="menu-input__wrapper">
+                            <div js-delete-article class="menu-input__input menu-input__delete">
+                                <span>Удалить регламент</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:insert="base :: scripts" />
+    <script th:src="@{/js/quill.js}"></script>
+    <!--<script th:src="@{/js/editor.js}"></script>-->
+    <script th:src="@{/js/upload-img.js}"></script>
+    <script th:src="@{/js/articles-menu.js}"></script>
+    <script th:src="@{/js/open-articles.js}"></script>
 
 </body>
+
 </html>
